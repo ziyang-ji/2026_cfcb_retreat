@@ -535,10 +535,11 @@ function getUserRegistrations(userId) {
     const familySheet = ss.getSheetByName('Family_Registrations');
     
     const individuals = [];
-    const familyMap = new Map();
+    const userFamilyIds = new Set(); // Track which families the user is part of
+    const allFamilyMembers = new Map(); // Store ALL members of each family
     let totalPeople = 0;
     
-    // Get individual registrations
+    // First pass: Get individual registrations and identify which families user is in
     const individualLastRow = individualSheet.getLastRow();
     if (individualLastRow > 1) {
       const individualData = individualSheet.getRange(2, 1, individualLastRow - 1, 9).getValues();
@@ -547,33 +548,40 @@ function getUserRegistrations(userId) {
         const rowUserId = individualData[i][7]; // User ID column
         const familyId = individualData[i][6]; // Family ID column
         
+        const person = {
+          timestamp: individualData[i][0],
+          id: individualData[i][1],
+          name: individualData[i][2],
+          phone: individualData[i][3],
+          email: individualData[i][4],
+          address: individualData[i][5],
+          familyId: familyId,
+          registeredBy: rowUserId
+        };
+        
+        // If this person was registered by current user
         if (rowUserId === userId) {
-          const person = {
-            timestamp: individualData[i][0],
-            id: individualData[i][1],
-            name: individualData[i][2],
-            phone: individualData[i][3],
-            email: individualData[i][4],
-            address: individualData[i][5],
-            familyId: familyId
-          };
-          
           if (!familyId) {
-            // Individual registration
+            // Individual registration (not part of family)
             individuals.push(person);
             totalPeople++;
           } else {
-            // Family member
-            if (!familyMap.has(familyId)) {
-              familyMap.set(familyId, []);
-            }
-            familyMap.get(familyId).push(person);
+            // User is part of this family
+            userFamilyIds.add(familyId);
           }
+        }
+        
+        // Store all family members (regardless of who registered them)
+        if (familyId) {
+          if (!allFamilyMembers.has(familyId)) {
+            allFamilyMembers.set(familyId, []);
+          }
+          allFamilyMembers.get(familyId).push(person);
         }
       }
     }
     
-    // Get family information
+    // Get family information - show ALL members for families user is part of
     const families = [];
     const familyLastRow = familySheet.getLastRow();
     if (familyLastRow > 1) {
@@ -582,8 +590,9 @@ function getUserRegistrations(userId) {
       for (let i = 0; i < familyData.length; i++) {
         const familyId = familyData[i][1];
         
-        if (familyMap.has(familyId)) {
-          const members = familyMap.get(familyId);
+        // If user is part of this family, show ALL members
+        if (userFamilyIds.has(familyId) && allFamilyMembers.has(familyId)) {
+          const members = allFamilyMembers.get(familyId);
           families.push({
             timestamp: familyData[i][0],
             familyId: familyId,
