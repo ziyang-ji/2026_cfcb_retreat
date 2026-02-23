@@ -58,110 +58,168 @@ function initializeSheets() {
 
 // Handle GET requests (for loading existing family data)
 function doGet(e) {
-  initializeSheets();
-  
-  const action = e.parameter.action;
-  
-  if (action === 'getFamilyMembers') {
-    const familyId = e.parameter.familyId;
-    return getFamilyMembers(familyId);
-  }
-  
-  return ContentService.createTextOutput(JSON.stringify({
-    success: false,
-    message: 'Invalid action'
-  })).setMimeType(ContentService.MimeType.JSON);
-}
-
-// Handle POST requests (for submitting new registrations)
-function doPost(e) {
-  initializeSheets();
-  
   try {
-    const data = JSON.parse(e.postData.contents);
+    initializeSheets();
     
-    if (data.type === 'individual') {
-      return handleIndividualRegistration(data);
-    } else if (data.type === 'family') {
-      return handleFamilyRegistration(data);
+    const action = e.parameter.action;
+    
+    // Test endpoint
+    if (action === 'test') {
+      return ContentService.createTextOutput(JSON.stringify({
+        success: true,
+        message: 'Connection successful! Google Apps Script is working.',
+        timestamp: new Date().toISOString(),
+        spreadsheetId: getSpreadsheet().getId()
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    if (action === 'getFamilyMembers') {
+      const familyId = e.parameter.familyId;
+      return getFamilyMembers(familyId);
     }
     
     return ContentService.createTextOutput(JSON.stringify({
       success: false,
-      message: 'Invalid registration type'
+      message: 'Invalid action'
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    Logger.log('Error in doGet: ' + error.toString());
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      message: 'Error: ' + error.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// Handle POST requests (for submitting new registrations)
+function doPost(e) {
+  try {
+    initializeSheets();
+    
+    Logger.log('Received POST request');
+    Logger.log('Post data: ' + e.postData.contents);
+    
+    const data = JSON.parse(e.postData.contents);
+    Logger.log('Parsed data type: ' + data.type);
+    
+    if (data.type === 'individual') {
+      Logger.log('Processing individual registration');
+      return handleIndividualRegistration(data);
+    } else if (data.type === 'family') {
+      Logger.log('Processing family registration');
+      return handleFamilyRegistration(data);
+    }
+    
+    Logger.log('Invalid registration type: ' + data.type);
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      message: 'Invalid registration type: ' + data.type
     })).setMimeType(ContentService.MimeType.JSON);
     
   } catch (error) {
     Logger.log('Error in doPost: ' + error.toString());
+    Logger.log('Error stack: ' + error.stack);
     return ContentService.createTextOutput(JSON.stringify({
       success: false,
-      message: error.toString()
+      message: 'Server error: ' + error.toString()
     })).setMimeType(ContentService.MimeType.JSON);
   }
 }
 
 // Handle individual registration
 function handleIndividualRegistration(data) {
-  const ss = getSpreadsheet();
-  const sheet = ss.getSheetByName('Individual_Registrations');
-  
-  sheet.appendRow([
-    data.timestamp,
-    data.id,
-    data.name,
-    data.phone,
-    data.email,
-    data.address,
-    '' // No family ID for individual registrations
-  ]);
-  
-  return ContentService.createTextOutput(JSON.stringify({
-    success: true,
-    message: 'Individual registration saved',
-    id: data.id
-  })).setMimeType(ContentService.MimeType.JSON);
+  try {
+    const ss = getSpreadsheet();
+    const sheet = ss.getSheetByName('Individual_Registrations');
+    
+    if (!sheet) {
+      throw new Error('Individual_Registrations sheet not found');
+    }
+    
+    Logger.log('Appending row to Individual_Registrations');
+    sheet.appendRow([
+      data.timestamp,
+      data.id,
+      data.name,
+      data.phone,
+      data.email,
+      data.address,
+      '' // No family ID for individual registrations
+    ]);
+    
+    Logger.log('Individual registration saved successfully');
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      success: true,
+      message: 'Individual registration saved',
+      id: data.id
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    Logger.log('Error in handleIndividualRegistration: ' + error.toString());
+    throw error;
+  }
 }
 
 // Handle family registration
 function handleFamilyRegistration(data) {
-  const ss = getSpreadsheet();
-  const individualSheet = ss.getSheetByName('Individual_Registrations');
-  const familySheet = ss.getSheetByName('Family_Registrations');
-  
-  // Add each family member to Individual_Registrations
-  data.members.forEach(member => {
-    individualSheet.appendRow([
-      data.timestamp,
-      member.id,
-      member.name,
-      member.phone,
-      member.email,
-      member.address,
-      data.familyId
-    ]);
-  });
-  
-  // Update or add family entry in Family_Registrations
-  if (data.isExisting) {
-    // Update existing family
-    updateFamilyRecord(familySheet, data);
-  } else {
-    // Add new family
-    familySheet.appendRow([
-      data.timestamp,
-      data.familyId,
-      data.familyHead,
-      data.members.length,
-      'Active'
-    ]);
+  try {
+    const ss = getSpreadsheet();
+    const individualSheet = ss.getSheetByName('Individual_Registrations');
+    const familySheet = ss.getSheetByName('Family_Registrations');
+    
+    if (!individualSheet) {
+      throw new Error('Individual_Registrations sheet not found');
+    }
+    if (!familySheet) {
+      throw new Error('Family_Registrations sheet not found');
+    }
+    
+    Logger.log('Processing ' + data.members.length + ' family members');
+    
+    // Add each family member to Individual_Registrations
+    data.members.forEach((member, index) => {
+      Logger.log('Adding member ' + (index + 1) + ': ' + member.name);
+      individualSheet.appendRow([
+        data.timestamp,
+        member.id,
+        member.name,
+        member.phone,
+        member.email,
+        member.address,
+        data.familyId
+      ]);
+    });
+    
+    // Update or add family entry in Family_Registrations
+    if (data.isExisting) {
+      Logger.log('Updating existing family record');
+      updateFamilyRecord(familySheet, data);
+    } else {
+      Logger.log('Creating new family record');
+      familySheet.appendRow([
+        data.timestamp,
+        data.familyId,
+        data.familyHead,
+        data.members.length,
+        'Active'
+      ]);
+    }
+    
+    Logger.log('Family registration saved successfully');
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      success: true,
+      message: 'Family registration saved',
+      familyId: data.familyId,
+      memberCount: data.members.length
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    Logger.log('Error in handleFamilyRegistration: ' + error.toString());
+    throw error;
   }
-  
-  return ContentService.createTextOutput(JSON.stringify({
-    success: true,
-    message: 'Family registration saved',
-    familyId: data.familyId,
-    memberCount: data.members.length
-  })).setMimeType(ContentService.MimeType.JSON);
 }
 
 // Update existing family record

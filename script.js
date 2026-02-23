@@ -12,6 +12,38 @@ let currentState = {
 // Google Apps Script Web App URL - UPDATE THIS AFTER DEPLOYING
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzilO0f7bGzAoGeVcK2gGoxJMOwyiMuJ-dkN9om42BiXRrTAMrd3_wDWUfHBAfEa0kO3Q/exec';
 
+// Test connection to Google Sheets
+async function testConnection() {
+    console.log('🔍 Testing connection to Google Sheets...');
+    console.log('URL:', GOOGLE_SCRIPT_URL);
+    
+    showLoading(true);
+    
+    try {
+        const response = await fetch(GOOGLE_SCRIPT_URL + '?action=test', {
+            method: 'GET',
+            redirect: 'follow'
+        });
+        
+        console.log('Response status:', response.status);
+        console.log('Response ok:', response.ok);
+        
+        const text = await response.text();
+        console.log('Response:', text);
+        
+        if (response.ok) {
+            alert('✅ Connection successful!\n\nGoogle Sheets is connected and ready.\n\nCheck the browser console (F12) for details.');
+        } else {
+            alert('⚠️ Connection issue\n\nStatus: ' + response.status + '\n\nCheck the browser console (F12) for details.');
+        }
+    } catch (error) {
+        console.error('❌ Connection failed:', error);
+        alert('❌ Connection failed!\n\nError: ' + error.message + '\n\nCheck the browser console (F12) for details.');
+    } finally {
+        showLoading(false);
+    }
+}
+
 // Navigation functions
 function showSection(sectionId) {
     document.querySelectorAll('.form-section').forEach(section => {
@@ -261,23 +293,51 @@ function goBackFromFamily() {
 async function submitToGoogleSheets(data) {
     showLoading(true);
     
+    console.log('Submitting to Google Sheets:', data);
+    console.log('Using URL:', GOOGLE_SCRIPT_URL);
+    
     try {
+        // Use redirect follow mode for Google Apps Script
         const response = await fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
-            mode: 'no-cors',
+            redirect: 'follow',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'text/plain',
             },
             body: JSON.stringify(data)
         });
         
-        // Note: no-cors mode doesn't allow reading the response
-        // We assume success if no error is thrown
-        console.log('Data submitted to Google Sheets:', data);
+        console.log('Response status:', response.status);
+        console.log('Response ok:', response.ok);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.text();
+        console.log('Response from Google Sheets:', result);
+        
+        // Try to parse as JSON
+        try {
+            const jsonResult = JSON.parse(result);
+            console.log('Parsed result:', jsonResult);
+            if (!jsonResult.success) {
+                throw new Error(jsonResult.message || 'Failed to save data');
+            }
+        } catch (parseError) {
+            console.log('Response is not JSON, but request completed');
+        }
+        
+        console.log('✅ Data successfully submitted!');
         
     } catch (error) {
-        console.error('Error submitting to Google Sheets:', error);
-        alert('There was an error submitting your registration. Please try again or contact support.');
+        console.error('❌ Error submitting to Google Sheets:', error);
+        console.error('Error details:', {
+            message: error.message,
+            name: error.name,
+            stack: error.stack
+        });
+        alert(`There was an error submitting your registration: ${error.message}\n\nPlease check the browser console (F12) for details, or contact support.`);
         throw error;
     } finally {
         showLoading(false);
