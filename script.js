@@ -250,6 +250,42 @@ async function searchFamily() {
     }
 }
 
+// Display family options when multiple found
+function displayFamilyOptions(families) {
+    const container = document.getElementById('family-options');
+    
+    container.innerHTML = families.map((family, index) => {
+        const members = family.members || [];
+        return `
+            <div class="member-card" style="margin-bottom: 1rem; padding: 1.5rem; background: #f8f9ff; border: 2px solid #667eea; border-radius: 8px; cursor: pointer;" onclick="selectFamilyFromOptions(${index})">
+                <div style="text-align: center; margin-bottom: 0.75rem;">
+                    <h3 style="color: #667eea; margin: 0 0 0.3rem 0;">👨‍👩‍👧‍👦 ${family.familyHead}'s Family</h3>
+                    <div style="font-family: 'Courier New', monospace; font-weight: bold; color: #333; font-size: 0.95rem;">
+                        Family ID: ${family.familyId}
+                    </div>
+                </div>
+                <div style="font-size: 0.9rem; color: #666;">
+                    <strong>${members.length} member${members.length !== 1 ? 's' : ''}:</strong>
+                    ${members.length > 0 ? members.slice(0, 3).map(m => m.name).join(', ') : 'No members yet'}
+                    ${members.length > 3 ? ` and ${members.length - 3} more...` : ''}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// Select family from multiple options
+function selectFamilyFromOptions(index) {
+    const family = currentState.searchResults[index];
+    currentState.pendingFamilyId = family.familyId;
+    currentState.pendingFamilyHead = family.familyHead;
+    currentState.pendingFamilyMembers = family.members || [];
+    currentState.fromSelection = true;
+    
+    displayFamilyPreview(family);
+    showSection('step-family-confirm');
+}
+
 // Display family preview for confirmation
 function displayFamilyPreview(familyData) {
     const preview = document.getElementById('family-preview');
@@ -273,6 +309,17 @@ function displayFamilyPreview(familyData) {
             `}
         </div>
     `;
+}
+
+// Go back from confirmation page
+function goBackFromConfirm() {
+    if (currentState.fromSelection) {
+        // Came from selection page, go back to selection
+        showSection('step-family-select');
+    } else {
+        // Came directly from search, go back to search
+        showSection('step-family-existing');
+    }
 }
 
 // Confirm and join the family

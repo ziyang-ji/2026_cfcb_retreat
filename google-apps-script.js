@@ -375,16 +375,16 @@ function getFamilyMembers(familyId) {
   })).setMimeType(ContentService.MimeType.JSON);
 }
 
-// Search for family by member email
+// Search for family by member email - returns ALL matching families
 function searchFamilyByEmail(email) {
   try {
     const ss = getSpreadsheet();
     const individualSheet = ss.getSheetByName('Individual_Registrations');
     const familySheet = ss.getSheetByName('Family_Registrations');
     
-    Logger.log('Searching for family with member email: ' + email);
+    Logger.log('Searching for families with member email: ' + email);
     
-    // Search for a family member with this email
+    // Search for all family members with this email
     const lastRow = individualSheet.getLastRow();
     if (lastRow <= 1) {
       return ContentService.createTextOutput(JSON.stringify({
@@ -395,59 +395,70 @@ function searchFamilyByEmail(email) {
     
     const data = individualSheet.getRange(2, 1, lastRow - 1, 7).getValues();
     
-    let foundFamilyId = null;
+    const foundFamilyIds = new Set();
     const emailLower = email.toLowerCase();
     
-    // Find a family member with matching email
+    // Find ALL families with members matching this email
     for (let i = 0; i < data.length; i++) {
       const memberEmail = data[i][4]; // Column 5 is Email
       const familyId = data[i][6]; // Column 7 is Family ID
       
       if (familyId && memberEmail && typeof memberEmail === 'string' && memberEmail.toLowerCase() === emailLower) {
-        foundFamilyId = familyId;
-        Logger.log('Found family: ' + foundFamilyId + ' for email: ' + email);
-        break;
+        foundFamilyIds.add(familyId);
+        Logger.log('Found family: ' + familyId + ' for email: ' + email);
       }
     }
     
-    if (!foundFamilyId) {
+    if (foundFamilyIds.size === 0) {
       return ContentService.createTextOutput(JSON.stringify({
         success: false,
         message: 'No family found with that email'
       })).setMimeType(ContentService.MimeType.JSON);
     }
     
-    // Get family details using the found family ID
+    // Get details for all found families
     const familyLastRow = familySheet.getLastRow();
     const familyData = familySheet.getRange(2, 1, familyLastRow - 1, 5).getValues();
     
-    let familyHead = '';
-    for (let i = 0; i < familyData.length; i++) {
-      if (familyData[i][1] === foundFamilyId) {
-        familyHead = familyData[i][2];
-        break;
+    const families = [];
+    
+    for (const familyId of foundFamilyIds) {
+      let familyHead = '';
+      
+      // Get family head name
+      for (let i = 0; i < familyData.length; i++) {
+        if (familyData[i][1] === familyId) {
+          familyHead = familyData[i][2];
+          break;
+        }
       }
+      
+      // Get all members of this family
+      const members = [];
+      for (let i = 0; i < data.length; i++) {
+        if (data[i][6] === familyId) {
+          members.push({
+            id: data[i][1],
+            name: data[i][2],
+            phone: data[i][3],
+            email: data[i][4],
+            address: data[i][5]
+          });
+        }
+      }
+      
+      families.push({
+        familyId: familyId,
+        familyHead: familyHead,
+        members: members
+      });
     }
     
-    // Get all members of this family
-    const members = [];
-    for (let i = 0; i < data.length; i++) {
-      if (data[i][6] === foundFamilyId) {
-        members.push({
-          id: data[i][1],
-          name: data[i][2],
-          phone: data[i][3],
-          email: data[i][4],
-          address: data[i][5]
-        });
-      }
-    }
+    Logger.log('Found ' + families.length + ' family/families');
     
     return ContentService.createTextOutput(JSON.stringify({
       success: true,
-      familyId: foundFamilyId,
-      familyHead: familyHead,
-      members: members
+      families: families
     })).setMimeType(ContentService.MimeType.JSON);
     
   } catch (error) {
