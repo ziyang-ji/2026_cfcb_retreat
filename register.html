@@ -94,15 +94,43 @@
 
         <!-- Step 3: Enter Existing Family ID -->
         <div id="step-family-existing" class="form-section">
-            <h2>Enter Family ID</h2>
+            <h2>Join Existing Family</h2>
+            <p>Find your family by entering either the Family ID or a family member's email.</p>
+            
             <div class="form-group">
-                <label for="existing-family-id">Family ID *</label>
-                <input type="text" id="existing-family-id" placeholder="e.g., SMITH-2026" required>
-                <small>Enter the Family ID provided when your family first registered</small>
+                <label for="existing-family-id">Family ID</label>
+                <input type="text" id="existing-family-id" placeholder="e.g., SMITH-123456" style="text-transform: uppercase;">
+                <small>Ask your family member for this ID</small>
             </div>
+            
+            <div style="text-align: center; margin: 1rem 0; color: #666; font-weight: 500;">
+                — OR —
+            </div>
+            
+            <div class="form-group">
+                <label for="member-email-search">Family Member's Email</label>
+                <input type="email" id="member-email-search" placeholder="e.g., john@example.com">
+                <small>Enter the email of someone already registered in the family</small>
+            </div>
+            
             <div class="button-row">
                 <button class="btn btn-secondary" onclick="showSection('step-family-check')">Back</button>
-                <button class="btn btn-primary" onclick="loadFamilyById()">Continue</button>
+                <button class="btn btn-primary" onclick="searchFamily()">Find Family</button>
+            </div>
+        </div>
+        
+        <!-- Step 3b: Confirm Family -->
+        <div id="step-family-confirm" class="form-section">
+            <h2>Confirm Family</h2>
+            <p>Is this the correct family?</p>
+            
+            <div id="family-preview" class="member-card" style="margin: 1.5rem 0; padding: 1.5rem; background: #f8f9ff; border: 2px solid #667eea; border-radius: 8px;">
+                <!-- Family details will be inserted here -->
+            </div>
+            
+            <div class="button-row">
+                <button class="btn btn-secondary" onclick="showSection('step-family-existing')">Back</button>
+                <button class="btn btn-primary" onclick="confirmAndJoinFamily()">Yes, Join This Family</button>
             </div>
         </div>
 
