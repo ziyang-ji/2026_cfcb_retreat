@@ -186,8 +186,7 @@ function displayRegistrations(data) {
                             <span class="detail-value" style="color: #667eea; font-weight: 600;">You are the owner</span>
                         </div>
                     ` : ''}
-                </div>`
-        }).join('');
+                </div>
                 <div class="family-members">
                     <h4>Family Members:</h4>
                     ${family.members.map(member => {
