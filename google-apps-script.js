@@ -518,6 +518,8 @@ function createUserAccount(data) {
 // Check if user exists
 function checkUserExists(email) {
   try {
+    Logger.log('checkUserExists called with email: ' + email);
+    
     const ss = getSpreadsheet();
     const userSheet = ss.getSheetByName('User_Accounts');
     
@@ -536,17 +538,27 @@ function checkUserExists(email) {
       })).setMimeType(ContentService.MimeType.JSON);
     }
     
-    const emails = userSheet.getRange(2, 4, lastRow - 1, 1).getValues();
+    // Get all user data (not just emails)
+    const data = userSheet.getRange(2, 1, lastRow - 1, 6).getValues();
     
-    for (let i = 0; i < emails.length; i++) {
-      if (emails[i][0].toLowerCase() === email.toLowerCase()) {
+    for (let i = 0; i < data.length; i++) {
+      const userEmail = String(data[i][3]).toLowerCase().trim();
+      const searchEmail = String(email).toLowerCase().trim();
+      
+      Logger.log('Row ' + i + ' - Stored email: "' + data[i][3] + '" vs Search: "' + email + '" - Match: ' + (userEmail === searchEmail));
+      
+      if (userEmail === searchEmail) {
+        Logger.log('✅ Email found! Returning userId: ' + data[i][1] + ', name: ' + data[i][2]);
         return ContentService.createTextOutput(JSON.stringify({
           success: true,
-          exists: true
+          exists: true,
+          userId: data[i][1],
+          name: data[i][2]
         })).setMimeType(ContentService.MimeType.JSON);
       }
     }
     
+    Logger.log('Email not found in database');
     return ContentService.createTextOutput(JSON.stringify({
       success: true,
       exists: false
