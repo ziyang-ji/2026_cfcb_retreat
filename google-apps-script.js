@@ -1077,6 +1077,8 @@ function quitFamily(data) {
 // Check if user exists by phone number
 function checkUserByPhone(phone) {
   try {
+    Logger.log('checkUserByPhone called with: ' + phone);
+    
     const ss = getSpreadsheet();
     const userSheet = ss.getSheetByName('User_Accounts');
     
@@ -1089,6 +1091,8 @@ function checkUserByPhone(phone) {
     }
     
     const lastRow = userSheet.getLastRow();
+    Logger.log('User_Accounts last row: ' + lastRow);
+    
     if (lastRow <= 1) {
       return ContentService.createTextOutput(JSON.stringify({
         success: true,
@@ -1097,10 +1101,14 @@ function checkUserByPhone(phone) {
     }
     
     const data = userSheet.getRange(2, 1, lastRow - 1, 6).getValues();
+    Logger.log('Searching through ' + data.length + ' users');
     
     for (let i = 0; i < data.length; i++) {
       const userPhone = data[i][3]; // Column 4 is Email/Phone
+      Logger.log('Row ' + i + ' - Stored: "' + userPhone + '" vs Searching: "' + phone + '" - Match: ' + (userPhone === phone));
+      
       if (userPhone === phone) {
+        Logger.log('Phone user found! userId: ' + data[i][1]);
         return ContentService.createTextOutput(JSON.stringify({
           success: true,
           exists: true,

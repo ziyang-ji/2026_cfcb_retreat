@@ -294,13 +294,18 @@ async function verifyCode(event) {
         
         // Check if user exists in our system
         const phoneNumber = user.phoneNumber;
+        console.log('Checking if phone user exists:', phoneNumber);
+        
         const checkResponse = await fetch(`${GOOGLE_SCRIPT_URL}?action=checkUserByPhone&phone=${encodeURIComponent(phoneNumber)}`);
         const checkResult = await checkResponse.json();
+        
+        console.log('checkUserByPhone result:', checkResult);
         
         let userId;
         let userName;
         
         if (!checkResult.exists) {
+            console.log('User does not exist, prompting for name...');
             // New user - show modal to get name
             showLoading(false);
             userName = await showNameModal();
