@@ -27,12 +27,11 @@ function showLoading(show) {
 
 // Sign in with Google using Firebase
 async function signInWithGoogle() {
-    showLoading(true);
-    
     try {
         // Check if Firebase is initialized
         if (!window.firebaseAuth) {
-            throw new Error('Firebase not initialized. Please refresh the page.');
+            alert('Firebase not initialized. Please refresh the page.');
+            return;
         }
         
         console.log('Starting Google Sign-In...');
@@ -42,6 +41,9 @@ async function signInWithGoogle() {
         
         // Sign in with popup
         const result = await window.signInWithPopup(window.firebaseAuth, provider);
+        
+        // Show loading only after successful popup (user actually signed in)
+        showLoading(true);
         
         // Get user info
         const user = result.user;
@@ -78,7 +80,9 @@ async function signInWithGoogle() {
             const createResult = await createResponse.json();
             
             if (!createResult.success) {
-                throw new Error('Failed to create user account: ' + createResult.message);
+                showLoading(false);
+                alert('Failed to create user account: ' + createResult.message);
+                return;
             }
             
             userId = createResult.userId;
@@ -103,7 +107,9 @@ async function signInWithGoogle() {
                     userId = checkResult2.userId;
                     userName = checkResult2.name;
                 } else {
-                    throw new Error('Authentication failed. Please try signing in with email/password instead.');
+                    showLoading(false);
+                    alert('Authentication failed. Please try signing in with email/password instead.');
+                    return;
                 }
             }
         }
@@ -125,21 +131,21 @@ async function signInWithGoogle() {
     } catch (error) {
         console.error('Google Sign-In error:', error);
         
-        let errorMessage = 'An error occurred during Google Sign-In.';
-        
+        // Silently handle popup closed by user - don't show any message
         if (error.code === 'auth/popup-closed-by-user') {
-            errorMessage = 'Sign-in cancelled. Please try again.';
-        } else if (error.code === 'auth/popup-blocked') {
-            errorMessage = 'Pop-up blocked by browser. Please allow pop-ups for this site.';
-        } else if (error.code === 'auth/unauthorized-domain') {
-            errorMessage = 'This domain is not authorized. Please add it to Firebase authorized domains.';
-        } else if (error.message) {
-            errorMessage = error.message;
+            console.log('User closed the sign-in popup');
+            return;
         }
         
-        alert(errorMessage);
-    } finally {
-        showLoading(false);
+        // Only show alerts for actual errors
+        if (error.code === 'auth/popup-blocked') {
+            alert('Pop-up blocked by browser. Please allow pop-ups for this site.');
+        } else if (error.code === 'auth/unauthorized-domain') {
+            alert('This domain is not authorized. Please add it to Firebase authorized domains.');
+        } else if (error.message && !error.code) {
+            // Only show custom error messages, not Firebase errors
+            alert(error.message);
+        }
     }
 }
 
