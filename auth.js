@@ -307,24 +307,39 @@ async function verifyCode(event) {
         let userName;
         
         if (!checkResult.exists) {
-            console.log('User does not exist, prompting for name...');
-            // New user - show modal to get name
+            console.log('User does not exist, prompting for name and email...');
+            // New user - show modal to get name and email
             showLoading(false);
-            userName = await showNameModal();
+            const userInfo = await showNameModal();
             showLoading(true);
             
-            if (!userName || !userName.trim()) {
-                userName = phoneNumber; // Use phone as fallback name
-            }
+            userName = userInfo.name || phoneNumber;
+            const userEmail = userInfo.email;
             
-            // Create new user account
-            const userData = {
-                action: 'createUser',
-                name: userName.trim(),
-                email: phoneNumber, // Store phone in email field for consistency
-                password: 'PHONE_AUTH',
-                timestamp: new Date().toISOString()
-            };
+            console.log('User provided - Name:', userName, 'Email:', userEmail);
+            
+            // Check if this email already exists (might be a Google auth user)
+            const emailCheckResponse = await fetch(`${GOOGLE_SCRIPT_URL}?action=checkUser&email=${encodeURIComponent(userEmail)}`);
+            const emailCheckResult = await emailCheckResponse.json();
+            
+            if (emailCheckResult.exists) {
+                console.log('✅ Email already exists! Linking phone to existing account...');
+                // Link phone to existing account
+                userId = emailCheckResult.userId;
+                userName = emailCheckResult.name;
+                
+                // TODO: Update the user account to include phone number
+                console.log('Linked to existing user:', userId);
+            } else {
+                console.log('Creating new user account with email and phone...');
+                // Create new user account
+                const userData = {
+                    action: 'createUser',
+                    name: userName.trim(),
+                    email: userEmail,
+                    password: 'PHONE_AUTH',
+                    timestamp: new Date().toISOString()
+                };
             
             const createResponse = await fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
@@ -333,15 +348,16 @@ async function verifyCode(event) {
                 body: JSON.stringify(userData)
             });
             
-            const createResult = await createResponse.json();
-            
-            if (!createResult.success) {
-                showLoading(false);
-                alert('Failed to create account: ' + createResult.message);
-                return;
+                const createResult = await createResponse.json();
+                
+                if (!createResult.success) {
+                    showLoading(false);
+                    showErrorModal('Failed to create account: ' + createResult.message);
+                    return;
+                }
+                
+                userId = createResult.userId;
             }
-            
-            userId = createResult.userId;
         } else {
             // Existing user
             userId = checkResult.userId;
@@ -395,19 +411,21 @@ function cancelPhoneAuth() {
 function showNameModal() {
     return new Promise((resolve) => {
         const modal = document.getElementById('name-modal');
-        const input = document.getElementById('name-input');
+        const nameInput = document.getElementById('name-input');
+        const emailInput = document.getElementById('email-input');
         
         // Store resolve function globally so submitName can access it
         window.nameModalResolve = resolve;
         
-        // Clear previous input
-        input.value = '';
+        // Clear previous inputs
+        nameInput.value = '';
+        emailInput.value = '';
         
         // Show modal with active class for proper centering
         modal.classList.add('active');
         
-        // Focus on input
-        setTimeout(() => input.focus(), 100);
+        // Focus on name input
+        setTimeout(() => nameInput.focus(), 100);
     });
 }
 
@@ -416,14 +434,15 @@ function submitName(event) {
     event.preventDefault();
     
     const name = document.getElementById('name-input').value.trim();
+    const email = document.getElementById('email-input').value.trim();
     const modal = document.getElementById('name-modal');
     
     // Hide modal
     modal.classList.remove('active');
     
-    // Resolve the promise with the name
+    // Resolve the promise with both name and email
     if (window.nameModalResolve) {
-        window.nameModalResolve(name);
+        window.nameModalResolve({ name, email });
         window.nameModalResolve = null;
     }
 }
