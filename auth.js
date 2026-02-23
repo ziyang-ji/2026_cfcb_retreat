@@ -1,17 +1,4 @@
-// Firebase Configuration - You'll need to set this up
-const firebaseConfig = {
-    apiKey: "AIzaSyDlTUolyV76EXxnNKjCmtEbfsb6kcRUQYY",
-    authDomain: "cfcb-retreat.firebaseapp.com",
-    projectId: "cfcb-retreat",
-    storageBucket: "cfcb-retreat.firebasestorage.app",
-    messagingSenderId: "19980448245",
-    appId: "1:19980448245:web:11a5338083626cd99130bc",
-    measurementId: "G-9RVZMVHGLJ"
-  };
-
-// For now, we'll use a simple localStorage-based auth system
-// You can upgrade to Firebase later
-
+// Google Apps Script URL
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyPAEhQn-B6qWd7XYRfAmR2X8Imfa3QpPwlP_MagpNPNUVyiInP8vu_lZN0Mgw8d9zVSg/exec';
 
 // Switch between auth tabs
@@ -38,13 +25,123 @@ function showLoading(show) {
     }
 }
 
-// Sign in with Google (Placeholder - requires Firebase setup)
+// Sign in with Google using Firebase
 async function signInWithGoogle() {
-    alert('Google Sign-In Setup Required:\n\n1. Create a Firebase project\n2. Enable Google Authentication\n3. Add your Firebase config to auth.js\n\nFor now, please use email/password to create an account.');
+    showLoading(true);
     
-    // TODO: Implement Firebase Google Sign-In
-    // const provider = new firebase.auth.GoogleAuthProvider();
-    // const result = await firebase.auth().signInWithPopup(provider);
+    try {
+        // Check if Firebase is initialized
+        if (!window.firebaseAuth) {
+            throw new Error('Firebase not initialized. Please refresh the page.');
+        }
+        
+        console.log('Starting Google Sign-In...');
+        
+        // Create Google provider
+        const provider = new window.GoogleAuthProvider();
+        
+        // Sign in with popup
+        const result = await window.signInWithPopup(window.firebaseAuth, provider);
+        
+        // Get user info
+        const user = result.user;
+        console.log('Google Sign-In successful:', user.email);
+        
+        // Check if user exists in our system
+        const checkResponse = await fetch(`${GOOGLE_SCRIPT_URL}?action=checkUser&email=${encodeURIComponent(user.email)}`);
+        const checkResult = await checkResponse.json();
+        
+        let userId;
+        let userName = user.displayName || user.email.split('@')[0];
+        
+        if (!checkResult.exists) {
+            // Create new user account in Google Sheets
+            console.log('Creating new user account for Google user...');
+            
+            const userData = {
+                action: 'createUser',
+                name: userName,
+                email: user.email,
+                password: 'GOOGLE_AUTH', // Special marker for Google-authenticated users
+                timestamp: new Date().toISOString()
+            };
+            
+            const createResponse = await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                redirect: 'follow',
+                headers: {
+                    'Content-Type': 'text/plain',
+                },
+                body: JSON.stringify(userData)
+            });
+            
+            const createResult = await createResponse.json();
+            
+            if (!createResult.success) {
+                throw new Error('Failed to create user account: ' + createResult.message);
+            }
+            
+            userId = createResult.userId;
+            console.log('New user account created:', userId);
+        } else {
+            // Authenticate existing user
+            console.log('Authenticating existing Google user...');
+            
+            const authResponse = await fetch(`${GOOGLE_SCRIPT_URL}?action=authenticateUser&email=${encodeURIComponent(user.email)}&password=${encodeURIComponent('GOOGLE_AUTH')}`);
+            const authResult = await authResponse.json();
+            
+            if (authResult.success) {
+                userId = authResult.userId;
+                userName = authResult.name;
+            } else {
+                // If auth fails with GOOGLE_AUTH, user might have signed up with email/password
+                // Let them in anyway since Google verified their identity
+                const checkResponse2 = await fetch(`${GOOGLE_SCRIPT_URL}?action=getUserByEmail&email=${encodeURIComponent(user.email)}`);
+                const checkResult2 = await checkResponse2.json();
+                
+                if (checkResult2.success) {
+                    userId = checkResult2.userId;
+                    userName = checkResult2.name;
+                } else {
+                    throw new Error('Authentication failed. Please try signing in with email/password instead.');
+                }
+            }
+        }
+        
+        // Save user session
+        const userSession = {
+            userId: userId,
+            name: userName,
+            email: user.email,
+            loginTime: Date.now(),
+            authMethod: 'google'
+        };
+        
+        localStorage.setItem('userSession', JSON.stringify(userSession));
+        
+        console.log('Session saved, redirecting to dashboard...');
+        alert('Welcome, ' + userName + '! Signed in successfully with Google.');
+        window.location.href = 'dashboard.html';
+        
+    } catch (error) {
+        console.error('Google Sign-In error:', error);
+        
+        let errorMessage = 'An error occurred during Google Sign-In.';
+        
+        if (error.code === 'auth/popup-closed-by-user') {
+            errorMessage = 'Sign-in cancelled. Please try again.';
+        } else if (error.code === 'auth/popup-blocked') {
+            errorMessage = 'Pop-up blocked by browser. Please allow pop-ups for this site.';
+        } else if (error.code === 'auth/unauthorized-domain') {
+            errorMessage = 'This domain is not authorized. Please add it to Firebase authorized domains.';
+        } else if (error.message) {
+            errorMessage = error.message;
+        }
+        
+        alert(errorMessage);
+    } finally {
+        showLoading(false);
+    }
 }
 
 // Sign up with email

@@ -113,6 +113,11 @@ function doGet(e) {
       return getUserRegistrations(userId);
     }
     
+    if (action === 'getUserByEmail') {
+      const email = e.parameter.email;
+      return getUserByEmail(email);
+    }
+    
     return ContentService.createTextOutput(JSON.stringify({
       success: false,
       message: 'Invalid action'
@@ -465,6 +470,56 @@ function authenticateUser(email, password) {
     
   } catch (error) {
     Logger.log('Error in authenticateUser: ' + error.toString());
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      message: error.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// Get user by email
+function getUserByEmail(email) {
+  try {
+    const ss = getSpreadsheet();
+    const userSheet = ss.getSheetByName('User_Accounts');
+    
+    if (!userSheet) {
+      return ContentService.createTextOutput(JSON.stringify({
+        success: false,
+        message: 'User accounts not initialized'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const lastRow = userSheet.getLastRow();
+    if (lastRow <= 1) {
+      return ContentService.createTextOutput(JSON.stringify({
+        success: false,
+        message: 'No user accounts found'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const userData = userSheet.getRange(2, 1, lastRow - 1, 6).getValues();
+    
+    for (let i = 0; i < userData.length; i++) {
+      const userEmail = userData[i][3];
+      
+      if (userEmail.toLowerCase() === email.toLowerCase()) {
+        return ContentService.createTextOutput(JSON.stringify({
+          success: true,
+          userId: userData[i][1],
+          name: userData[i][2],
+          email: userEmail
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      message: 'User not found'
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    Logger.log('Error in getUserByEmail: ' + error.toString());
     return ContentService.createTextOutput(JSON.stringify({
       success: false,
       message: error.toString()

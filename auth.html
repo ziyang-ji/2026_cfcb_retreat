@@ -6,8 +6,6 @@
     <title>Sign In - Church Retreat</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
 <body>
     <div class="container">
         <header>
@@ -105,6 +103,32 @@
         </div>
     </div>
 
+    <!-- Firebase SDK v9 (modular) -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getAuth, signInWithPopup, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDlTUolyV76EXxnNKjCmtEbfsb6kcRUQYY",
+            authDomain: "cfcb-retreat.firebaseapp.com",
+            projectId: "cfcb-retreat",
+            storageBucket: "cfcb-retreat.firebasestorage.app",
+            messagingSenderId: "19980448245",
+            appId: "1:19980448245:web:11a5338083626cd99130bc",
+            measurementId: "G-9RVZMVHGLJ"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Make auth available globally
+        window.firebaseAuth = auth;
+        window.GoogleAuthProvider = GoogleAuthProvider;
+        window.signInWithPopup = signInWithPopup;
+    </script>
     <script type="module" src="auth.js"></script>
 </body>
 </html>
