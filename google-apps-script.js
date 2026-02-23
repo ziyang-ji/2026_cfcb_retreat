@@ -586,9 +586,10 @@ function getUserRegistrations(userId, userEmail) {
         
         // Match by userId OR by email (fallback for legacy data or mismatches)
         // Also match if the registrant's email matches the user's email
+        // Safely check if values exist and are strings before calling toLowerCase()
         const isUserRegistration = (rowUserId === userId) || 
-                                   (userEmail && rowUserEmail && rowUserEmail.toLowerCase() === userEmail.toLowerCase()) ||
-                                   (userEmail && rowEmail && rowEmail.toLowerCase() === userEmail.toLowerCase());
+                                   (userEmail && rowUserEmail && typeof rowUserEmail === 'string' && rowUserEmail.toLowerCase() === userEmail.toLowerCase()) ||
+                                   (userEmail && rowEmail && typeof rowEmail === 'string' && rowEmail.toLowerCase() === userEmail.toLowerCase());
         
         if (isUserRegistration) {
           Logger.log('Found registration for user: ' + person.name + ' (ID: ' + person.id + ')');
