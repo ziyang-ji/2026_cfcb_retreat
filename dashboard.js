@@ -339,7 +339,7 @@ async function saveEdit(event) {
         if (result.success) {
             closeEditModal();
             await loadUserRegistrations();
-            alert('Registration updated successfully!');
+            showSuccessModal('Registration updated successfully!');
         } else {
             alert('Failed to update: ' + result.message);
         }
@@ -394,7 +394,7 @@ async function confirmDelete() {
         if (result.success) {
             closeDeleteModal();
             await loadUserRegistrations();
-            alert('Registration deleted successfully');
+            showSuccessModal('Registration deleted successfully');
         } else {
             alert('Failed to delete: ' + result.message);
         }
@@ -449,7 +449,7 @@ async function confirmDeleteFamily() {
         if (result.success) {
             closeDeleteFamilyModal();
             await loadUserRegistrations();
-            alert(`Family deleted successfully. ${result.deletedCount} member(s) removed.`);
+            showSuccessModal(`Family deleted successfully. ${result.deletedCount} member(s) removed.`);
         } else {
             alert('Failed to delete family: ' + result.message);
         }
@@ -465,6 +465,16 @@ function closeDeleteFamilyModal() {
     document.getElementById('delete-family-modal').classList.remove('active');
 }
 
+// Success modal
+function showSuccessModal(message) {
+    document.getElementById('success-message').textContent = message;
+    document.getElementById('success-modal').classList.add('active');
+}
+
+function closeSuccessModal() {
+    document.getElementById('success-modal').classList.remove('active');
+}
+
 // Make other functions globally available (signOut functions already assigned to window at top)
 window.addToFamily = addToFamily;
 window.editIndividual = editIndividual;
@@ -478,3 +488,4 @@ window.closeDeleteModal = closeDeleteModal;
 window.deleteFamily = deleteFamily;
 window.confirmDeleteFamily = confirmDeleteFamily;
 window.closeDeleteFamilyModal = closeDeleteFamilyModal;
+window.closeSuccessModal = closeSuccessModal;
