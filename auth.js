@@ -258,7 +258,7 @@ async function sendVerificationCode(event) {
             errorMsg = 'Failed to send verification code. Check console for details.';
         }
         
-        alert(errorMsg);
+        showErrorModal(errorMsg);
         
         // Reset reCAPTCHA on error
         if (window.recaptchaVerifier) {
@@ -279,7 +279,7 @@ async function verifyCode(event) {
     const code = document.getElementById('verification-code').value.trim();
     
     if (code.length !== 6) {
-        alert('Please enter a 6-digit verification code');
+        showErrorModal('Please enter a 6-digit verification code');
         return;
     }
     
@@ -421,9 +421,21 @@ function submitName(event) {
     }
 }
 
+// Show error modal
+function showErrorModal(message) {
+    document.getElementById('error-message').textContent = message;
+    document.getElementById('error-modal').style.display = 'block';
+}
+
+// Close error modal
+function closeErrorModal() {
+    document.getElementById('error-modal').style.display = 'none';
+}
+
 // Make functions globally available
 window.signInWithGoogle = signInWithGoogle;
 window.sendVerificationCode = sendVerificationCode;
 window.verifyCode = verifyCode;
 window.cancelPhoneAuth = cancelPhoneAuth;
 window.submitName = submitName;
+window.closeErrorModal = closeErrorModal;
