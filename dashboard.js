@@ -83,7 +83,7 @@ async function loadUserRegistrations() {
 
 // Display registrations on dashboard
 function displayRegistrations(data) {
-    const { individuals, families, totalPeople } = data;
+    const { individuals, families } = data;
     
     // Store families in session storage for delete modal
     sessionStorage.setItem('currentFamilies', JSON.stringify(families));
@@ -91,7 +91,6 @@ function displayRegistrations(data) {
     // Update summary cards
     document.getElementById('individual-count').textContent = individuals.length;
     document.getElementById('family-count').textContent = families.length;
-    document.getElementById('total-people').textContent = totalPeople;
     
     // Display individual registrations
     const individualContainer = document.getElementById('individual-registrations');
@@ -232,7 +231,6 @@ function displayRegistrations(data) {
 function showEmptyState() {
     document.getElementById('individual-count').textContent = '0';
     document.getElementById('family-count').textContent = '0';
-    document.getElementById('total-people').textContent = '0';
     
     document.getElementById('individual-registrations').innerHTML = `
         <div class="empty-state">
