@@ -168,25 +168,37 @@ async function sendVerificationCode(event) {
         // Setup reCAPTCHA verifier
         if (!window.recaptchaVerifier) {
             console.log('Creating reCAPTCHA verifier...');
-            console.log('Firebase Auth:', window.firebaseAuth);
+            console.log('Firebase Auth available:', !!window.firebaseAuth);
+            console.log('RecaptchaVerifier available:', !!window.RecaptchaVerifier);
+            console.log('Container exists:', !!document.getElementById('recaptcha-container'));
             
-            window.recaptchaVerifier = new window.RecaptchaVerifier(
-                window.firebaseAuth,
-                'recaptcha-container',
-                {
-                    'size': 'normal',
-                    'callback': (response) => {
-                        console.log('reCAPTCHA solved');
-                    },
-                    'expired-callback': () => {
-                        console.log('reCAPTCHA expired');
+            try {
+                // Firebase v9+ uses: new RecaptchaVerifier(auth, containerElementId, parameters)
+                window.recaptchaVerifier = new window.RecaptchaVerifier(
+                    window.firebaseAuth,
+                    'recaptcha-container',
+                    {
+                        'size': 'normal',
+                        'callback': (response) => {
+                            console.log('✅ reCAPTCHA solved');
+                        },
+                        'expired-callback': () => {
+                            console.log('⚠️ reCAPTCHA expired');
+                        }
                     }
-                }
-            );
-            
-            // Render the reCAPTCHA
-            await window.recaptchaVerifier.render();
-            console.log('reCAPTCHA rendered');
+                );
+                
+                console.log('✅ RecaptchaVerifier object created:', window.recaptchaVerifier);
+                
+                // Render the reCAPTCHA
+                console.log('Rendering reCAPTCHA...');
+                await window.recaptchaVerifier.render();
+                console.log('✅ reCAPTCHA rendered successfully');
+                
+            } catch (recaptchaError) {
+                console.error('❌ Failed to create/render reCAPTCHA:', recaptchaError);
+                throw new Error('reCAPTCHA initialization failed: ' + recaptchaError.message);
+            }
         }
         
         console.log('Sending SMS to:', phoneNumber);
