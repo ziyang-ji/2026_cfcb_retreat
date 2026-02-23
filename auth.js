@@ -396,8 +396,8 @@ function showNameModal() {
         // Clear previous input
         input.value = '';
         
-        // Show modal
-        modal.style.display = 'block';
+        // Show modal with active class for proper centering
+        modal.classList.add('active');
         
         // Focus on input
         setTimeout(() => input.focus(), 100);
@@ -412,7 +412,7 @@ function submitName(event) {
     const modal = document.getElementById('name-modal');
     
     // Hide modal
-    modal.style.display = 'none';
+    modal.classList.remove('active');
     
     // Resolve the promise with the name
     if (window.nameModalResolve) {
@@ -424,12 +424,12 @@ function submitName(event) {
 // Show error modal
 function showErrorModal(message) {
     document.getElementById('error-message').textContent = message;
-    document.getElementById('error-modal').style.display = 'block';
+    document.getElementById('error-modal').classList.add('active');
 }
 
 // Close error modal
 function closeErrorModal() {
-    document.getElementById('error-modal').style.display = 'none';
+    document.getElementById('error-modal').classList.remove('active');
 }
 
 // Make functions globally available
