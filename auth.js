@@ -384,8 +384,46 @@ function cancelPhoneAuth() {
     }
 }
 
+// Show name input modal and wait for user input
+function showNameModal() {
+    return new Promise((resolve) => {
+        const modal = document.getElementById('name-modal');
+        const input = document.getElementById('name-input');
+        
+        // Store resolve function globally so submitName can access it
+        window.nameModalResolve = resolve;
+        
+        // Clear previous input
+        input.value = '';
+        
+        // Show modal
+        modal.style.display = 'block';
+        
+        // Focus on input
+        setTimeout(() => input.focus(), 100);
+    });
+}
+
+// Handle name submission from modal
+function submitName(event) {
+    event.preventDefault();
+    
+    const name = document.getElementById('name-input').value.trim();
+    const modal = document.getElementById('name-modal');
+    
+    // Hide modal
+    modal.style.display = 'none';
+    
+    // Resolve the promise with the name
+    if (window.nameModalResolve) {
+        window.nameModalResolve(name);
+        window.nameModalResolve = null;
+    }
+}
+
 // Make functions globally available
 window.signInWithGoogle = signInWithGoogle;
 window.sendVerificationCode = sendVerificationCode;
 window.verifyCode = verifyCode;
 window.cancelPhoneAuth = cancelPhoneAuth;
+window.submitName = submitName;
