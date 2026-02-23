@@ -142,12 +142,17 @@ async function signInWithGoogle() {
 async function sendVerificationCode(event) {
     event.preventDefault();
     
-    const phoneNumber = document.getElementById('phone-number').value.trim();
+    let phoneNumber = document.getElementById('phone-number').value.trim();
     
+    // Remove all non-digit characters except leading +
+    phoneNumber = phoneNumber.replace(/[^\d+]/g, '');
+    
+    // If no country code, assume +1 (US)
     if (!phoneNumber.startsWith('+')) {
-        alert('Please include the country code (e.g., +1 for US)');
-        return;
+        phoneNumber = '+1' + phoneNumber;
     }
+    
+    console.log('Formatted phone number:', phoneNumber);
     
     showLoading(true);
     
