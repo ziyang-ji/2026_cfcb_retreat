@@ -167,43 +167,60 @@ async function sendVerificationCode(event) {
         
         // Setup reCAPTCHA verifier
         if (!window.recaptchaVerifier) {
-            window.recaptchaVerifier = new window.RecaptchaVerifier(window.firebaseAuth, 'recaptcha-container', {
+            console.log('Creating reCAPTCHA verifier...');
+            window.recaptchaVerifier = new window.RecaptchaVerifier('recaptcha-container', {
                 'size': 'normal',
                 'callback': (response) => {
                     console.log('reCAPTCHA solved');
+                },
+                'expired-callback': () => {
+                    console.log('reCAPTCHA expired');
                 }
-            });
+            }, window.firebaseAuth);
+            
+            // Render the reCAPTCHA
+            await window.recaptchaVerifier.render();
+            console.log('reCAPTCHA rendered');
         }
+        
+        console.log('Sending SMS...');
         
         // Send verification code
         const appVerifier = window.recaptchaVerifier;
         confirmationResult = await window.signInWithPhoneNumber(window.firebaseAuth, phoneNumber, appVerifier);
         
         console.log('Verification code sent successfully');
+        showLoading(false);
         
         // Show verification form
         document.getElementById('phone-form').style.display = 'none';
         document.getElementById('verification-form').style.display = 'block';
         
     } catch (error) {
+        showLoading(false);
         console.error('Error sending verification code:', error);
+        console.error('Error code:', error.code);
+        console.error('Error message:', error.message);
         
         if (error.code === 'auth/invalid-phone-number') {
-            alert('Invalid phone number. Please check the format and include country code.');
+            alert('Invalid phone number. Please check the format.');
         } else if (error.code === 'auth/too-many-requests') {
             alert('Too many attempts. Please try again later.');
+        } else if (error.code === 'auth/captcha-check-failed') {
+            alert('reCAPTCHA verification failed. Please try again.');
         } else {
             alert('Failed to send verification code: ' + error.message);
         }
         
         // Reset reCAPTCHA on error
         if (window.recaptchaVerifier) {
-            window.recaptchaVerifier.render().then(function(widgetId) {
-                grecaptcha.reset(widgetId);
-            });
+            try {
+                window.recaptchaVerifier.clear();
+                window.recaptchaVerifier = null;
+            } catch (e) {
+                console.error('Error clearing reCAPTCHA:', e);
+            }
         }
-    } finally {
-        showLoading(false);
     }
 }
 
