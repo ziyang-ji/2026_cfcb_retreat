@@ -120,7 +120,6 @@ async function signInWithGoogle() {
         localStorage.setItem('userSession', JSON.stringify(userSession));
         
         console.log('Session saved, redirecting to dashboard...');
-        alert('Welcome, ' + userName + '! Signed in successfully with Google.');
         window.location.href = 'dashboard.html';
         
     } catch (error) {
@@ -208,7 +207,6 @@ async function signUpWithEmail(event) {
             
             localStorage.setItem('userSession', JSON.stringify(userSession));
             
-            alert('Account created successfully! Welcome to Church Retreat Sign-Up.');
             window.location.href = 'dashboard.html';
         } else {
             alert('Failed to create account: ' + result.message);
