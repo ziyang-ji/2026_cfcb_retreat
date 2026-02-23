@@ -62,13 +62,11 @@ const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwp_PbsZuGrer
             });
         } else if (action === 'addToFamily' && familyId) {
             console.log('Adding to existing family:', familyId);
-            // Pre-select family registration and load family
+            // Pre-select family registration and load family directly (skip confirmation)
             currentState.isExistingFamily = true;
             currentState.familyId = familyId;
             document.addEventListener('DOMContentLoaded', () => {
-                document.getElementById('existing-family-id').value = familyId;
-                showSection('step-family-existing');
-                setTimeout(() => loadFamilyById(), 100);
+                loadFamilyDirectly(familyId);
             });
         } else {
             // No URL parameters, show selection page
@@ -188,7 +186,35 @@ function selectFamilyOption(option) {
     }
 }
 
-// Search for family by ID or email
+// Load family directly without confirmation (for "Add More Members" from dashboard)
+async function loadFamilyDirectly(familyId) {
+    showLoading(true);
+    
+    try {
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getFamilyMembers&familyId=${familyId}`);
+        const result = await response.json();
+        
+        if (result.success) {
+            currentState.familyId = result.familyId;
+            currentState.familyHead = result.familyHead;
+            currentState.familyMembers = result.members || [];
+            currentState.existingMemberIds = result.members ? result.members.map(m => m.id) : [];
+            
+            document.getElementById('display-family-id').textContent = result.familyId;
+            displayFamilyMembers();
+            showSection('step-family-page');
+        } else {
+            showErrorModal('Unable to load family. Please try again from the dashboard.');
+        }
+    } catch (error) {
+        console.error('Error loading family:', error);
+        showErrorModal('Unable to load family information. Please try again or contact support.');
+    } finally {
+        showLoading(false);
+    }
+}
+
+// Search for family by ID or email (with confirmation step)
 async function searchFamily() {
     const familyId = document.getElementById('existing-family-id').value.trim().toUpperCase();
     const memberEmail = document.getElementById('member-email-search').value.trim().toLowerCase();
