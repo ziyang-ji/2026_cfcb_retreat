@@ -124,6 +124,11 @@ function doGet(e) {
       return getRegistrationById(id);
     }
     
+    if (action === 'searchFamilyByEmail') {
+      const email = e.parameter.email;
+      return searchFamilyByEmail(email);
+    }
+    
     return ContentService.createTextOutput(JSON.stringify({
       success: false,
       message: 'Invalid action'
@@ -353,6 +358,90 @@ function getFamilyMembers(familyId) {
     familyHead: familyHead,
     members: members
   })).setMimeType(ContentService.MimeType.JSON);
+}
+
+// Search for family by member email
+function searchFamilyByEmail(email) {
+  try {
+    const ss = getSpreadsheet();
+    const individualSheet = ss.getSheetByName('Individual_Registrations');
+    const familySheet = ss.getSheetByName('Family_Registrations');
+    
+    Logger.log('Searching for family with member email: ' + email);
+    
+    // Search for a family member with this email
+    const lastRow = individualSheet.getLastRow();
+    if (lastRow <= 1) {
+      return ContentService.createTextOutput(JSON.stringify({
+        success: false,
+        message: 'No registrations found'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const data = individualSheet.getRange(2, 1, lastRow - 1, 7).getValues();
+    
+    let foundFamilyId = null;
+    const emailLower = email.toLowerCase();
+    
+    // Find a family member with matching email
+    for (let i = 0; i < data.length; i++) {
+      const memberEmail = data[i][4]; // Column 5 is Email
+      const familyId = data[i][6]; // Column 7 is Family ID
+      
+      if (familyId && memberEmail && typeof memberEmail === 'string' && memberEmail.toLowerCase() === emailLower) {
+        foundFamilyId = familyId;
+        Logger.log('Found family: ' + foundFamilyId + ' for email: ' + email);
+        break;
+      }
+    }
+    
+    if (!foundFamilyId) {
+      return ContentService.createTextOutput(JSON.stringify({
+        success: false,
+        message: 'No family found with that email'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // Get family details using the found family ID
+    const familyLastRow = familySheet.getLastRow();
+    const familyData = familySheet.getRange(2, 1, familyLastRow - 1, 5).getValues();
+    
+    let familyHead = '';
+    for (let i = 0; i < familyData.length; i++) {
+      if (familyData[i][1] === foundFamilyId) {
+        familyHead = familyData[i][2];
+        break;
+      }
+    }
+    
+    // Get all members of this family
+    const members = [];
+    for (let i = 0; i < data.length; i++) {
+      if (data[i][6] === foundFamilyId) {
+        members.push({
+          id: data[i][1],
+          name: data[i][2],
+          phone: data[i][3],
+          email: data[i][4],
+          address: data[i][5]
+        });
+      }
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      success: true,
+      familyId: foundFamilyId,
+      familyHead: familyHead,
+      members: members
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    Logger.log('Error in searchFamilyByEmail: ' + error.toString());
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      message: error.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
 }
 
 // User Management Functions

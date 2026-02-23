@@ -188,40 +188,102 @@ function selectFamilyOption(option) {
     }
 }
 
-async function loadFamilyById() {
+// Search for family by ID or email
+async function searchFamily() {
     const familyId = document.getElementById('existing-family-id').value.trim().toUpperCase();
+    const memberEmail = document.getElementById('member-email-search').value.trim().toLowerCase();
     
-    if (!familyId) {
-        showErrorModal('Please enter a Family ID');
+    if (!familyId && !memberEmail) {
+        showErrorModal('Please enter either a Family ID or a family member\'s email');
         return;
     }
     
     showLoading(true);
     
     try {
-        // Fetch existing family data from Google Sheets
-        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getFamilyMembers&familyId=${familyId}`);
+        let response;
+        
+        if (familyId) {
+            // Search by Family ID
+            response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getFamilyMembers&familyId=${familyId}`);
+        } else {
+            // Search by member email
+            response = await fetch(`${GOOGLE_SCRIPT_URL}?action=searchFamilyByEmail&email=${encodeURIComponent(memberEmail)}`);
+        }
+        
         const result = await response.json();
         
         if (result.success) {
-            currentState.familyId = familyId;
-            currentState.familyMembers = result.members || [];
-            currentState.familyHead = result.familyHead;
-            // Track existing member IDs to prevent duplicates
-            currentState.existingMemberIds = result.members ? result.members.map(m => m.id) : [];
+            // Store family info temporarily
+            currentState.pendingFamilyId = result.familyId;
+            currentState.pendingFamilyHead = result.familyHead;
+            currentState.pendingFamilyMembers = result.members || [];
             
-            document.getElementById('display-family-id').textContent = familyId;
-            displayFamilyMembers();
-            showSection('step-family-page');
+            // Display family preview for confirmation
+            displayFamilyPreview(result);
+            showSection('step-family-confirm');
         } else {
-            showErrorModal('Family ID not found. Please check the ID or create a new family registration.');
+            if (familyId) {
+                showErrorModal('Family ID not found. Please check the ID or try searching by email.');
+            } else {
+                showErrorModal('No family found with a member using that email address. Please check the email or try using the Family ID.');
+            }
         }
     } catch (error) {
-        console.error('Error loading family:', error);
-        showErrorModal('Unable to load family information. Please try again or contact support.');
+        console.error('Error searching for family:', error);
+        showErrorModal('Unable to search for family. Please try again or contact support.');
     } finally {
         showLoading(false);
     }
+}
+
+// Display family preview for confirmation
+function displayFamilyPreview(familyData) {
+    const preview = document.getElementById('family-preview');
+    const members = familyData.members || [];
+    
+    preview.innerHTML = `
+        <div style="text-align: center; margin-bottom: 1rem;">
+            <h3 style="color: #667eea; margin: 0 0 0.5rem 0;">👨‍👩‍👧‍👦 ${familyData.familyHead}'s Family</h3>
+            <div style="font-family: 'Courier New', monospace; font-weight: bold; color: #333; font-size: 1.1rem;">
+                Family ID: ${familyData.familyId}
+            </div>
+        </div>
+        <div style="margin-top: 1rem;">
+            <strong style="color: #333;">Current Members (${members.length}):</strong>
+            ${members.length > 0 ? `
+                <ul style="margin: 0.5rem 0 0 1.5rem; line-height: 1.8;">
+                    ${members.map(m => `<li>${m.name} (${m.email})</li>`).join('')}
+                </ul>
+            ` : `
+                <p style="color: #666; font-style: italic; margin: 0.5rem 0;">No members yet</p>
+            `}
+        </div>
+    `;
+}
+
+// Confirm and join the family
+function confirmAndJoinFamily() {
+    // Move pending family info to current state
+    currentState.familyId = currentState.pendingFamilyId;
+    currentState.familyHead = currentState.pendingFamilyHead;
+    currentState.familyMembers = currentState.pendingFamilyMembers;
+    currentState.existingMemberIds = currentState.pendingFamilyMembers.map(m => m.id);
+    
+    // Clear pending data
+    currentState.pendingFamilyId = null;
+    currentState.pendingFamilyHead = null;
+    currentState.pendingFamilyMembers = null;
+    
+    // Display in family page
+    document.getElementById('display-family-id').textContent = currentState.familyId;
+    displayFamilyMembers();
+    showSection('step-family-page');
+}
+
+// Legacy function - now redirects to searchFamily
+async function loadFamilyById() {
+    await searchFamily();
 }
 
 function createFamilyId() {
