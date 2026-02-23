@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Church Retreat Sign-Up</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏔️ Church Retreat Sign-Up</h1>
+            <p class="subtitle">Register for our upcoming retreat</p>
+        </header>
+
+        <!-- Step 1: Choose Registration Type -->
+        <div id="step-registration-type" class="form-section active">
+            <h2>How would you like to register?</h2>
+            <div class="button-group">
+                <button class="choice-btn" onclick="selectRegistrationType('individual')">
+                    <span class="icon">👤</span>
+                    <span class="text">Individual Registration</span>
+                    <span class="description">Register yourself only</span>
+                </button>
+                <button class="choice-btn" onclick="selectRegistrationType('family')">
+                    <span class="icon">👨‍👩‍👧‍👦</span>
+                    <span class="text">Family Registration</span>
+                    <span class="description">Register multiple family members</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 2: Individual Name Entry -->
+        <div id="step-individual-name" class="form-section">
+            <h2>Enter Your Name</h2>
+            <div class="form-group">
+                <label for="individual-name">Full Name *</label>
+                <input type="text" id="individual-name" placeholder="John Doe" required>
+            </div>
+            <div class="button-row">
+                <button class="btn btn-secondary" onclick="goBack('step-registration-type')">Back</button>
+                <button class="btn btn-primary" onclick="createIndividualId()">Continue</button>
+            </div>
+        </div>
+
+        <!-- Step 3: Individual Details Form -->
+        <div id="step-individual-form" class="form-section">
+            <h2>Registration Details</h2>
+            <div class="id-display">
+                <strong>Your ID:</strong> <span id="display-individual-id"></span>
+            </div>
+            <div class="form-group">
+                <label for="individual-phone">Phone Number *</label>
+                <input type="tel" id="individual-phone" placeholder="(555) 123-4567" required>
+            </div>
+            <div class="form-group">
+                <label for="individual-email">Email Address *</label>
+                <input type="email" id="individual-email" placeholder="john@example.com" required>
+            </div>
+            <div class="form-group">
+                <label for="individual-address">Home Address *</label>
+                <textarea id="individual-address" rows="3" placeholder="123 Main St, City, State ZIP" required></textarea>
+            </div>
+            <div class="button-row">
+                <button class="btn btn-secondary" onclick="goBack('step-individual-name')">Back</button>
+                <button class="btn btn-primary" onclick="submitIndividual()">Submit Registration</button>
+            </div>
+        </div>
+
+        <!-- Step 2: Family - Check if Exists -->
+        <div id="step-family-check" class="form-section">
+            <h2>Family Registration</h2>
+            <p class="info-text">Do you already have a family registration created?</p>
+            <div class="button-group">
+                <button class="choice-btn" onclick="selectFamilyOption('existing')">
+                    <span class="icon">📋</span>
+                    <span class="text">Yes, I have a Family ID</span>
+                    <span class="description">Continue existing registration</span>
+                </button>
+                <button class="choice-btn" onclick="selectFamilyOption('new')">
+                    <span class="icon">➕</span>
+                    <span class="text">No, Create New Family</span>
+                    <span class="description">Start a new family registration</span>
+                </button>
+            </div>
+            <div class="button-row">
+                <button class="btn btn-secondary" onclick="goBack('step-registration-type')">Back</button>
+            </div>
+        </div>
+
+        <!-- Step 3: Enter Existing Family ID -->
+        <div id="step-family-existing" class="form-section">
+            <h2>Enter Family ID</h2>
+            <div class="form-group">
+                <label for="existing-family-id">Family ID *</label>
+                <input type="text" id="existing-family-id" placeholder="e.g., SMITH-2026" required>
+                <small>Enter the Family ID provided when your family first registered</small>
+            </div>
+            <div class="button-row">
+                <button class="btn btn-secondary" onclick="goBack('step-family-check')">Back</button>
+                <button class="btn btn-primary" onclick="loadFamilyById()">Continue</button>
+            </div>
+        </div>
+
+        <!-- Step 3: Create New Family -->
+        <div id="step-family-new" class="form-section">
+            <h2>Create Family Registration</h2>
+            <div class="form-group">
+                <label for="family-head-name">Head of Family Name *</label>
+                <input type="text" id="family-head-name" placeholder="John Smith" required>
+                <small>This will be used to create your Family ID</small>
+            </div>
+            <div class="button-row">
+                <button class="btn btn-secondary" onclick="goBack('step-family-check')">Back</button>
+                <button class="btn btn-primary" onclick="createFamilyId()">Create Family</button>
+            </div>
+        </div>
+
+        <!-- Step 4: Family Sign-Up Page -->
+        <div id="step-family-page" class="form-section">
+            <h2>Family Registration</h2>
+            <div class="id-display">
+                <strong>Family ID:</strong> <span id="display-family-id"></span>
+            </div>
+            
+            <div id="family-members-list">
+                <h3>Family Members</h3>
+                <div id="members-container">
+                    <p class="empty-state">No members added yet. Click "Add Family Member" to get started.</p>
+                </div>
+            </div>
+
+            <button class="btn btn-success" onclick="showAddMemberForm()">+ Add Family Member</button>
+            
+            <div id="add-member-section" class="add-member-form" style="display: none;">
+                <h3>Add New Family Member</h3>
+                <div class="form-group">
+                    <label for="member-name">Full Name *</label>
+                    <input type="text" id="member-name" placeholder="Jane Smith" required>
+                </div>
+                <div class="form-group">
+                    <label for="member-phone">Phone Number *</label>
+                    <input type="tel" id="member-phone" placeholder="(555) 123-4567" required>
+                </div>
+                <div class="form-group">
+                    <label for="member-email">Email Address *</label>
+                    <input type="email" id="member-email" placeholder="jane@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="member-address">Home Address *</label>
+                    <textarea id="member-address" rows="3" placeholder="123 Main St, City, State ZIP" required></textarea>
+                </div>
+                <div class="button-row">
+                    <button class="btn btn-secondary" onclick="cancelAddMember()">Cancel</button>
+                    <button class="btn btn-primary" onclick="addFamilyMember()">Add Member</button>
+                </div>
+            </div>
+
+            <div class="button-row" style="margin-top: 2rem;">
+                <button class="btn btn-secondary" onclick="goBackFromFamily()">Back</button>
+                <button class="btn btn-primary" onclick="completeFamilyRegistration()">Complete Registration</button>
+            </div>
+        </div>
+
+        <!-- Success Message -->
+        <div id="step-success" class="form-section success-section">
+            <div class="success-icon">✅</div>
+            <h2>Registration Complete!</h2>
+            <p id="success-message"></p>
+            <div class="id-display" id="success-id-display"></div>
+            <button class="btn btn-primary" onclick="resetForm()">Register Another Person/Family</button>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="loading-overlay">
+            <div class="spinner"></div>
+            <p>Processing...</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
