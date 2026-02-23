@@ -314,7 +314,7 @@ async function verifyCode(event) {
             const userData = {
                 action: 'createUser',
                 name: userName.trim(),
-                phone: phoneNumber,
+                email: phoneNumber, // Store phone in email field for consistency
                 password: 'PHONE_AUTH',
                 timestamp: new Date().toISOString()
             };
