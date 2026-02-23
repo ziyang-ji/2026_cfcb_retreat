@@ -6,7 +6,8 @@ let currentState = {
     familyId: null,
     familyHead: null,
     familyMembers: [],
-    isExistingFamily: false
+    isExistingFamily: false,
+    existingMemberIds: [] // Track members already in the system
 };
 
 let currentUser = null;
@@ -234,6 +235,8 @@ async function loadFamilyById() {
             currentState.familyId = familyId;
             currentState.familyMembers = result.members;
             currentState.familyHead = result.familyHead;
+            // Track existing member IDs to prevent duplicates
+            currentState.existingMemberIds = result.members.map(m => m.id);
             
             document.getElementById('display-family-id').textContent = familyId;
             displayFamilyMembers();
@@ -268,6 +271,7 @@ function createFamilyId() {
     
     currentState.familyId = `${lastName}-${year}-${random}`;
     currentState.familyMembers = [];
+    currentState.existingMemberIds = []; // New family, no existing members
     
     document.getElementById('display-family-id').textContent = currentState.familyId;
     showSection('step-family-page');
@@ -350,11 +354,21 @@ async function completeFamilyRegistration() {
         return;
     }
     
+    // Filter out members who were already submitted (only submit new ones)
+    const newMembers = currentState.familyMembers.filter(member => 
+        !currentState.existingMemberIds.includes(member.id)
+    );
+    
+    if (newMembers.length === 0 && currentState.isExistingFamily) {
+        alert('No new members to submit. All members have already been registered.');
+        return;
+    }
+    
     const data = {
         type: 'family',
         familyId: currentState.familyId,
         familyHead: currentState.familyHead,
-        members: currentState.familyMembers,
+        members: newMembers, // Only submit NEW members
         isExisting: currentState.isExistingFamily,
         userId: currentUser.userId,
         userEmail: currentUser.email,
@@ -363,9 +377,17 @@ async function completeFamilyRegistration() {
     
     await submitToGoogleSheets(data);
     
-    const memberCount = currentState.familyMembers.length;
-    document.getElementById('success-message').textContent = 
-        `Family registration complete! ${memberCount} member${memberCount > 1 ? 's' : ''} registered successfully.`;
+    const memberCount = newMembers.length;
+    const totalCount = currentState.familyMembers.length;
+    
+    if (currentState.isExistingFamily) {
+        document.getElementById('success-message').textContent = 
+            `${memberCount} new member${memberCount > 1 ? 's' : ''} added to your family! Total family members: ${totalCount}.`;
+    } else {
+        document.getElementById('success-message').textContent = 
+            `Family registration complete! ${memberCount} member${memberCount > 1 ? 's' : ''} registered successfully.`;
+    }
+    
     document.getElementById('success-id-display').innerHTML = 
         `<strong>Family ID:</strong> <span style="font-family: 'Courier New', monospace; font-weight: bold;">${currentState.familyId}</span><br><small style="color: #666;">Share this ID with other family members so they can add themselves to your registration.</small>`;
     showSection('step-success');
