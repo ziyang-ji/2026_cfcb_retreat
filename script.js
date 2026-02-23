@@ -14,8 +14,8 @@ let currentUser = null;
 // Google Apps Script Web App URL - UPDATE THIS AFTER DEPLOYING
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-OyUhu34p3uR3Do_4hk_LHI4Oltw4Gn6AsYmt9QVrT4SyOGvYntgM4aVxnEPtep2VIw/exec';
 
-// Check authentication on page load
-window.addEventListener('DOMContentLoaded', () => {
+// Check authentication and handle URL parameters immediately
+(function initializePage() {
     const userSession = localStorage.getItem('userSession');
     
     if (!userSession) {
@@ -44,23 +44,37 @@ window.addEventListener('DOMContentLoaded', () => {
         const type = urlParams.get('type');
         const familyId = urlParams.get('familyId');
         
+        console.log('URL parameters:', { action, type, familyId });
+        
         // Handle direct registration type from dashboard
         if (type === 'individual') {
-            // Skip selection, go directly to individual registration
-            selectRegistrationType('individual');
+            console.log('Direct navigation to individual registration');
+            // Show individual name entry immediately
+            document.addEventListener('DOMContentLoaded', () => {
+                showSection('step-individual-name');
+            });
         } else if (type === 'family') {
-            // Skip selection, go directly to family registration
-            selectRegistrationType('family');
+            console.log('Direct navigation to family registration');
+            // Show family check immediately
+            document.addEventListener('DOMContentLoaded', () => {
+                showSection('step-family-check');
+            });
         } else if (action === 'addToFamily' && familyId) {
+            console.log('Adding to existing family:', familyId);
             // Pre-select family registration and load family
             currentState.isExistingFamily = true;
             currentState.familyId = familyId;
-            document.getElementById('existing-family-id').value = familyId;
-            selectRegistrationType('family');
-            setTimeout(() => {
-                selectFamilyOption('existing');
+            document.addEventListener('DOMContentLoaded', () => {
+                document.getElementById('existing-family-id').value = familyId;
+                showSection('step-family-existing');
                 setTimeout(() => loadFamilyById(), 100);
-            }, 100);
+            });
+        } else {
+            // No URL parameters, show selection page
+            console.log('No direct navigation, showing selection page');
+            document.addEventListener('DOMContentLoaded', () => {
+                showSection('step-registration-type');
+            });
         }
         
     } catch (error) {
@@ -68,7 +82,7 @@ window.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem('userSession');
         window.location.href = 'auth.html';
     }
-});
+})();
 
 // Sign out function
 function signOut() {
