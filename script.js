@@ -100,37 +100,6 @@ function confirmSignOut() {
     window.location.href = 'auth.html';
 }
 
-// Test connection to Google Sheets
-async function testConnection() {
-    console.log('🔍 Testing connection to Google Sheets...');
-    console.log('URL:', GOOGLE_SCRIPT_URL);
-    
-    showLoading(true);
-    
-    try {
-        const response = await fetch(GOOGLE_SCRIPT_URL + '?action=test', {
-            method: 'GET',
-            redirect: 'follow'
-        });
-        
-        console.log('Response status:', response.status);
-        console.log('Response ok:', response.ok);
-        
-        const text = await response.text();
-        console.log('Response:', text);
-        
-        if (response.ok) {
-            alert('✅ Connection successful!\n\nGoogle Sheets is connected and ready.\n\nCheck the browser console (F12) for details.');
-        } else {
-            alert('⚠️ Connection issue\n\nStatus: ' + response.status + '\n\nCheck the browser console (F12) for details.');
-        }
-    } catch (error) {
-        console.error('❌ Connection failed:', error);
-        alert('❌ Connection failed!\n\nError: ' + error.message + '\n\nCheck the browser console (F12) for details.');
-    } finally {
-        showLoading(false);
-    }
-}
 
 // Navigation functions
 function showSection(sectionId) {
@@ -140,9 +109,6 @@ function showSection(sectionId) {
     document.getElementById(sectionId).classList.add('active');
 }
 
-function goBack(sectionId) {
-    showSection(sectionId);
-}
 
 // Step 1: Registration Type Selection
 function selectRegistrationType(type) {
