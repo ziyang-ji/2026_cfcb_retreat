@@ -141,7 +141,11 @@ function displayRegistrations(data) {
                 </div>
             </div>
         `;
-        }).join('');
+        }).join('') + `
+            <div style="text-align: center; margin-top: 1.5rem;">
+                <button class="btn btn-secondary" onclick="location.href='register.html?type=individual'">+ Create Another Individual Registration</button>
+            </div>
+        `;
     }
     
     // Display family registrations
@@ -211,7 +215,11 @@ function displayRegistrations(data) {
                 <button class="btn btn-secondary" onclick="addToFamily('${family.familyId}')">+ Add More Members</button>
             </div>
         `;
-        }).join('');
+        }).join('') + `
+            <div style="text-align: center; margin-top: 1.5rem;">
+                <button class="btn btn-secondary" onclick="location.href='register.html?type=family'">+ Create Another Family Registration</button>
+            </div>
+        `;
     }
 }
 
