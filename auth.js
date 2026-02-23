@@ -211,19 +211,30 @@ async function sendVerificationCode(event) {
         
     } catch (error) {
         showLoading(false);
-        console.error('Error sending verification code:', error);
+        console.error('❌ Error sending verification code:', error);
         console.error('Error code:', error.code);
         console.error('Error message:', error.message);
+        console.error('Full error:', JSON.stringify(error, null, 2));
+        
+        let errorMsg = '';
         
         if (error.code === 'auth/invalid-phone-number') {
-            alert('Invalid phone number. Please check the format.');
+            errorMsg = 'Invalid phone number. Please check the format.';
         } else if (error.code === 'auth/too-many-requests') {
-            alert('Too many attempts. Please try again later.');
+            errorMsg = 'Too many attempts. Please try again later.';
         } else if (error.code === 'auth/captcha-check-failed') {
-            alert('reCAPTCHA verification failed. Please try again.');
+            errorMsg = 'reCAPTCHA verification failed. Please try again.';
+        } else if (error.code === 'auth/quota-exceeded') {
+            errorMsg = 'SMS quota exceeded. Please try again later or contact support.';
+        } else if (error.code === 'auth/operation-not-allowed') {
+            errorMsg = 'Phone authentication is not enabled in Firebase. Please enable it in Firebase Console → Authentication → Sign-in method → Phone.';
+        } else if (error.message) {
+            errorMsg = 'Failed to send verification code: ' + error.message;
         } else {
-            alert('Failed to send verification code: ' + error.message);
+            errorMsg = 'Failed to send verification code. Check console for details.';
         }
+        
+        alert(errorMsg);
         
         // Reset reCAPTCHA on error
         if (window.recaptchaVerifier) {
