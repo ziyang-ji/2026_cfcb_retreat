@@ -192,7 +192,7 @@ async function loadFamilyById() {
     const familyId = document.getElementById('existing-family-id').value.trim().toUpperCase();
     
     if (!familyId) {
-        alert('Please enter a Family ID');
+        showErrorModal('Please enter a Family ID');
         return;
     }
     
@@ -214,11 +214,11 @@ async function loadFamilyById() {
             displayFamilyMembers();
             showSection('step-family-page');
         } else {
-            alert('Family ID not found. Please check the ID or create a new family registration.');
+            showErrorModal('Family ID not found. Please check the ID or create a new family registration.');
         }
     } catch (error) {
         console.error('Error loading family:', error);
-        alert('Unable to load family information. Please try again or contact support.');
+        showErrorModal('Unable to load family information. Please try again or contact support.');
     } finally {
         showLoading(false);
     }
@@ -476,4 +476,14 @@ function showLoading(show) {
 function resetForm() {
     // Redirect back to dashboard instead of resetting
     window.location.href = 'dashboard.html';
+}
+
+// Error modal functions
+function showErrorModal(message) {
+    document.getElementById('error-message').textContent = message;
+    document.getElementById('error-modal').classList.add('active');
+}
+
+function closeErrorModal() {
+    document.getElementById('error-modal').classList.remove('active');
 }
