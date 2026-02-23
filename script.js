@@ -203,12 +203,12 @@ async function loadFamilyById() {
         const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getFamilyMembers&familyId=${familyId}`);
         const result = await response.json();
         
-        if (result.success && result.members.length > 0) {
+        if (result.success) {
             currentState.familyId = familyId;
-            currentState.familyMembers = result.members;
+            currentState.familyMembers = result.members || [];
             currentState.familyHead = result.familyHead;
             // Track existing member IDs to prevent duplicates
-            currentState.existingMemberIds = result.members.map(m => m.id);
+            currentState.existingMemberIds = result.members ? result.members.map(m => m.id) : [];
             
             document.getElementById('display-family-id').textContent = familyId;
             displayFamilyMembers();
