@@ -173,6 +173,11 @@ function displayRegistrations(data) {
                     </div>
                     <div class="card-actions">
                         <span class="card-badge">Family ID: ${family.familyId}</span>
+                        ${isOwner ? `
+                            <button class="btn btn-secondary" onclick="deleteFamily('${family.familyId}', '${family.familyHead}')" style="background: #f44336; color: white; padding: 0.4rem 0.8rem; font-size: 0.85rem;">Delete Family</button>
+                        ` : userMemberCount > 0 ? `
+                            <button class="btn btn-secondary" onclick="quitFamily('${family.familyId}', '${family.familyHead}', ${userMemberCount})" style="background: #ff9800; color: white; padding: 0.4rem 0.8rem; font-size: 0.85rem;">Quit Family</button>
+                        ` : ''}
                     </div>
                 </div>
                 <div class="card-details">
@@ -212,14 +217,7 @@ function displayRegistrations(data) {
                     `;
                     }).join('') : '<p style="color: #666; font-style: italic; padding: 1rem;">No members yet. Click "Add More Members" to add someone.</p>'}
                 </div>
-                <div style="display: flex; gap: 0.75rem; margin-top: 1rem;">
-                    <button class="btn btn-secondary" onclick="addToFamily('${family.familyId}')">+ Add More Members</button>
-                    ${isOwner ? `
-                        <button class="btn btn-secondary" onclick="deleteFamily('${family.familyId}', '${family.familyHead}')" style="background: #f44336; color: white;">Delete Family</button>
-                    ` : userMemberCount > 0 ? `
-                        <button class="btn btn-secondary" onclick="quitFamily('${family.familyId}', '${family.familyHead}', ${userMemberCount})" style="background: #ff9800; color: white;">Quit Family</button>
-                    ` : ''}
-                </div>
+                <button class="btn btn-secondary" onclick="addToFamily('${family.familyId}')">+ Add More Members</button>
             </div>
         `;
         }).join('') + `
