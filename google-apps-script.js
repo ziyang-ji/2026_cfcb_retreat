@@ -1000,6 +1000,52 @@ function deleteFamily(data) {
   }
 }
 
+// Quit family (for non-owners) - deletes only user's registrations
+function quitFamily(data) {
+  try {
+    const ss = getSpreadsheet();
+    const individualSheet = ss.getSheetByName('Individual_Registrations');
+    
+    Logger.log('User ' + data.userId + ' quitting family ' + data.familyId);
+    
+    // Find and delete all registrations by this user in this family
+    const individualLastRow = individualSheet.getLastRow();
+    let deletedCount = 0;
+    
+    if (individualLastRow > 1) {
+      const individualData = individualSheet.getRange(2, 1, individualLastRow - 1, 9).getValues();
+      
+      // Delete from bottom to top to avoid index shifting
+      for (let i = individualData.length - 1; i >= 0; i--) {
+        const familyId = individualData[i][6]; // Column 7 is Family ID
+        const registeredBy = individualData[i][7]; // Column 8 is User ID
+        
+        // Delete if this is the user's registration in the specified family
+        if (familyId === data.familyId && registeredBy === data.userId) {
+          individualSheet.deleteRow(i + 2);
+          deletedCount++;
+          Logger.log('Deleted registration: ' + individualData[i][1]);
+        }
+      }
+    }
+    
+    Logger.log('User quit family. Deleted ' + deletedCount + ' registrations');
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      success: true,
+      message: 'You have quit the family',
+      deletedCount: deletedCount
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    Logger.log('Error in quitFamily: ' + error.toString());
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      message: error.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
 // Helper function to get user's email by userId
 function getUserEmailById(userId) {
   try {
