@@ -414,6 +414,20 @@ function goBackFromFamilyNew() {
     showSection('step-family-check');
 }
 
+function goBackFromIndividual() {
+    // Check if came from direct link
+    const urlParams = new URLSearchParams(window.location.search);
+    const type = urlParams.get('type');
+    
+    if (type === 'individual') {
+        // Came from dashboard, go back to dashboard
+        window.location.href = 'dashboard.html';
+    } else {
+        // Came from selection page, go back to that
+        showSection('step-registration-type');
+    }
+}
+
 function goBackFromFamilyCheck() {
     // Check if came from direct link
     const urlParams = new URLSearchParams(window.location.search);
