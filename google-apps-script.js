@@ -548,6 +548,10 @@ function getUserRegistrations(userId) {
     const individualSheet = ss.getSheetByName('Individual_Registrations');
     const familySheet = ss.getSheetByName('Family_Registrations');
     
+    // Get user's email for fallback matching
+    const userEmail = getUserEmailById(userId);
+    Logger.log('Getting registrations for userId: ' + userId + ', email: ' + userEmail);
+    
     const individuals = [];
     const userFamilyIds = new Set(); // Track which families the user is part of
     const allFamilyMembers = new Map(); // Store ALL members of each family
@@ -560,6 +564,7 @@ function getUserRegistrations(userId) {
       
       for (let i = 0; i < individualData.length; i++) {
         const rowUserId = individualData[i][7]; // User ID column
+        const rowUserEmail = individualData[i][8]; // User Email column
         const familyId = individualData[i][6]; // Family ID column
         
         const person = {
@@ -573,8 +578,11 @@ function getUserRegistrations(userId) {
           registeredBy: rowUserId
         };
         
-        // If this person was registered by current user
-        if (rowUserId === userId) {
+        // Match by userId OR by email (fallback for legacy data or mismatches)
+        const isUserRegistration = (rowUserId === userId) || 
+                                   (userEmail && rowUserEmail && rowUserEmail.toLowerCase() === userEmail.toLowerCase());
+        
+        if (isUserRegistration) {
           if (!familyId) {
             // Individual registration (not part of family)
             individuals.push(person);
@@ -878,6 +886,32 @@ function deleteFamily(data) {
       success: false,
       message: error.toString()
     })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// Helper function to get user's email by userId
+function getUserEmailById(userId) {
+  try {
+    const ss = getSpreadsheet();
+    const userSheet = ss.getSheetByName('User_Accounts');
+    
+    if (!userSheet) return null;
+    
+    const lastRow = userSheet.getLastRow();
+    if (lastRow <= 1) return null;
+    
+    const userData = userSheet.getRange(2, 1, lastRow - 1, 6).getValues();
+    
+    for (let i = 0; i < userData.length; i++) {
+      if (userData[i][1] === userId) { // Column 2 is User ID
+        return userData[i][3]; // Column 4 is Email
+      }
+    }
+    
+    return null;
+  } catch (error) {
+    Logger.log('Error in getUserEmailById: ' + error.toString());
+    return null;
   }
 }
 
