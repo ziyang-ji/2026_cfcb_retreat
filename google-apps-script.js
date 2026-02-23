@@ -614,7 +614,7 @@ function getUserRegistrations(userId, userEmail) {
       }
     }
     
-    // Get family information - show ALL members for families user is part of
+    // Get family information - show ALL members for families user is part of OR owns
     const families = [];
     const familyLastRow = familySheet.getLastRow();
     if (familyLastRow > 1) {
@@ -622,17 +622,21 @@ function getUserRegistrations(userId, userEmail) {
       
       for (let i = 0; i < familyData.length; i++) {
         const familyId = familyData[i][1];
+        const ownerId = familyData[i][5]; // User ID of family creator
         
-        // If user is part of this family, show ALL members
-        if (userFamilyIds.has(familyId) && allFamilyMembers.has(familyId)) {
-          const members = allFamilyMembers.get(familyId);
+        // Show family if: user is part of it OR user owns it (even with 0 members)
+        const isPartOfFamily = userFamilyIds.has(familyId);
+        const isOwner = ownerId === userId;
+        
+        if (isPartOfFamily || isOwner) {
+          const members = allFamilyMembers.get(familyId) || []; // Empty array if no members
           families.push({
             timestamp: familyData[i][0],
             familyId: familyId,
             familyHead: familyData[i][2],
             memberCount: members.length,
             status: familyData[i][4],
-            ownerId: familyData[i][5], // User ID of family creator
+            ownerId: ownerId,
             members: members
           });
           totalPeople += members.length;
