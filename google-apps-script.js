@@ -166,6 +166,9 @@ function doPost(e) {
     } else if (data.action === 'deleteFamily') {
       Logger.log('Deleting entire family');
       return deleteFamily(data);
+    } else if (data.action === 'quitFamily') {
+      Logger.log('User quitting family');
+      return quitFamily(data);
     } else if (data.type === 'individual') {
       Logger.log('Processing individual registration');
       return handleIndividualRegistration(data);

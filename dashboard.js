@@ -161,6 +161,9 @@ function displayRegistrations(data) {
     } else {
         familyContainer.innerHTML = families.map(family => {
             const isOwner = family.ownerId === currentUser.userId;
+            // Count how many members the current user registered in this family
+            const userMemberCount = family.members.filter(m => m.registeredBy === currentUser.userId).length;
+            
             return `
             <div class="registration-card family-card">
                 <div class="card-header">
@@ -172,6 +175,8 @@ function displayRegistrations(data) {
                         <span class="card-badge">Family ID: ${family.familyId}</span>
                         ${isOwner ? `
                             <button class="btn-icon" onclick="deleteFamily('${family.familyId}', '${family.familyHead}')" title="Delete Family">🗑️</button>
+                        ` : userMemberCount > 0 ? `
+                            <button class="btn-icon" onclick="quitFamily('${family.familyId}', '${family.familyHead}', ${userMemberCount})" title="Quit Family" style="background: #ff9800;">🚪</button>
                         ` : ''}
                     </div>
                 </div>
@@ -473,6 +478,55 @@ function closeDeleteFamilyModal() {
     document.getElementById('delete-family-modal').classList.remove('active');
 }
 
+// Quit family (for non-owners)
+function quitFamily(familyId, familyHead, memberCount) {
+    document.getElementById('quit-family-id-input').value = familyId;
+    document.getElementById('quit-family-message').textContent = 
+        `Are you sure you want to quit ${familyHead}'s family?`;
+    document.getElementById('quit-family-count').textContent = memberCount;
+    document.getElementById('quit-family-modal').classList.add('active');
+}
+
+async function confirmQuitFamily() {
+    showLoading(true);
+    
+    const familyId = document.getElementById('quit-family-id-input').value;
+    
+    const data = {
+        action: 'quitFamily',
+        familyId: familyId,
+        userId: currentUser.userId
+    };
+    
+    try {
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            redirect: 'follow',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            closeQuitFamilyModal();
+            await loadUserRegistrations();
+            showSuccessModal(`You have left the family. ${result.deletedCount} registration(s) removed.`);
+        } else {
+            alert('Failed to quit family: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error quitting family:', error);
+        alert('Failed to quit family');
+    } finally {
+        showLoading(false);
+    }
+}
+
+function closeQuitFamilyModal() {
+    document.getElementById('quit-family-modal').classList.remove('active');
+}
+
 // Success modal
 function showSuccessModal(message) {
     document.getElementById('success-message').textContent = message;
@@ -496,4 +550,7 @@ window.closeDeleteModal = closeDeleteModal;
 window.deleteFamily = deleteFamily;
 window.confirmDeleteFamily = confirmDeleteFamily;
 window.closeDeleteFamilyModal = closeDeleteFamilyModal;
+window.quitFamily = quitFamily;
+window.confirmQuitFamily = confirmQuitFamily;
+window.closeQuitFamilyModal = closeQuitFamilyModal;
 window.closeSuccessModal = closeSuccessModal;

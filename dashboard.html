@@ -149,6 +149,27 @@
             </div>
         </div>
 
+        <!-- Quit Family Confirmation Modal -->
+        <div id="quit-family-modal" class="modal">
+            <div class="modal-content">
+                <h2 style="color: #ff9800;">⚠️ Quit Family</h2>
+                <p id="quit-family-message" style="font-weight: 600;">Are you sure you want to quit this family?</p>
+                <p style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">
+                    This will permanently delete:
+                </p>
+                <ul style="color: #666; font-size: 0.9rem; margin: 0.5rem 0 1rem 1.5rem; line-height: 1.8;">
+                    <li>All your registrations in this family (<span id="quit-family-count">0</span> people)</li>
+                    <li>Other family members will remain in the family</li>
+                    <li>This action cannot be undone</li>
+                </ul>
+                <input type="hidden" id="quit-family-id-input">
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" onclick="closeQuitFamilyModal()">Cancel</button>
+                    <button class="btn btn-primary" style="background: #ff9800;" onclick="confirmQuitFamily()">Yes, Quit Family</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Success Modal -->
         <div id="success-modal" class="modal">
             <div class="modal-content">
