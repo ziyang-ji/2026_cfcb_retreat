@@ -1,5 +1,5 @@
 // Google Apps Script URL
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxASg95SMAivpOd1lc9GknxLf-6VCih0oC5JGJInt9GRVhPA74CCvfjvKimULzuSfq54g/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzpS7YbYrbtmnS26S1qCyZe3tEaMoMu3S8yWI6U1SaiGaKB4XzHgv9z9QEljImUw0Y-6g/exec';
 
 // Switch between auth tabs
 function showAuthTab(tab) {
