@@ -25,6 +25,21 @@ function getSpreadsheet() {
 function initializeSheets() {
   const ss = getSpreadsheet();
   
+  // User Accounts Sheet
+  let userSheet = ss.getSheetByName('User_Accounts');
+  if (!userSheet) {
+    userSheet = ss.insertSheet('User_Accounts');
+    userSheet.appendRow([
+      'Timestamp',
+      'User ID',
+      'Name',
+      'Email',
+      'Password',
+      'Status'
+    ]);
+    userSheet.getRange('A1:F1').setFontWeight('bold').setBackground('#4caf50').setFontColor('white');
+  }
+  
   // Individual Registrations Sheet
   let individualSheet = ss.getSheetByName('Individual_Registrations');
   if (!individualSheet) {
@@ -36,9 +51,11 @@ function initializeSheets() {
       'Phone',
       'Email',
       'Address',
-      'Family ID'
+      'Family ID',
+      'User ID',
+      'User Email'
     ]);
-    individualSheet.getRange('A1:G1').setFontWeight('bold').setBackground('#667eea').setFontColor('white');
+    individualSheet.getRange('A1:I1').setFontWeight('bold').setBackground('#667eea').setFontColor('white');
   }
   
   // Family Registrations Sheet
@@ -50,9 +67,11 @@ function initializeSheets() {
       'Family ID',
       'Head of Family',
       'Total Members',
-      'Status'
+      'Status',
+      'User ID',
+      'User Email'
     ]);
-    familySheet.getRange('A1:E1').setFontWeight('bold').setBackground('#764ba2').setFontColor('white');
+    familySheet.getRange('A1:G1').setFontWeight('bold').setBackground('#764ba2').setFontColor('white');
   }
 }
 
@@ -78,6 +97,22 @@ function doGet(e) {
       return getFamilyMembers(familyId);
     }
     
+    if (action === 'checkUser') {
+      const email = e.parameter.email;
+      return checkUserExists(email);
+    }
+    
+    if (action === 'authenticateUser') {
+      const email = e.parameter.email;
+      const password = e.parameter.password;
+      return authenticateUser(email, password);
+    }
+    
+    if (action === 'getUserRegistrations') {
+      const userId = e.parameter.userId;
+      return getUserRegistrations(userId);
+    }
+    
     return ContentService.createTextOutput(JSON.stringify({
       success: false,
       message: 'Invalid action'
@@ -101,9 +136,12 @@ function doPost(e) {
     Logger.log('Post data: ' + e.postData.contents);
     
     const data = JSON.parse(e.postData.contents);
-    Logger.log('Parsed data type: ' + data.type);
+    Logger.log('Parsed data action/type: ' + (data.action || data.type));
     
-    if (data.type === 'individual') {
+    if (data.action === 'createUser') {
+      Logger.log('Creating user account');
+      return createUserAccount(data);
+    } else if (data.type === 'individual') {
       Logger.log('Processing individual registration');
       return handleIndividualRegistration(data);
     } else if (data.type === 'family') {
@@ -145,7 +183,9 @@ function handleIndividualRegistration(data) {
       data.phone,
       data.email,
       data.address,
-      '' // No family ID for individual registrations
+      '', // No family ID for individual registrations
+      data.userId || '',
+      data.userEmail || ''
     ]);
     
     Logger.log('Individual registration saved successfully');
@@ -188,7 +228,9 @@ function handleFamilyRegistration(data) {
         member.phone,
         member.email,
         member.address,
-        data.familyId
+        data.familyId,
+        data.userId || '',
+        data.userEmail || ''
       ]);
     });
     
@@ -203,7 +245,9 @@ function handleFamilyRegistration(data) {
         data.familyId,
         data.familyHead,
         data.members.length,
-        'Active'
+        'Active',
+        data.userId || '',
+        data.userEmail || ''
       ]);
     }
     
@@ -289,6 +333,236 @@ function getFamilyMembers(familyId) {
     familyHead: familyHead,
     members: members
   })).setMimeType(ContentService.MimeType.JSON);
+}
+
+// User Management Functions
+
+// Create user account
+function createUserAccount(data) {
+  try {
+    const ss = getSpreadsheet();
+    const userSheet = ss.getSheetByName('User_Accounts');
+    
+    if (!userSheet) {
+      throw new Error('User_Accounts sheet not found');
+    }
+    
+    // Generate user ID
+    const userId = 'USER-' + new Date().getTime();
+    
+    Logger.log('Creating user account: ' + data.email);
+    userSheet.appendRow([
+      data.timestamp,
+      userId,
+      data.name,
+      data.email,
+      data.password, // Already base64 encoded by client
+      'Active'
+    ]);
+    
+    Logger.log('User account created successfully: ' + userId);
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      success: true,
+      message: 'User account created',
+      userId: userId,
+      name: data.name
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    Logger.log('Error in createUserAccount: ' + error.toString());
+    throw error;
+  }
+}
+
+// Check if user exists
+function checkUserExists(email) {
+  try {
+    const ss = getSpreadsheet();
+    const userSheet = ss.getSheetByName('User_Accounts');
+    
+    if (!userSheet) {
+      return ContentService.createTextOutput(JSON.stringify({
+        success: true,
+        exists: false
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const lastRow = userSheet.getLastRow();
+    if (lastRow <= 1) {
+      return ContentService.createTextOutput(JSON.stringify({
+        success: true,
+        exists: false
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const emails = userSheet.getRange(2, 4, lastRow - 1, 1).getValues();
+    
+    for (let i = 0; i < emails.length; i++) {
+      if (emails[i][0].toLowerCase() === email.toLowerCase()) {
+        return ContentService.createTextOutput(JSON.stringify({
+          success: true,
+          exists: true
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      success: true,
+      exists: false
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    Logger.log('Error in checkUserExists: ' + error.toString());
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      message: error.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// Authenticate user
+function authenticateUser(email, password) {
+  try {
+    const ss = getSpreadsheet();
+    const userSheet = ss.getSheetByName('User_Accounts');
+    
+    if (!userSheet) {
+      return ContentService.createTextOutput(JSON.stringify({
+        success: false,
+        message: 'User accounts not initialized'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const lastRow = userSheet.getLastRow();
+    if (lastRow <= 1) {
+      return ContentService.createTextOutput(JSON.stringify({
+        success: false,
+        message: 'No user accounts found'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const userData = userSheet.getRange(2, 1, lastRow - 1, 6).getValues();
+    
+    for (let i = 0; i < userData.length; i++) {
+      const userEmail = userData[i][3];
+      const userPassword = userData[i][4];
+      
+      if (userEmail.toLowerCase() === email.toLowerCase() && userPassword === password) {
+        return ContentService.createTextOutput(JSON.stringify({
+          success: true,
+          userId: userData[i][1],
+          name: userData[i][2],
+          email: userEmail
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      message: 'Invalid credentials'
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    Logger.log('Error in authenticateUser: ' + error.toString());
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      message: error.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// Get user's registrations
+function getUserRegistrations(userId) {
+  try {
+    const ss = getSpreadsheet();
+    const individualSheet = ss.getSheetByName('Individual_Registrations');
+    const familySheet = ss.getSheetByName('Family_Registrations');
+    
+    const individuals = [];
+    const familyMap = new Map();
+    let totalPeople = 0;
+    
+    // Get individual registrations
+    const individualLastRow = individualSheet.getLastRow();
+    if (individualLastRow > 1) {
+      const individualData = individualSheet.getRange(2, 1, individualLastRow - 1, 9).getValues();
+      
+      for (let i = 0; i < individualData.length; i++) {
+        const rowUserId = individualData[i][7]; // User ID column
+        const familyId = individualData[i][6]; // Family ID column
+        
+        if (rowUserId === userId) {
+          const person = {
+            timestamp: individualData[i][0],
+            id: individualData[i][1],
+            name: individualData[i][2],
+            phone: individualData[i][3],
+            email: individualData[i][4],
+            address: individualData[i][5],
+            familyId: familyId
+          };
+          
+          if (!familyId) {
+            // Individual registration
+            individuals.push(person);
+            totalPeople++;
+          } else {
+            // Family member
+            if (!familyMap.has(familyId)) {
+              familyMap.set(familyId, []);
+            }
+            familyMap.get(familyId).push(person);
+          }
+        }
+      }
+    }
+    
+    // Get family information
+    const families = [];
+    const familyLastRow = familySheet.getLastRow();
+    if (familyLastRow > 1) {
+      const familyData = familySheet.getRange(2, 1, familyLastRow - 1, 7).getValues();
+      
+      for (let i = 0; i < familyData.length; i++) {
+        const familyId = familyData[i][1];
+        
+        if (familyMap.has(familyId)) {
+          const members = familyMap.get(familyId);
+          families.push({
+            timestamp: familyData[i][0],
+            familyId: familyId,
+            familyHead: familyData[i][2],
+            memberCount: members.length,
+            status: familyData[i][4],
+            members: members
+          });
+          totalPeople += members.length;
+        }
+      }
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      success: true,
+      data: {
+        individuals: individuals,
+        families: families,
+        totalPeople: totalPeople
+      }
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    Logger.log('Error in getUserRegistrations: ' + error.toString());
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      message: error.toString(),
+      data: {
+        individuals: [],
+        families: [],
+        totalPeople: 0
+      }
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
 }
 
 // Test function to verify setup

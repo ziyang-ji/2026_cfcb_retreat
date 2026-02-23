@@ -9,8 +9,66 @@ let currentState = {
     isExistingFamily: false
 };
 
+let currentUser = null;
+
 // Google Apps Script Web App URL - UPDATE THIS AFTER DEPLOYING
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzilO0f7bGzAoGeVcK2gGoxJMOwyiMuJ-dkN9om42BiXRrTAMrd3_wDWUfHBAfEa0kO3Q/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyS6REfEcNjXCXZyocU9wauHgYsDqwaz86uuUZx6wfc748_pcgp67fpVm90dHjZeXDbFQ/exec';
+
+// Check authentication on page load
+window.addEventListener('DOMContentLoaded', () => {
+    const userSession = localStorage.getItem('userSession');
+    
+    if (!userSession) {
+        alert('Please sign in to register for the retreat.');
+        window.location.href = 'auth.html';
+        return;
+    }
+    
+    try {
+        currentUser = JSON.parse(userSession);
+        
+        // Check if session is expired
+        const sessionAge = Date.now() - currentUser.loginTime;
+        const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+        
+        if (sessionAge >= thirtyDays) {
+            localStorage.removeItem('userSession');
+            alert('Your session has expired. Please sign in again.');
+            window.location.href = 'auth.html';
+            return;
+        }
+        
+        // Check if we're adding to an existing family
+        const urlParams = new URLSearchParams(window.location.search);
+        const action = urlParams.get('action');
+        const familyId = urlParams.get('familyId');
+        
+        if (action === 'addToFamily' && familyId) {
+            // Pre-select family registration and load family
+            currentState.isExistingFamily = true;
+            currentState.familyId = familyId;
+            document.getElementById('existing-family-id').value = familyId;
+            selectRegistrationType('family');
+            setTimeout(() => {
+                selectFamilyOption('existing');
+                setTimeout(() => loadFamilyById(), 100);
+            }, 100);
+        }
+        
+    } catch (error) {
+        console.error('Error loading session:', error);
+        localStorage.removeItem('userSession');
+        window.location.href = 'auth.html';
+    }
+});
+
+// Sign out function
+function signOut() {
+    if (confirm('Are you sure you want to sign out?')) {
+        localStorage.removeItem('userSession');
+        window.location.href = 'auth.html';
+    }
+}
 
 // Test connection to Google Sheets
 async function testConnection() {
@@ -107,6 +165,8 @@ async function submitIndividual() {
         phone: phone,
         email: email,
         address: address,
+        userId: currentUser.userId,
+        userEmail: currentUser.email,
         timestamp: new Date().toISOString()
     };
     
@@ -268,6 +328,8 @@ async function completeFamilyRegistration() {
         familyHead: currentState.familyHead,
         members: currentState.familyMembers,
         isExisting: currentState.isExistingFamily,
+        userId: currentUser.userId,
+        userEmail: currentUser.email,
         timestamp: new Date().toISOString()
     };
     
@@ -355,20 +417,6 @@ function showLoading(show) {
 }
 
 function resetForm() {
-    currentState = {
-        registrationType: null,
-        individualId: null,
-        individualName: null,
-        familyId: null,
-        familyHead: null,
-        familyMembers: [],
-        isExistingFamily: false
-    };
-    
-    // Clear all input fields
-    document.querySelectorAll('input, textarea').forEach(field => {
-        field.value = '';
-    });
-    
-    showSection('step-registration-type');
+    // Redirect back to dashboard instead of resetting
+    window.location.href = 'dashboard.html';
 }

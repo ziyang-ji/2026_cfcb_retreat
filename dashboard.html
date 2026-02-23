@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dashboard - Church Retreat</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏔️ Church Retreat Sign-Up</h1>
+            <p class="subtitle">Welcome back, <span id="user-name">User</span>!</p>
+            <div class="header-actions">
+                <button class="btn-header" onclick="location.href='register.html'">+ New Registration</button>
+                <button class="btn-header btn-signout" onclick="signOut()">Sign Out</button>
+            </div>
+        </header>
+
+        <div class="dashboard-container">
+            <!-- Summary Cards -->
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <div class="card-icon">👤</div>
+                    <div class="card-content">
+                        <div class="card-number" id="individual-count">0</div>
+                        <div class="card-label">Individual Registrations</div>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-icon">👨‍👩‍👧‍👦</div>
+                    <div class="card-content">
+                        <div class="card-number" id="family-count">0</div>
+                        <div class="card-label">Family Registrations</div>
+                    </div>
+                </div>
+                <div class="summary-card">
+                    <div class="card-icon">👥</div>
+                    <div class="card-content">
+                        <div class="card-number" id="total-people">0</div>
+                        <div class="card-label">Total People</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Individual Registrations -->
+            <section class="dashboard-section">
+                <h2>👤 Individual Registrations</h2>
+                <div id="individual-registrations">
+                    <div class="empty-state">
+                        <p>You haven't registered individually yet.</p>
+                        <button class="btn btn-primary" onclick="location.href='register.html'">Create Individual Registration</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Family Registrations -->
+            <section class="dashboard-section">
+                <h2>👨‍👩‍👧‍👦 Family Registrations</h2>
+                <div id="family-registrations">
+                    <div class="empty-state">
+                        <p>You're not part of any family registration yet.</p>
+                        <button class="btn btn-primary" onclick="location.href='register.html'">Create Family Registration</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="loading-overlay">
+            <div class="spinner"></div>
+            <p>Loading your registrations...</p>
+        </div>
+    </div>
+
+    <script type="module" src="dashboard.js"></script>
+</body>
+</html>
