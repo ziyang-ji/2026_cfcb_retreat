@@ -1,6 +1,39 @@
 // Google Apps Script URL
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxOT6O0wnWUUcacDnjKqrwvV0-tZNBYl24P2L47oAVcpzlyDvzVzI1ATLmWPsj7R2-uQg/exec';
 
+// Global variable for phone auth confirmation result
+let confirmationResult = null;
+
+// Initialize reCAPTCHA when page loads
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('🔄 DOMContentLoaded - Waiting for Firebase...');
+    
+    // Wait for Firebase to be ready (max 5 seconds)
+    let attempts = 0;
+    while (!window.firebaseReady && attempts < 50) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        attempts++;
+    }
+    
+    if (!window.firebaseReady) {
+        console.error('❌ Firebase failed to load');
+        return;
+    }
+    
+    console.log('✅ Firebase ready, initializing reCAPTCHA...');
+    
+    // Call the initialization function
+    if (window.initRecaptcha) {
+        try {
+            await window.initRecaptcha();
+            console.log('✅ reCAPTCHA initialization complete');
+        } catch (error) {
+            console.error('❌ Failed to initialize reCAPTCHA:', error);
+        }
+    } else {
+        console.log('No initRecaptcha function found (might not be on phone auth page)');
+    }
+});
 
 // Show loading overlay
 function showLoading(show) {
