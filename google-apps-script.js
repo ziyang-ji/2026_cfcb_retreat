@@ -1077,7 +1077,9 @@ function quitFamily(data) {
 // Check if user exists by phone number
 function checkUserByPhone(phone) {
   try {
-    Logger.log('checkUserByPhone called with: ' + phone);
+    // Normalize phone - remove + if present
+    const normalizedPhone = phone.replace(/^\+/, '');
+    Logger.log('checkUserByPhone called with: ' + phone + ' (normalized: ' + normalizedPhone + ')');
     
     const ss = getSpreadsheet();
     const userSheet = ss.getSheetByName('User_Accounts');
@@ -1104,11 +1106,11 @@ function checkUserByPhone(phone) {
     Logger.log('Searching through ' + data.length + ' users');
     
     for (let i = 0; i < data.length; i++) {
-      const userPhone = data[i][3]; // Column 4 is Email/Phone
-      Logger.log('Row ' + i + ' - Stored: "' + userPhone + '" vs Searching: "' + phone + '" - Match: ' + (userPhone === phone));
+      const userPhone = String(data[i][3]).replace(/^\+/, ''); // Normalize stored phone too
+      Logger.log('Row ' + i + ' - Stored: "' + data[i][3] + '" (normalized: "' + userPhone + '") vs Searching: "' + normalizedPhone + '" - Match: ' + (userPhone === normalizedPhone));
       
-      if (userPhone === phone) {
-        Logger.log('Phone user found! userId: ' + data[i][1]);
+      if (userPhone === normalizedPhone) {
+        Logger.log('✅ Phone user found! userId: ' + data[i][1]);
         return ContentService.createTextOutput(JSON.stringify({
           success: true,
           exists: true,

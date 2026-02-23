@@ -293,8 +293,10 @@ async function verifyCode(event) {
         console.log('Phone authentication successful:', user.phoneNumber);
         
         // Check if user exists in our system
-        const phoneNumber = user.phoneNumber;
+        // Normalize phone number - remove + for consistency
+        const phoneNumber = user.phoneNumber.replace(/^\+/, '');
         console.log('Checking if phone user exists:', phoneNumber);
+        console.log('Original Firebase phone:', user.phoneNumber);
         
         const checkResponse = await fetch(`${GOOGLE_SCRIPT_URL}?action=checkUserByPhone&phone=${encodeURIComponent(phoneNumber)}`);
         const checkResult = await checkResponse.json();
