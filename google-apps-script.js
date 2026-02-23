@@ -1074,6 +1074,57 @@ function quitFamily(data) {
   }
 }
 
+// Check if user exists by phone number
+function checkUserByPhone(phone) {
+  try {
+    const ss = getSpreadsheet();
+    const userSheet = ss.getSheetByName('User_Accounts');
+    
+    if (!userSheet) {
+      return ContentService.createTextOutput(JSON.stringify({
+        success: false,
+        exists: false,
+        message: 'User_Accounts sheet not found'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const lastRow = userSheet.getLastRow();
+    if (lastRow <= 1) {
+      return ContentService.createTextOutput(JSON.stringify({
+        success: true,
+        exists: false
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const data = userSheet.getRange(2, 1, lastRow - 1, 6).getValues();
+    
+    for (let i = 0; i < data.length; i++) {
+      const userPhone = data[i][3]; // Column 4 is Email/Phone
+      if (userPhone === phone) {
+        return ContentService.createTextOutput(JSON.stringify({
+          success: true,
+          exists: true,
+          userId: data[i][1],
+          name: data[i][2]
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      success: true,
+      exists: false
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    Logger.log('Error in checkUserByPhone: ' + error.toString());
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      exists: false,
+      message: error.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
 // Helper function to get user's email by userId
 function getUserEmailById(userId) {
   try {
