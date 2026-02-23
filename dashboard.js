@@ -2,6 +2,20 @@ const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwHcyxYo8bNBt
 
 let currentUser = null;
 
+// Sign out functions - define first so they're always available
+function signOut() {
+    document.getElementById('signout-modal').classList.add('active');
+}
+
+function closeSignOutModal() {
+    document.getElementById('signout-modal').classList.remove('active');
+}
+
+function confirmSignOut() {
+    localStorage.removeItem('userSession');
+    window.location.href = 'auth.html';
+}
+
 // Check authentication on page load
 window.addEventListener('DOMContentLoaded', async () => {
     const userSession = localStorage.getItem('userSession');
@@ -233,21 +247,6 @@ function addToFamily(familyId) {
     window.location.href = 'register.html?action=addToFamily&familyId=' + familyId;
 }
 
-// Sign out
-function signOut() {
-    // Show custom modal instead of browser confirm
-    document.getElementById('signout-modal').classList.add('active');
-}
-
-function closeSignOutModal() {
-    document.getElementById('signout-modal').classList.remove('active');
-}
-
-function confirmSignOut() {
-    localStorage.removeItem('userSession');
-    window.location.href = 'auth.html';
-}
-
 // Show loading overlay
 function showLoading(show) {
     const overlay = document.getElementById('loading-overlay');
@@ -460,11 +459,8 @@ function closeDeleteFamilyModal() {
     document.getElementById('delete-family-modal').classList.remove('active');
 }
 
-// Make functions globally available
+// Make functions globally available (signOut already defined at top)
 window.addToFamily = addToFamily;
-window.signOut = signOut;
-window.closeSignOutModal = closeSignOutModal;
-window.confirmSignOut = confirmSignOut;
 window.editIndividual = editIndividual;
 window.editFamilyMember = editFamilyMember;
 window.saveEdit = saveEdit;
