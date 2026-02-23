@@ -2,19 +2,19 @@ const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxe5Z6iOt-i1V
 
 let currentUser = null;
 
-// Sign out functions - define first so they're always available
-function signOut() {
+// Sign out functions - assign to window immediately so they're globally available
+window.signOut = function() {
     document.getElementById('signout-modal').classList.add('active');
-}
+};
 
-function closeSignOutModal() {
+window.closeSignOutModal = function() {
     document.getElementById('signout-modal').classList.remove('active');
-}
+};
 
-function confirmSignOut() {
+window.confirmSignOut = function() {
     localStorage.removeItem('userSession');
     window.location.href = 'auth.html';
-}
+};
 
 // Check authentication on page load
 window.addEventListener('DOMContentLoaded', async () => {
@@ -465,7 +465,7 @@ function closeDeleteFamilyModal() {
     document.getElementById('delete-family-modal').classList.remove('active');
 }
 
-// Make functions globally available
+// Make other functions globally available (signOut functions already assigned to window at top)
 window.addToFamily = addToFamily;
 window.editIndividual = editIndividual;
 window.editFamilyMember = editFamilyMember;
