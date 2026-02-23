@@ -201,10 +201,17 @@ function addToFamily(familyId) {
 
 // Sign out
 function signOut() {
-    if (confirm('Are you sure you want to sign out?')) {
-        localStorage.removeItem('userSession');
-        window.location.href = 'auth.html';
-    }
+    // Show custom modal instead of browser confirm
+    document.getElementById('signout-modal').classList.add('active');
+}
+
+function closeSignOutModal() {
+    document.getElementById('signout-modal').classList.remove('active');
+}
+
+function confirmSignOut() {
+    localStorage.removeItem('userSession');
+    window.location.href = 'auth.html';
 }
 
 // Show loading overlay
@@ -220,3 +227,5 @@ function showLoading(show) {
 // Make functions globally available
 window.addToFamily = addToFamily;
 window.signOut = signOut;
+window.closeSignOutModal = closeSignOutModal;
+window.confirmSignOut = confirmSignOut;

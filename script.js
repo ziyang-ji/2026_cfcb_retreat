@@ -88,10 +88,17 @@ const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-OyUhu34p3u
 
 // Sign out function
 function signOut() {
-    if (confirm('Are you sure you want to sign out?')) {
-        localStorage.removeItem('userSession');
-        window.location.href = 'auth.html';
-    }
+    // Show custom modal instead of browser confirm
+    document.getElementById('signout-modal').classList.add('active');
+}
+
+function closeSignOutModal() {
+    document.getElementById('signout-modal').classList.remove('active');
+}
+
+function confirmSignOut() {
+    localStorage.removeItem('userSession');
+    window.location.href = 'auth.html';
 }
 
 // Test connection to Google Sheets
