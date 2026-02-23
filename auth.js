@@ -165,41 +165,14 @@ async function sendVerificationCode(event) {
         
         console.log('Sending verification code to:', phoneNumber);
         
-        // Setup reCAPTCHA verifier
+        // Verify reCAPTCHA is ready
         if (!window.recaptchaVerifier) {
-            console.log('Creating reCAPTCHA verifier...');
-            console.log('Firebase Auth available:', !!window.firebaseAuth);
-            console.log('RecaptchaVerifier available:', !!window.RecaptchaVerifier);
-            console.log('Container exists:', !!document.getElementById('recaptcha-container'));
-            
-            try {
-                // Firebase v9+ uses: new RecaptchaVerifier(auth, containerElementId, parameters)
-                window.recaptchaVerifier = new window.RecaptchaVerifier(
-                    window.firebaseAuth,
-                    'recaptcha-container',
-                    {
-                        'size': 'normal',
-                        'callback': (response) => {
-                            console.log('✅ reCAPTCHA solved');
-                        },
-                        'expired-callback': () => {
-                            console.log('⚠️ reCAPTCHA expired');
-                        }
-                    }
-                );
-                
-                console.log('✅ RecaptchaVerifier object created:', window.recaptchaVerifier);
-                
-                // Render the reCAPTCHA
-                console.log('Rendering reCAPTCHA...');
-                await window.recaptchaVerifier.render();
-                console.log('✅ reCAPTCHA rendered successfully');
-                
-            } catch (recaptchaError) {
-                console.error('❌ Failed to create/render reCAPTCHA:', recaptchaError);
-                throw new Error('reCAPTCHA initialization failed: ' + recaptchaError.message);
-            }
+            showLoading(false);
+            alert('reCAPTCHA not initialized. Please refresh the page and try again.');
+            return;
         }
+        
+        console.log('reCAPTCHA verifier is ready');
         
         console.log('Sending SMS to:', phoneNumber);
         console.log('Auth instance:', window.firebaseAuth);
