@@ -579,6 +579,12 @@ h3 {
     color: #333;
 }
 
+.card-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
 .card-badge {
     background: #f8f9ff;
     color: #667eea;
@@ -587,6 +593,33 @@ h3 {
     font-size: 0.85rem;
     font-weight: 600;
     font-family: 'Courier New', monospace;
+}
+
+.btn-icon {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    transition: transform 0.2s ease;
+}
+
+.btn-icon:hover {
+    transform: scale(1.2);
+}
+
+.btn-icon-small {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.2rem;
+    margin-left: 0.5rem;
+    transition: transform 0.2s ease;
+}
+
+.btn-icon-small:hover {
+    transform: scale(1.2);
 }
 
 .card-details {
@@ -721,6 +754,38 @@ h3 {
 .modal-buttons .btn {
     flex: 0 1 auto;
     min-width: 100px;
+}
+
+.modal-large {
+    max-width: 500px;
+}
+
+.modal-large .form-group {
+    margin-bottom: 1rem;
+    text-align: left;
+}
+
+.modal-large label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #555;
+}
+
+.modal-large input,
+.modal-large textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.modal-large input:focus,
+.modal-large textarea:focus {
+    outline: none;
+    border-color: #667eea;
 }
 
 @media (max-width: 600px) {

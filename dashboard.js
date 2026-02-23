@@ -80,14 +80,22 @@ function displayRegistrations(data) {
             </div>
         `;
     } else {
-        individualContainer.innerHTML = individuals.map(person => `
+        individualContainer.innerHTML = individuals.map(person => {
+            const isOwner = person.registeredBy === currentUser.userId;
+            return `
             <div class="registration-card">
                 <div class="card-header">
                     <div class="card-title">
                         <span class="card-icon">👤</span>
                         <span class="card-name">${person.name}</span>
                     </div>
-                    <span class="card-badge">ID: ${person.id}</span>
+                    <div class="card-actions">
+                        <span class="card-badge">ID: ${person.id}</span>
+                        ${isOwner ? `
+                            <button class="btn-icon" onclick="editIndividual('${person.id}')" title="Edit">✏️</button>
+                            <button class="btn-icon" onclick="deleteIndividual('${person.id}', '${person.name}')" title="Delete">🗑️</button>
+                        ` : ''}
+                    </div>
                 </div>
                 <div class="card-details">
                     <div class="detail-row">
@@ -108,7 +116,8 @@ function displayRegistrations(data) {
                     </div>
                 </div>
             </div>
-        `).join('');
+        `;
+        }).join('');
     }
     
     // Display family registrations
@@ -143,17 +152,24 @@ function displayRegistrations(data) {
                 </div>
                 <div class="family-members">
                     <h4>Family Members:</h4>
-                    ${family.members.map(member => `
+                    ${family.members.map(member => {
+                        const isOwner = member.registeredBy === currentUser.userId;
+                        return `
                         <div class="family-member-item">
                             <div class="member-info">
                                 <strong>${member.name}</strong>
                                 <span class="member-id">ID: ${member.id}</span>
+                                ${isOwner ? `
+                                    <button class="btn-icon-small" onclick="editFamilyMember('${member.id}', '${family.familyId}')" title="Edit">✏️</button>
+                                    <button class="btn-icon-small" onclick="deleteFamilyMember('${member.id}', '${member.name}', '${family.familyId}')" title="Delete">🗑️</button>
+                                ` : ''}
                             </div>
                             <div class="member-contact">
                                 ${member.phone} • ${member.email}
                             </div>
                         </div>
-                    `).join('')}
+                    `;
+                    }).join('')}
                 </div>
                 <button class="btn btn-secondary" onclick="addToFamily('${family.familyId}')">+ Add More Members</button>
             </div>
@@ -224,8 +240,163 @@ function showLoading(show) {
     }
 }
 
+// Edit individual registration
+async function editIndividual(id) {
+    showLoading(true);
+    try {
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getRegistrationById&id=${id}`);
+        const result = await response.json();
+        
+        if (result.success) {
+            document.getElementById('edit-id').value = result.data.id;
+            document.getElementById('edit-family-id').value = '';
+            document.getElementById('edit-name').value = result.data.name;
+            document.getElementById('edit-phone').value = result.data.phone;
+            document.getElementById('edit-email').value = result.data.email;
+            document.getElementById('edit-address').value = result.data.address;
+            document.getElementById('edit-modal').classList.add('active');
+        }
+    } catch (error) {
+        console.error('Error loading registration:', error);
+        alert('Failed to load registration details');
+    } finally {
+        showLoading(false);
+    }
+}
+
+// Edit family member
+async function editFamilyMember(id, familyId) {
+    showLoading(true);
+    try {
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getRegistrationById&id=${id}`);
+        const result = await response.json();
+        
+        if (result.success) {
+            document.getElementById('edit-id').value = result.data.id;
+            document.getElementById('edit-family-id').value = familyId;
+            document.getElementById('edit-name').value = result.data.name;
+            document.getElementById('edit-phone').value = result.data.phone;
+            document.getElementById('edit-email').value = result.data.email;
+            document.getElementById('edit-address').value = result.data.address;
+            document.getElementById('edit-modal').classList.add('active');
+        }
+    } catch (error) {
+        console.error('Error loading registration:', error);
+        alert('Failed to load registration details');
+    } finally {
+        showLoading(false);
+    }
+}
+
+// Save edited registration
+async function saveEdit(event) {
+    event.preventDefault();
+    showLoading(true);
+    
+    const data = {
+        action: 'updateRegistration',
+        id: document.getElementById('edit-id').value,
+        name: document.getElementById('edit-name').value,
+        phone: document.getElementById('edit-phone').value,
+        email: document.getElementById('edit-email').value,
+        address: document.getElementById('edit-address').value,
+        userId: currentUser.userId
+    };
+    
+    try {
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            redirect: 'follow',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            closeEditModal();
+            await loadUserRegistrations();
+            alert('Registration updated successfully!');
+        } else {
+            alert('Failed to update: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error updating registration:', error);
+        alert('Failed to update registration');
+    } finally {
+        showLoading(false);
+    }
+}
+
+function closeEditModal() {
+    document.getElementById('edit-modal').classList.remove('active');
+}
+
+// Delete individual registration
+function deleteIndividual(id, name) {
+    document.getElementById('delete-id').value = id;
+    document.getElementById('delete-family-id').value = '';
+    document.getElementById('delete-message').textContent = `Are you sure you want to delete the registration for ${name}?`;
+    document.getElementById('delete-modal').classList.add('active');
+}
+
+// Delete family member
+function deleteFamilyMember(id, name, familyId) {
+    document.getElementById('delete-id').value = id;
+    document.getElementById('delete-family-id').value = familyId;
+    document.getElementById('delete-message').textContent = `Are you sure you want to remove ${name} from the family registration?`;
+    document.getElementById('delete-modal').classList.add('active');
+}
+
+// Confirm delete
+async function confirmDelete() {
+    showLoading(true);
+    
+    const data = {
+        action: 'deleteRegistration',
+        id: document.getElementById('delete-id').value,
+        userId: currentUser.userId
+    };
+    
+    try {
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            redirect: 'follow',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            closeDeleteModal();
+            await loadUserRegistrations();
+            alert('Registration deleted successfully');
+        } else {
+            alert('Failed to delete: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error deleting registration:', error);
+        alert('Failed to delete registration');
+    } finally {
+        showLoading(false);
+    }
+}
+
+function closeDeleteModal() {
+    document.getElementById('delete-modal').classList.remove('active');
+}
+
 // Make functions globally available
 window.addToFamily = addToFamily;
 window.signOut = signOut;
 window.closeSignOutModal = closeSignOutModal;
 window.confirmSignOut = confirmSignOut;
+window.editIndividual = editIndividual;
+window.editFamilyMember = editFamilyMember;
+window.saveEdit = saveEdit;
+window.closeEditModal = closeEditModal;
+window.deleteIndividual = deleteIndividual;
+window.deleteFamilyMember = deleteFamilyMember;
+window.confirmDelete = confirmDelete;
+window.closeDeleteModal = closeDeleteModal;

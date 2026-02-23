@@ -82,6 +82,51 @@
                 </div>
             </div>
         </div>
+
+        <!-- Edit Registration Modal -->
+        <div id="edit-modal" class="modal">
+            <div class="modal-content modal-large">
+                <h2>Edit Registration</h2>
+                <form onsubmit="saveEdit(event)">
+                    <input type="hidden" id="edit-id">
+                    <input type="hidden" id="edit-family-id">
+                    <div class="form-group">
+                        <label for="edit-name">Name</label>
+                        <input type="text" id="edit-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-phone">Phone</label>
+                        <input type="tel" id="edit-phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-email">Email</label>
+                        <input type="email" id="edit-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-address">Address</label>
+                        <textarea id="edit-address" rows="3" required></textarea>
+                    </div>
+                    <div class="modal-buttons">
+                        <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div id="delete-modal" class="modal">
+            <div class="modal-content">
+                <h2>Delete Registration</h2>
+                <p id="delete-message">Are you sure you want to delete this registration?</p>
+                <input type="hidden" id="delete-id">
+                <input type="hidden" id="delete-family-id">
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                    <button class="btn btn-primary" style="background: #f44336;" onclick="confirmDelete()">Delete</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script type="module" src="dashboard.js"></script>
