@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Church Retreat Sign-Up</title>
+    <link rel="stylesheet" href="styles.css">
+    <script type="module">
+        // Check if user is logged in
+        const userSession = localStorage.getItem('userSession');
+        
+        if (userSession) {
+            try {
+                const user = JSON.parse(userSession);
+                // Check if session is still valid (less than 30 days old)
+                const sessionAge = Date.now() - user.loginTime;
+                const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+                
+                if (sessionAge < thirtyDays) {
+                    // User is logged in, redirect to dashboard
+                    window.location.href = 'dashboard.html';
+                } else {
+                    // Session expired
+                    localStorage.removeItem('userSession');
+                    window.location.href = 'auth.html';
+                }
+            } catch (e) {
+                // Invalid session data
+                localStorage.removeItem('userSession');
+                window.location.href = 'auth.html';
+            }
+        } else {
+            // Not logged in, redirect to auth
+            window.location.href = 'auth.html';
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="loading-overlay active">
+            <div class="spinner"></div>
+            <p>Loading...</p>
+        </div>
+    </div>
+</body>
+</html>
