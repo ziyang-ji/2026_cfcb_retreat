@@ -604,11 +604,12 @@ function authenticateUser(email, password) {
       })).setMimeType(ContentService.MimeType.JSON);
     }
     
-    const userData = userSheet.getRange(2, 1, lastRow - 1, 6).getValues();
+    // Schema: Timestamp, UserID, Name, Email, Phone, Password, Status
+    const userData = userSheet.getRange(2, 1, lastRow - 1, 7).getValues();
     
     for (let i = 0; i < userData.length; i++) {
-      const userEmail = userData[i][3];
-      const userPassword = userData[i][4];
+      const userEmail = userData[i][3]; // Column 4 is Email
+      const userPassword = userData[i][5]; // Column 6 is Password (moved due to Phone column)
       
       if (userEmail.toLowerCase() === email.toLowerCase() && userPassword === password) {
         return ContentService.createTextOutput(JSON.stringify({
@@ -655,10 +656,11 @@ function getUserByEmail(email) {
       })).setMimeType(ContentService.MimeType.JSON);
     }
     
-    const userData = userSheet.getRange(2, 1, lastRow - 1, 6).getValues();
+    // Schema: Timestamp, UserID, Name, Email, Phone, Password, Status
+    const userData = userSheet.getRange(2, 1, lastRow - 1, 7).getValues();
     
     for (let i = 0; i < userData.length; i++) {
-      const userEmail = userData[i][3];
+      const userEmail = userData[i][3]; // Column 4 is Email
       
       if (userEmail.toLowerCase() === email.toLowerCase()) {
         return ContentService.createTextOutput(JSON.stringify({
@@ -1168,7 +1170,8 @@ function getUserEmailById(userId) {
     const lastRow = userSheet.getLastRow();
     if (lastRow <= 1) return null;
     
-    const userData = userSheet.getRange(2, 1, lastRow - 1, 6).getValues();
+    // Schema: Timestamp, UserID, Name, Email, Phone, Password, Status
+    const userData = userSheet.getRange(2, 1, lastRow - 1, 7).getValues();
     
     for (let i = 0; i < userData.length; i++) {
       if (userData[i][1] === userId) { // Column 2 is User ID
