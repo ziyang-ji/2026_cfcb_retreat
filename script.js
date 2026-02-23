@@ -128,7 +128,7 @@ function createIndividualId() {
     const name = document.getElementById('individual-name').value.trim();
     
     if (!name) {
-        alert('Please enter your name');
+        showErrorModal('Please enter your name');
         return;
     }
     
@@ -152,7 +152,7 @@ async function submitIndividual() {
     const address = document.getElementById('individual-address').value.trim();
     
     if (!phone || !email || !address) {
-        alert('Please fill in all required fields');
+        showErrorModal('Please fill in all required fields');
         return;
     }
     
@@ -228,7 +228,7 @@ function createFamilyId() {
     const name = document.getElementById('family-head-name').value.trim();
     
     if (!name) {
-        alert('Please enter the head of family name');
+        showErrorModal('Please enter the head of family name');
         return;
     }
     
@@ -275,7 +275,7 @@ function addFamilyMember() {
     const address = document.getElementById('member-address').value.trim();
     
     if (!name || !phone || !email || !address) {
-        alert('Please fill in all member details');
+        showErrorModal('Please fill in all member details');
         return;
     }
     
@@ -324,7 +324,7 @@ function displayFamilyMembers() {
 
 async function completeFamilyRegistration() {
     if (currentState.familyMembers.length === 0) {
-        alert('Please add at least one family member before completing registration');
+        showErrorModal('Please add at least one family member before completing registration');
         return;
     }
     
@@ -334,7 +334,7 @@ async function completeFamilyRegistration() {
     );
     
     if (newMembers.length === 0 && currentState.isExistingFamily) {
-        alert('No new members to submit. All members have already been registered.');
+        showErrorModal('No new members to submit. All members have already been registered.');
         return;
     }
     
@@ -456,7 +456,7 @@ async function submitToGoogleSheets(data) {
             name: error.name,
             stack: error.stack
         });
-        alert(`There was an error submitting your registration: ${error.message}\n\nPlease check the browser console (F12) for details, or contact support.`);
+        showErrorModal(`There was an error submitting your registration: ${error.message}\n\nPlease check the browser console (F12) for details, or contact support.`);
         throw error;
     } finally {
         showLoading(false);
