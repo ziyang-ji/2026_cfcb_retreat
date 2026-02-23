@@ -320,12 +320,15 @@ async function verifyCode(event) {
             
             // Check if this email already exists (might be a Google auth user)
             console.log('Checking if email exists:', userEmail);
+            console.log('Request URL:', `${GOOGLE_SCRIPT_URL}?action=checkUser&email=${encodeURIComponent(userEmail)}`);
+            
             const emailCheckResponse = await fetch(`${GOOGLE_SCRIPT_URL}?action=checkUser&email=${encodeURIComponent(userEmail)}`);
+            console.log('Email check response status:', emailCheckResponse.status);
+            
             const emailCheckResult = await emailCheckResponse.json();
+            console.log('Email check result:', JSON.stringify(emailCheckResult, null, 2));
             
-            console.log('Email check result:', emailCheckResult);
-            
-            if (emailCheckResult.exists && emailCheckResult.userId) {
+            if (emailCheckResult.success && emailCheckResult.exists && emailCheckResult.userId) {
                 console.log('✅ Email already exists! Linking phone to existing account...');
                 // Link phone to existing account
                 userId = emailCheckResult.userId;
@@ -333,6 +336,8 @@ async function verifyCode(event) {
                 
                 console.log('Linked to existing user - ID:', userId, 'Name:', userName);
             } else {
+                console.log('Email not found. Creating new account.');
+                console.log('Reason - success:', emailCheckResult.success, 'exists:', emailCheckResult.exists, 'userId:', emailCheckResult.userId);
                 console.log('Email not found or no userId, creating new user account...');
                 // Create new user account with both email and phone
                 const userData = {
