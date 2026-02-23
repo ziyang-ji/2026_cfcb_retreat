@@ -191,9 +191,16 @@ async function sendVerificationCode(event) {
         
         console.log('Sending SMS...');
         
-        // Send verification code
+        // Send verification code with timeout
         const appVerifier = window.recaptchaVerifier;
-        confirmationResult = await window.signInWithPhoneNumber(window.firebaseAuth, phoneNumber, appVerifier);
+        
+        // Add a timeout to prevent hanging
+        const smsPromise = window.signInWithPhoneNumber(window.firebaseAuth, phoneNumber, appVerifier);
+        const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('SMS sending timed out. Please try again.')), 30000)
+        );
+        
+        confirmationResult = await Promise.race([smsPromise, timeoutPromise]);
         
         console.log('Verification code sent successfully');
         showLoading(false);
