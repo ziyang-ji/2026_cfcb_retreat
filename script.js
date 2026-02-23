@@ -12,7 +12,7 @@ let currentState = {
 let currentUser = null;
 
 // Google Apps Script Web App URL - UPDATE THIS AFTER DEPLOYING
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyPAEhQn-B6qWd7XYRfAmR2X8Imfa3QpPwlP_MagpNPNUVyiInP8vu_lZN0Mgw8d9zVSg/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-OyUhu34p3uR3Do_4hk_LHI4Oltw4Gn6AsYmt9QVrT4SyOGvYntgM4aVxnEPtep2VIw/exec';
 
 // Check authentication on page load
 window.addEventListener('DOMContentLoaded', () => {
