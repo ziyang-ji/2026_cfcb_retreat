@@ -74,21 +74,21 @@
         <!-- Step 2: Family - Check if Exists -->
         <div id="step-family-check" class="form-section">
             <h2>Family Registration</h2>
-            <p class="info-text">Do you already have a family registration created?</p>
+            <p class="info-text">Choose an option below:</p>
             <div class="button-group">
                 <button class="choice-btn" onclick="selectFamilyOption('existing')">
-                    <span class="icon">📋</span>
-                    <span class="text">Yes, I have a Family ID</span>
-                    <span class="description">Continue existing registration</span>
+                    <span class="icon">👨‍👩‍👧‍👦</span>
+                    <span class="text">Join a Family</span>
+                    <span class="description">Enter your Family ID to add yourself</span>
                 </button>
                 <button class="choice-btn" onclick="selectFamilyOption('new')">
-                    <span class="icon">➕</span>
-                    <span class="text">No, Create New Family</span>
+                    <span class="icon">✨</span>
+                    <span class="text">New here? Create a New Family</span>
                     <span class="description">Start a new family registration</span>
                 </button>
             </div>
             <div class="button-row">
-                <button class="btn btn-secondary" onclick="goBack('step-registration-type')">Back</button>
+                <button class="btn btn-secondary" onclick="goBackFromFamilyCheck()">Back</button>
             </div>
         </div>
 

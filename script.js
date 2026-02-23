@@ -56,10 +56,9 @@ const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-OyUhu34p3u
             });
         } else if (type === 'family') {
             console.log('Direct navigation to family registration');
-            // User clicked "Create Family" so they don't have a family yet
-            // Skip the check and go directly to create new family
+            // Show family check page to let user choose join or create
             document.addEventListener('DOMContentLoaded', () => {
-                showSection('step-family-new');
+                showSection('step-family-check');
             });
         } else if (action === 'addToFamily' && familyId) {
             console.log('Adding to existing family:', familyId);
@@ -411,6 +410,11 @@ function goBackFromFamily() {
 }
 
 function goBackFromFamilyNew() {
+    // Always go back to family check page
+    showSection('step-family-check');
+}
+
+function goBackFromFamilyCheck() {
     // Check if came from direct link
     const urlParams = new URLSearchParams(window.location.search);
     const type = urlParams.get('type');
@@ -420,7 +424,7 @@ function goBackFromFamilyNew() {
         window.location.href = 'dashboard.html';
     } else {
         // Came from selection page, go back to that
-        showSection('step-family-check');
+        showSection('step-registration-type');
     }
 }
 
