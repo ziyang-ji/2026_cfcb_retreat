@@ -109,14 +109,15 @@
         <!-- Step 3: Create New Family -->
         <div id="step-family-new" class="form-section">
             <h2>Create Family Registration</h2>
+            <p class="info-text">Enter the primary contact's name for your family. A unique Family ID will be generated for you.</p>
             <div class="form-group">
-                <label for="family-head-name">Head of Family Name *</label>
+                <label for="family-head-name">Primary Contact / Head of Family *</label>
                 <input type="text" id="family-head-name" placeholder="John Smith" required>
                 <small>This will be used to create your Family ID</small>
             </div>
             <div class="button-row">
-                <button class="btn btn-secondary" onclick="goBack('step-family-check')">Back</button>
-                <button class="btn btn-primary" onclick="createFamilyId()">Create Family</button>
+                <button class="btn btn-secondary" onclick="goBackFromFamilyNew()">Back</button>
+                <button class="btn btn-primary" onclick="createFamilyId()">Create Family & Continue</button>
             </div>
         </div>
 
@@ -125,6 +126,7 @@
             <h2>Family Registration</h2>
             <div class="id-display">
                 <strong>Family ID:</strong> <span id="display-family-id"></span>
+                <small style="display: block; margin-top: 0.5rem; color: #666;">Share this ID with family members so they can add themselves later!</small>
             </div>
             
             <div id="family-members-list">

@@ -55,9 +55,10 @@ const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby-OyUhu34p3u
             });
         } else if (type === 'family') {
             console.log('Direct navigation to family registration');
-            // Show family check immediately
+            // User clicked "Create Family" so they don't have a family yet
+            // Skip the check and go directly to create new family
             document.addEventListener('DOMContentLoaded', () => {
-                showSection('step-family-check');
+                showSection('step-family-new');
             });
         } else if (action === 'addToFamily' && familyId) {
             console.log('Adding to existing family:', familyId);
@@ -143,6 +144,8 @@ function selectRegistrationType(type) {
     if (type === 'individual') {
         showSection('step-individual-name');
     } else if (type === 'family') {
+        // When manually selecting family from the choice page
+        // Still show the check in case they're using this page directly
         showSection('step-family-check');
     }
 }
@@ -255,12 +258,15 @@ function createFamilyId() {
     }
     
     currentState.familyHead = name;
-    // Create unique Family ID: LASTNAME-YEAR
+    currentState.isExistingFamily = false;
+    
+    // Create unique Family ID: LASTNAME-YEAR-RANDOM
     const nameParts = name.split(' ');
     const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1].toUpperCase() : nameParts[0].toUpperCase();
     const year = new Date().getFullYear();
+    const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
     
-    currentState.familyId = `${lastName}-${year}`;
+    currentState.familyId = `${lastName}-${year}-${random}`;
     currentState.familyMembers = [];
     
     document.getElementById('display-family-id').textContent = currentState.familyId;
@@ -370,6 +376,20 @@ function goBackFromFamily() {
         showSection('step-family-existing');
     } else {
         showSection('step-family-new');
+    }
+}
+
+function goBackFromFamilyNew() {
+    // Check if came from direct link
+    const urlParams = new URLSearchParams(window.location.search);
+    const type = urlParams.get('type');
+    
+    if (type === 'family') {
+        // Came from dashboard, go back to dashboard
+        window.location.href = 'dashboard.html';
+    } else {
+        // Came from selection page, go back to that
+        showSection('step-family-check');
     }
 }
 
