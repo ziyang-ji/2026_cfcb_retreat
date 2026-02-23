@@ -10,7 +10,7 @@ let currentState = {
 };
 
 // Google Apps Script Web App URL - UPDATE THIS AFTER DEPLOYING
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/library/d/1kl011AD0jqBwA-yn5Sv-VRDUumiwck0BLyv3Ocmuhk319PP3dys-43QI/1';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzilO0f7bGzAoGeVcK2gGoxJMOwyiMuJ-dkN9om42BiXRrTAMrd3_wDWUfHBAfEa0kO3Q/exec';
 
 // Navigation functions
 function showSection(sectionId) {
