@@ -11,7 +11,7 @@ const FIREBASE_CONFIG = {
 // For now, we'll use a simple localStorage-based auth system
 // You can upgrade to Firebase later
 
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzilO0f7bGzAoGeVcK2gGoxJMOwyiMuJ-dkN9om42BiXRrTAMrd3_wDWUfHBAfEa0kO3Q/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyPAEhQn-B6qWd7XYRfAmR2X8Imfa3QpPwlP_MagpNPNUVyiInP8vu_lZN0Mgw8d9zVSg/exec';
 
 // Switch between auth tabs
 function showAuthTab(tab) {
