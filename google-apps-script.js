@@ -110,7 +110,8 @@ function doGet(e) {
     
     if (action === 'getUserRegistrations') {
       const userId = e.parameter.userId;
-      return getUserRegistrations(userId);
+      const userEmail = e.parameter.userEmail;
+      return getUserRegistrations(userId, userEmail);
     }
     
     if (action === 'getUserByEmail') {
@@ -542,15 +543,19 @@ function getUserByEmail(email) {
 }
 
 // Get user's registrations
-function getUserRegistrations(userId) {
+function getUserRegistrations(userId, userEmail) {
   try {
     const ss = getSpreadsheet();
     const individualSheet = ss.getSheetByName('Individual_Registrations');
     const familySheet = ss.getSheetByName('Family_Registrations');
     
-    // Get user's email for fallback matching
-    const userEmail = getUserEmailById(userId);
+    // Use provided email, or look it up as fallback
+    if (!userEmail) {
+      userEmail = getUserEmailById(userId);
+    }
+    
     Logger.log('Getting registrations for userId: ' + userId + ', email: ' + userEmail);
+    Logger.log('Starting registration search...');
     
     const individuals = [];
     const userFamilyIds = new Set(); // Track which families the user is part of
@@ -565,6 +570,7 @@ function getUserRegistrations(userId) {
       for (let i = 0; i < individualData.length; i++) {
         const rowUserId = individualData[i][7]; // User ID column
         const rowUserEmail = individualData[i][8]; // User Email column
+        const rowEmail = individualData[i][4]; // Registrant's email column
         const familyId = individualData[i][6]; // Family ID column
         
         const person = {
@@ -579,10 +585,14 @@ function getUserRegistrations(userId) {
         };
         
         // Match by userId OR by email (fallback for legacy data or mismatches)
+        // Also match if the registrant's email matches the user's email
         const isUserRegistration = (rowUserId === userId) || 
-                                   (userEmail && rowUserEmail && rowUserEmail.toLowerCase() === userEmail.toLowerCase());
+                                   (userEmail && rowUserEmail && rowUserEmail.toLowerCase() === userEmail.toLowerCase()) ||
+                                   (userEmail && rowEmail && rowEmail.toLowerCase() === userEmail.toLowerCase());
         
         if (isUserRegistration) {
+          Logger.log('Found registration for user: ' + person.name + ' (ID: ' + person.id + ')');
+          
           if (!familyId) {
             // Individual registration (not part of family)
             individuals.push(person);
@@ -628,6 +638,10 @@ function getUserRegistrations(userId) {
         }
       }
     }
+    
+    Logger.log('Found ' + individuals.length + ' individual registrations');
+    Logger.log('Found ' + families.length + ' family registrations');
+    Logger.log('Total people: ' + totalPeople);
     
     return ContentService.createTextOutput(JSON.stringify({
       success: true,

@@ -56,10 +56,17 @@ async function loadUserRegistrations() {
     showLoading(true);
     
     try {
-        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getUserRegistrations&userId=${currentUser.userId}`);
+        console.log('Loading registrations for user:', currentUser);
+        console.log('User ID:', currentUser.userId);
+        console.log('User Email:', currentUser.email);
+        
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getUserRegistrations&userId=${currentUser.userId}&userEmail=${encodeURIComponent(currentUser.email)}`);
         const result = await response.json();
         
+        console.log('Registration response:', result);
+        
         if (result.success) {
+            console.log('Found registrations:', result.data);
             displayRegistrations(result.data);
         } else {
             console.error('Failed to load registrations:', result.message);
