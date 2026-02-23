@@ -63,6 +63,20 @@
             <div class="spinner"></div>
             <p>Processing...</p>
         </div>
+
+        <!-- Name Input Modal -->
+        <div id="name-modal" class="modal">
+            <div class="modal-content">
+                <h3>Welcome!</h3>
+                <p>Please enter your full name to complete sign-up:</p>
+                <form onsubmit="submitName(event)">
+                    <div class="form-group">
+                        <input type="text" id="name-input" placeholder="Full Name" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Continue</button>
+                </form>
+            </div>
+        </div>
     </div>
 
     <!-- Firebase SDK v9 (modular) -->

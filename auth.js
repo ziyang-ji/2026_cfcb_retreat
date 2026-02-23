@@ -301,8 +301,11 @@ async function verifyCode(event) {
         let userName;
         
         if (!checkResult.exists) {
-            // New user - prompt for name
-            userName = prompt('Welcome! Please enter your full name:');
+            // New user - show modal to get name
+            showLoading(false);
+            userName = await showNameModal();
+            showLoading(true);
+            
             if (!userName || !userName.trim()) {
                 userName = phoneNumber; // Use phone as fallback name
             }
