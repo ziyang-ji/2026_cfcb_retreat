@@ -65,6 +65,7 @@ const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwp_PbsZuGrer
             // Pre-select family registration and load family directly (skip confirmation)
             currentState.isExistingFamily = true;
             currentState.familyId = familyId;
+            currentState.fromDashboard = true; // Flag to track we came from dashboard
             document.addEventListener('DOMContentLoaded', () => {
                 loadFamilyDirectly(familyId);
             });
@@ -442,6 +443,13 @@ async function completeFamilyRegistration() {
 }
 
 function goBackFromFamily() {
+    // If came from dashboard's "+Add More Members", go back to dashboard
+    if (currentState.fromDashboard) {
+        window.location.href = 'dashboard.html';
+        return;
+    }
+    
+    // Otherwise, go back to the previous step in the registration flow
     if (currentState.isExistingFamily) {
         showSection('step-family-existing');
     } else {
