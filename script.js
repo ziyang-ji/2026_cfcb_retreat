@@ -263,15 +263,17 @@ function createFamilyId() {
     currentState.familyHead = name;
     currentState.isExistingFamily = false;
     
-    // Create unique Family ID: LASTNAME-YEAR-RANDOM
+    // Create unique Family ID: LASTNAME-TIMESTAMP
+    // Using timestamp ensures uniqueness even if same name registers multiple times
     const nameParts = name.split(' ');
     const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1].toUpperCase() : nameParts[0].toUpperCase();
-    const year = new Date().getFullYear();
-    const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+    const timestamp = Date.now().toString().slice(-6); // Last 6 digits of timestamp
     
-    currentState.familyId = `${lastName}-${year}-${random}`;
+    currentState.familyId = `${lastName}-${timestamp}`;
     currentState.familyMembers = [];
     currentState.existingMemberIds = []; // New family, no existing members
+    
+    console.log('Created Family ID:', currentState.familyId);
     
     document.getElementById('display-family-id').textContent = currentState.familyId;
     showSection('step-family-page');
