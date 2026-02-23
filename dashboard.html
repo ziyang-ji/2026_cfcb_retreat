@@ -127,6 +127,27 @@
                 </div>
             </div>
         </div>
+
+        <!-- Delete Family Confirmation Modal -->
+        <div id="delete-family-modal" class="modal">
+            <div class="modal-content">
+                <h2 style="color: #f44336;">⚠️ Delete Entire Family</h2>
+                <p id="delete-family-message" style="font-weight: 600;">Are you sure you want to delete this family?</p>
+                <p style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">
+                    This will permanently delete:
+                </p>
+                <ul style="color: #666; font-size: 0.9rem; margin: 0.5rem 0 1rem 1.5rem; line-height: 1.8;">
+                    <li>The family registration</li>
+                    <li>All family members (<span id="delete-family-count">0</span> people)</li>
+                    <li>This action cannot be undone</li>
+                </ul>
+                <input type="hidden" id="delete-family-id-input">
+                <div class="modal-buttons">
+                    <button class="btn btn-secondary" onclick="closeDeleteFamilyModal()">Cancel</button>
+                    <button class="btn btn-primary" style="background: #f44336;" onclick="confirmDeleteFamily()">Yes, Delete Everything</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script type="module" src="dashboard.js"></script>

@@ -64,6 +64,9 @@ async function loadUserRegistrations() {
 function displayRegistrations(data) {
     const { individuals, families, totalPeople } = data;
     
+    // Store families in session storage for delete modal
+    sessionStorage.setItem('currentFamilies', JSON.stringify(families));
+    
     // Update summary cards
     document.getElementById('individual-count').textContent = individuals.length;
     document.getElementById('family-count').textContent = families.length;
@@ -131,14 +134,21 @@ function displayRegistrations(data) {
             </div>
         `;
     } else {
-        familyContainer.innerHTML = families.map(family => `
+        familyContainer.innerHTML = families.map(family => {
+            const isOwner = family.ownerId === currentUser.userId;
+            return `
             <div class="registration-card family-card">
                 <div class="card-header">
                     <div class="card-title">
                         <span class="card-icon">👨‍👩‍👧‍👦</span>
                         <span class="card-name">${family.familyHead}'s Family</span>
                     </div>
-                    <span class="card-badge">Family ID: ${family.familyId}</span>
+                    <div class="card-actions">
+                        <span class="card-badge">Family ID: ${family.familyId}</span>
+                        ${isOwner ? `
+                            <button class="btn-icon" onclick="deleteFamily('${family.familyId}', '${family.familyHead}')" title="Delete Family">🗑️</button>
+                        ` : ''}
+                    </div>
                 </div>
                 <div class="card-details">
                     <div class="detail-row">
@@ -149,7 +159,14 @@ function displayRegistrations(data) {
                         <span class="detail-label">📅 Created:</span>
                         <span class="detail-value">${formatDate(family.timestamp)}</span>
                     </div>
-                </div>
+                    ${isOwner ? `
+                        <div class="detail-row">
+                            <span class="detail-label">👑 Status:</span>
+                            <span class="detail-value" style="color: #667eea; font-weight: 600;">You are the owner</span>
+                        </div>
+                    ` : ''}
+                </div>`
+        }).join('');
                 <div class="family-members">
                     <h4>Family Members:</h4>
                     ${family.members.map(member => {
@@ -173,7 +190,8 @@ function displayRegistrations(data) {
                 </div>
                 <button class="btn btn-secondary" onclick="addToFamily('${family.familyId}')">+ Add More Members</button>
             </div>
-        `).join('');
+        `;
+        }).join('');
     }
 }
 
@@ -387,6 +405,61 @@ function closeDeleteModal() {
     document.getElementById('delete-modal').classList.remove('active');
 }
 
+// Delete entire family
+function deleteFamily(familyId, familyHead) {
+    // Find the family to get member count
+    const familyContainer = document.getElementById('family-registrations');
+    const families = JSON.parse(sessionStorage.getItem('currentFamilies') || '[]');
+    const family = families.find(f => f.familyId === familyId);
+    
+    document.getElementById('delete-family-id-input').value = familyId;
+    document.getElementById('delete-family-message').textContent = 
+        `Are you sure you want to delete ${familyHead}'s family?`;
+    document.getElementById('delete-family-count').textContent = 
+        family ? family.memberCount : '0';
+    document.getElementById('delete-family-modal').classList.add('active');
+}
+
+async function confirmDeleteFamily() {
+    showLoading(true);
+    
+    const familyId = document.getElementById('delete-family-id-input').value;
+    
+    const data = {
+        action: 'deleteFamily',
+        familyId: familyId,
+        userId: currentUser.userId
+    };
+    
+    try {
+        const response = await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            redirect: 'follow',
+            headers: { 'Content-Type': 'text/plain' },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            closeDeleteFamilyModal();
+            await loadUserRegistrations();
+            alert(`Family deleted successfully. ${result.deletedCount} member(s) removed.`);
+        } else {
+            alert('Failed to delete family: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error deleting family:', error);
+        alert('Failed to delete family');
+    } finally {
+        showLoading(false);
+    }
+}
+
+function closeDeleteFamilyModal() {
+    document.getElementById('delete-family-modal').classList.remove('active');
+}
+
 // Make functions globally available
 window.addToFamily = addToFamily;
 window.signOut = signOut;
@@ -400,3 +473,6 @@ window.deleteIndividual = deleteIndividual;
 window.deleteFamilyMember = deleteFamilyMember;
 window.confirmDelete = confirmDelete;
 window.closeDeleteModal = closeDeleteModal;
+window.deleteFamily = deleteFamily;
+window.confirmDeleteFamily = confirmDeleteFamily;
+window.closeDeleteFamilyModal = closeDeleteFamilyModal;

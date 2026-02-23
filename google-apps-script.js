@@ -154,9 +154,12 @@ function doPost(e) {
     } else if (data.action === 'updateRegistration') {
       Logger.log('Updating registration');
       return updateRegistration(data);
-    } else if (data.action === 'deleteRegistration') {
+    } else     if (data.action === 'deleteRegistration') {
       Logger.log('Deleting registration');
       return deleteRegistration(data);
+    } else if (data.action === 'deleteFamily') {
+      Logger.log('Deleting entire family');
+      return deleteFamily(data);
     } else if (data.type === 'individual') {
       Logger.log('Processing individual registration');
       return handleIndividualRegistration(data);
@@ -610,6 +613,7 @@ function getUserRegistrations(userId) {
             familyHead: familyData[i][2],
             memberCount: members.length,
             status: familyData[i][4],
+            ownerId: familyData[i][5], // User ID of family creator
             members: members
           });
           totalPeople += members.length;
@@ -791,6 +795,85 @@ function deleteRegistration(data) {
     
   } catch (error) {
     Logger.log('Error in deleteRegistration: ' + error.toString());
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      message: error.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// Delete entire family
+function deleteFamily(data) {
+  try {
+    const ss = getSpreadsheet();
+    const individualSheet = ss.getSheetByName('Individual_Registrations');
+    const familySheet = ss.getSheetByName('Family_Registrations');
+    
+    // First, verify ownership of the family
+    const familyLastRow = familySheet.getLastRow();
+    if (familyLastRow <= 1) {
+      return ContentService.createTextOutput(JSON.stringify({
+        success: false,
+        message: 'Family not found'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const familyData = familySheet.getRange(2, 1, familyLastRow - 1, 7).getValues();
+    let familyRowIndex = -1;
+    let isOwner = false;
+    
+    for (let i = 0; i < familyData.length; i++) {
+      if (familyData[i][1] === data.familyId) { // Column 2 is Family ID
+        familyRowIndex = i + 2;
+        isOwner = familyData[i][5] === data.userId; // Column 6 is User ID (owner)
+        break;
+      }
+    }
+    
+    if (familyRowIndex === -1) {
+      return ContentService.createTextOutput(JSON.stringify({
+        success: false,
+        message: 'Family not found'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    if (!isOwner) {
+      return ContentService.createTextOutput(JSON.stringify({
+        success: false,
+        message: 'You do not have permission to delete this family. Only the family owner can delete it.'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // Delete all family members from Individual_Registrations
+    let deletedCount = 0;
+    const individualLastRow = individualSheet.getLastRow();
+    
+    if (individualLastRow > 1) {
+      const individualData = individualSheet.getRange(2, 1, individualLastRow - 1, 9).getValues();
+      
+      // Delete from bottom to top to maintain row indices
+      for (let i = individualData.length - 1; i >= 0; i--) {
+        if (individualData[i][6] === data.familyId) { // Column 7 is Family ID
+          const rowIndex = i + 2;
+          individualSheet.deleteRow(rowIndex);
+          deletedCount++;
+        }
+      }
+    }
+    
+    // Delete the family record
+    familySheet.deleteRow(familyRowIndex);
+    
+    Logger.log('Deleted family: ' + data.familyId + ' with ' + deletedCount + ' members');
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      success: true,
+      message: 'Family deleted successfully',
+      deletedCount: deletedCount
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    Logger.log('Error in deleteFamily: ' + error.toString());
     return ContentService.createTextOutput(JSON.stringify({
       success: false,
       message: error.toString()
