@@ -34,10 +34,19 @@ function initializeSheets() {
       'User ID',
       'Name',
       'Email',
+      'Phone',
       'Password',
       'Status'
     ]);
-    userSheet.getRange('A1:F1').setFontWeight('bold').setBackground('#4caf50').setFontColor('white');
+    userSheet.getRange('A1:G1').setFontWeight('bold').setBackground('#4caf50').setFontColor('white');
+  } else {
+    // Check if Phone column exists, if not add it
+    const headers = userSheet.getRange(1, 1, 1, userSheet.getLastColumn()).getValues()[0];
+    if (headers.indexOf('Phone') === -1) {
+      Logger.log('Adding Phone column to User_Accounts');
+      userSheet.insertColumnAfter(4); // Insert after Email column
+      userSheet.getRange(1, 5).setValue('Phone').setFontWeight('bold').setBackground('#4caf50').setFontColor('white');
+    }
   }
   
   // Individual Registrations Sheet
@@ -490,12 +499,13 @@ function createUserAccount(data) {
     // Generate user ID
     const userId = 'USER-' + new Date().getTime();
     
-    Logger.log('Creating user account: ' + data.email);
+    Logger.log('Creating user account - Email: ' + data.email + ', Phone: ' + data.phone);
     userSheet.appendRow([
       data.timestamp,
       userId,
       data.name,
-      data.email,
+      data.email || '',
+      data.phone || '',
       data.password, // Already base64 encoded by client
       'Active'
     ]);
@@ -538,11 +548,11 @@ function checkUserExists(email) {
       })).setMimeType(ContentService.MimeType.JSON);
     }
     
-    // Get all user data (not just emails)
-    const data = userSheet.getRange(2, 1, lastRow - 1, 6).getValues();
+    // Get all user data (columns: Timestamp, UserID, Name, Email, Phone, Password, Status)
+    const data = userSheet.getRange(2, 1, lastRow - 1, 7).getValues();
     
     for (let i = 0; i < data.length; i++) {
-      const userEmail = String(data[i][3]).toLowerCase().trim();
+      const userEmail = String(data[i][3]).toLowerCase().trim(); // Column 4 is Email
       const searchEmail = String(email).toLowerCase().trim();
       
       Logger.log('Row ' + i + ' - Stored email: "' + data[i][3] + '" vs Search: "' + email + '" - Match: ' + (userEmail === searchEmail));
@@ -1114,12 +1124,12 @@ function checkUserByPhone(phone) {
       })).setMimeType(ContentService.MimeType.JSON);
     }
     
-    const data = userSheet.getRange(2, 1, lastRow - 1, 6).getValues();
+    const data = userSheet.getRange(2, 1, lastRow - 1, 7).getValues();
     Logger.log('Searching through ' + data.length + ' users');
     
     for (let i = 0; i < data.length; i++) {
-      const userPhone = String(data[i][3]).replace(/^\+/, ''); // Normalize stored phone too
-      Logger.log('Row ' + i + ' - Stored: "' + data[i][3] + '" (normalized: "' + userPhone + '") vs Searching: "' + normalizedPhone + '" - Match: ' + (userPhone === normalizedPhone));
+      const userPhone = String(data[i][4]).replace(/^\+/, ''); // Column 5 is Phone
+      Logger.log('Row ' + i + ' - Stored: "' + data[i][4] + '" (normalized: "' + userPhone + '") vs Searching: "' + normalizedPhone + '" - Match: ' + (userPhone === normalizedPhone));
       
       if (userPhone === normalizedPhone) {
         Logger.log('✅ Phone user found! userId: ' + data[i][1]);

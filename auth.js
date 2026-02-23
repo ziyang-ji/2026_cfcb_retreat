@@ -334,11 +334,12 @@ async function verifyCode(event) {
                 console.log('Linked to existing user - ID:', userId, 'Name:', userName);
             } else {
                 console.log('Email not found or no userId, creating new user account...');
-                // Create new user account
+                // Create new user account with both email and phone
                 const userData = {
                     action: 'createUser',
                     name: userName.trim(),
                     email: userEmail,
+                    phone: phoneNumber,
                     password: 'PHONE_AUTH',
                     timestamp: new Date().toISOString()
                 };
