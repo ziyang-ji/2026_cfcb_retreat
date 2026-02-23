@@ -157,30 +157,42 @@ function doPost(e) {
     if (data.action === 'createUser') {
       Logger.log('Creating user account');
       return createUserAccount(data);
-    } else if (data.action === 'updateRegistration') {
+    }
+    
+    if (data.action === 'updateRegistration') {
       Logger.log('Updating registration');
       return updateRegistration(data);
-    } else     if (data.action === 'deleteRegistration') {
+    }
+    
+    if (data.action === 'deleteRegistration') {
       Logger.log('Deleting registration');
       return deleteRegistration(data);
-    } else if (data.action === 'deleteFamily') {
+    }
+    
+    if (data.action === 'deleteFamily') {
       Logger.log('Deleting entire family');
       return deleteFamily(data);
-    } else if (data.action === 'quitFamily') {
+    }
+    
+    if (data.action === 'quitFamily') {
       Logger.log('User quitting family');
       return quitFamily(data);
-    } else if (data.type === 'individual') {
+    }
+    
+    if (data.type === 'individual') {
       Logger.log('Processing individual registration');
       return handleIndividualRegistration(data);
-    } else if (data.type === 'family') {
+    }
+    
+    if (data.type === 'family') {
       Logger.log('Processing family registration');
       return handleFamilyRegistration(data);
     }
     
-    Logger.log('Invalid registration type: ' + data.type);
+    Logger.log('Invalid action/type. Data received:', JSON.stringify(data));
     return ContentService.createTextOutput(JSON.stringify({
       success: false,
-      message: 'Invalid registration type: ' + data.type
+      message: 'Invalid action or registration type'
     })).setMimeType(ContentService.MimeType.JSON);
     
   } catch (error) {
