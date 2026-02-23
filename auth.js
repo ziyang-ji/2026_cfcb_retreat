@@ -203,14 +203,21 @@ async function sendVerificationCode(event) {
         
         console.log('Sending SMS to:', phoneNumber);
         console.log('Auth instance:', window.firebaseAuth);
-        console.log('Auth app:', window.firebaseAuth ? window.firebaseAuth.app : 'no auth');
-        console.log('Verifier:', window.recaptchaVerifier);
+        console.log('Verifier exists:', !!window.recaptchaVerifier);
+        console.log('Verifier type:', typeof window.recaptchaVerifier);
+        
+        if (!window.recaptchaVerifier) {
+            throw new Error('reCAPTCHA verifier is undefined. This should not happen!');
+        }
+        
         console.log('This may take 5-10 seconds...');
         
-        // Send verification code - NO timeout, let it fail naturally to see real error
+        // Send verification code
         const appVerifier = window.recaptchaVerifier;
         
+        console.log('Calling Firebase signInWithPhoneNumber API...');
         confirmationResult = await window.signInWithPhoneNumber(window.firebaseAuth, phoneNumber, appVerifier);
+        console.log('Firebase API returned!');
         
         console.log('✅ Verification code sent successfully!');
         console.log('Confirmation result:', confirmationResult);
