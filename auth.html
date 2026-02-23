@@ -93,24 +93,24 @@
         window.signInWithPhoneNumber = signInWithPhoneNumber;
         window.RecaptchaVerifier = RecaptchaVerifier;
         
-        // Initialize reCAPTCHA immediately after Firebase is ready
+        // Initialize reCAPTCHA after Firebase is ready
         console.log('Firebase initialized, setting up reCAPTCHA...');
         
-        // Wait for DOM to be ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initRecaptcha);
-        } else {
-            initRecaptcha();
-        }
+        // Signal that Firebase is ready
+        window.firebaseReady = true;
         
-        function initRecaptcha() {
+        // Wait for DOM to be ready, then initialize reCAPTCHA
+        window.initRecaptcha = function() {
             const container = document.getElementById('recaptcha-container');
             if (!container) {
                 console.log('No reCAPTCHA container found on this page');
-                return;
+                return Promise.resolve();
             }
             
             console.log('Creating reCAPTCHA verifier...');
+            console.log('Auth object:', auth);
+            console.log('Container element:', container);
+            
             try {
                 window.recaptchaVerifier = new RecaptchaVerifier(
                     auth,
@@ -126,13 +126,19 @@
                     }
                 );
                 
-                window.recaptchaVerifier.render().then(() => {
+                console.log('RecaptchaVerifier created, rendering...');
+                return window.recaptchaVerifier.render().then(() => {
                     console.log('✅ reCAPTCHA rendered and ready for user to solve');
+                    console.log('Verifier object:', window.recaptchaVerifier);
+                }).catch(error => {
+                    console.error('❌ Failed to render reCAPTCHA:', error);
+                    throw error;
                 });
             } catch (error) {
                 console.error('❌ Failed to create reCAPTCHA:', error);
+                throw error;
             }
-        }
+        };
     </script>
     <script src="auth.js"></script>
 </body>
