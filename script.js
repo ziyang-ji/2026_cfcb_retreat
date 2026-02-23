@@ -69,11 +69,9 @@ const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwp_PbsZuGrer
                 loadFamilyDirectly(familyId);
             });
         } else {
-            // No URL parameters, show selection page
-            console.log('No direct navigation, showing selection page');
-            document.addEventListener('DOMContentLoaded', () => {
-                showSection('step-registration-type');
-            });
+            // No URL parameters, redirect to dashboard
+            console.log('No registration type specified, redirecting to dashboard');
+            window.location.href = 'dashboard.html';
         }
         
     } catch (error) {
@@ -108,18 +106,6 @@ function showSection(sectionId) {
 }
 
 
-// Step 1: Registration Type Selection
-function selectRegistrationType(type) {
-    currentState.registrationType = type;
-    
-    if (type === 'individual') {
-        showSection('step-individual-name');
-    } else if (type === 'family') {
-        // When manually selecting family from the choice page
-        // Still show the check in case they're using this page directly
-        showSection('step-family-check');
-    }
-}
 
 // Individual Registration Flow
 function createIndividualId() {
@@ -469,31 +455,13 @@ function goBackFromFamilyNew() {
 }
 
 function goBackFromIndividual() {
-    // Check if came from direct link
-    const urlParams = new URLSearchParams(window.location.search);
-    const type = urlParams.get('type');
-    
-    if (type === 'individual') {
-        // Came from dashboard, go back to dashboard
-        window.location.href = 'dashboard.html';
-    } else {
-        // Came from selection page, go back to that
-        showSection('step-registration-type');
-    }
+    // Always go back to dashboard
+    window.location.href = 'dashboard.html';
 }
 
 function goBackFromFamilyCheck() {
-    // Check if came from direct link
-    const urlParams = new URLSearchParams(window.location.search);
-    const type = urlParams.get('type');
-    
-    if (type === 'family') {
-        // Came from dashboard, go back to dashboard
-        window.location.href = 'dashboard.html';
-    } else {
-        // Came from selection page, go back to that
-        showSection('step-registration-type');
-    }
+    // Always go back to dashboard
+    window.location.href = 'dashboard.html';
 }
 
 // Google Sheets Integration
