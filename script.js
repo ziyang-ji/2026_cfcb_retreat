@@ -214,30 +214,51 @@ async function searchFamily() {
     showLoading(true);
     
     try {
-        let response;
-        
         if (familyId) {
-            // Search by Family ID
-            response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getFamilyMembers&familyId=${familyId}`);
-        } else {
-            // Search by member email
-            response = await fetch(`${GOOGLE_SCRIPT_URL}?action=searchFamilyByEmail&email=${encodeURIComponent(memberEmail)}`);
-        }
-        
-        const result = await response.json();
-        
-        if (result.success) {
-            // Store family info temporarily
-            currentState.pendingFamilyId = result.familyId;
-            currentState.pendingFamilyHead = result.familyHead;
-            currentState.pendingFamilyMembers = result.members || [];
+            // Search by Family ID - single result
+            const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getFamilyMembers&familyId=${familyId}`);
+            const result = await response.json();
             
-            // Display family preview for confirmation
-            displayFamilyPreview(result);
-            showSection('step-family-confirm');
-        } else {
-            if (familyId) {
+            console.log('Family ID search result:', result);
+            
+            if (result.success) {
+                // Single family found, go to confirmation
+                currentState.pendingFamilyId = result.familyId;
+                currentState.pendingFamilyHead = result.familyHead;
+                currentState.pendingFamilyMembers = result.members || [];
+                currentState.fromSelection = false;
+                
+                displayFamilyPreview(result);
+                showSection('step-family-confirm');
+            } else {
                 showErrorModal('Family ID not found. Please check the ID or try searching by email.');
+            }
+        } else {
+            // Search by member email - may return multiple families
+            const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=searchFamilyByEmail&email=${encodeURIComponent(memberEmail)}`);
+            const result = await response.json();
+            
+            console.log('Email search result:', result);
+            
+            if (result.success && result.families) {
+                if (result.families.length > 1) {
+                    // Multiple families found, show selection
+                    currentState.searchResults = result.families;
+                    displayFamilyOptions(result.families);
+                    showSection('step-family-select');
+                } else if (result.families.length === 1) {
+                    // Single family found, go to confirmation
+                    const family = result.families[0];
+                    currentState.pendingFamilyId = family.familyId;
+                    currentState.pendingFamilyHead = family.familyHead;
+                    currentState.pendingFamilyMembers = family.members || [];
+                    currentState.fromSelection = false;
+                    
+                    displayFamilyPreview(family);
+                    showSection('step-family-confirm');
+                } else {
+                    showErrorModal('No family found with a member using that email address.');
+                }
             } else {
                 showErrorModal('No family found with a member using that email address. Please check the email or try using the Family ID.');
             }
