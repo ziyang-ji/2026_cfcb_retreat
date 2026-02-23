@@ -168,15 +168,21 @@ async function sendVerificationCode(event) {
         // Setup reCAPTCHA verifier
         if (!window.recaptchaVerifier) {
             console.log('Creating reCAPTCHA verifier...');
-            window.recaptchaVerifier = new window.RecaptchaVerifier('recaptcha-container', {
-                'size': 'normal',
-                'callback': (response) => {
-                    console.log('reCAPTCHA solved');
-                },
-                'expired-callback': () => {
-                    console.log('reCAPTCHA expired');
+            console.log('Firebase Auth:', window.firebaseAuth);
+            
+            window.recaptchaVerifier = new window.RecaptchaVerifier(
+                window.firebaseAuth,
+                'recaptcha-container',
+                {
+                    'size': 'normal',
+                    'callback': (response) => {
+                        console.log('reCAPTCHA solved');
+                    },
+                    'expired-callback': () => {
+                        console.log('reCAPTCHA expired');
+                    }
                 }
-            }, window.firebaseAuth);
+            );
             
             // Render the reCAPTCHA
             await window.recaptchaVerifier.render();
