@@ -76,7 +76,7 @@ function displayRegistrations(data) {
         individualContainer.innerHTML = `
             <div class="empty-state">
                 <p>You haven't registered individually yet.</p>
-                <button class="btn btn-primary" onclick="location.href='register.html'">Create Individual Registration</button>
+                <button class="btn btn-primary" onclick="location.href='register.html?type=individual'">Create Individual Registration</button>
             </div>
         `;
     } else {
@@ -118,7 +118,7 @@ function displayRegistrations(data) {
         familyContainer.innerHTML = `
             <div class="empty-state">
                 <p>You're not part of any family registration yet.</p>
-                <button class="btn btn-primary" onclick="location.href='register.html'">Create Family Registration</button>
+                <button class="btn btn-primary" onclick="location.href='register.html?type=family'">Create Family Registration</button>
             </div>
         `;
     } else {
@@ -170,14 +170,14 @@ function showEmptyState() {
     document.getElementById('individual-registrations').innerHTML = `
         <div class="empty-state">
             <p>You haven't registered individually yet.</p>
-            <button class="btn btn-primary" onclick="location.href='register.html'">Create Individual Registration</button>
+            <button class="btn btn-primary" onclick="location.href='register.html?type=individual'">Create Individual Registration</button>
         </div>
     `;
     
     document.getElementById('family-registrations').innerHTML = `
         <div class="empty-state">
             <p>You're not part of any family registration yet.</p>
-            <button class="btn btn-primary" onclick="location.href='register.html'">Create Family Registration</button>
+            <button class="btn btn-primary" onclick="location.href='register.html?type=family'">Create Family Registration</button>
         </div>
     `;
 }

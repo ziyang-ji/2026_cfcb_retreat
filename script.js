@@ -38,12 +38,20 @@ window.addEventListener('DOMContentLoaded', () => {
             return;
         }
         
-        // Check if we're adding to an existing family
+        // Check URL parameters for direct navigation
         const urlParams = new URLSearchParams(window.location.search);
         const action = urlParams.get('action');
+        const type = urlParams.get('type');
         const familyId = urlParams.get('familyId');
         
-        if (action === 'addToFamily' && familyId) {
+        // Handle direct registration type from dashboard
+        if (type === 'individual') {
+            // Skip selection, go directly to individual registration
+            selectRegistrationType('individual');
+        } else if (type === 'family') {
+            // Skip selection, go directly to family registration
+            selectRegistrationType('family');
+        } else if (action === 'addToFamily' && familyId) {
             // Pre-select family registration and load family
             currentState.isExistingFamily = true;
             currentState.familyId = familyId;
