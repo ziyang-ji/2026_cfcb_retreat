@@ -465,7 +465,7 @@ function closeDeleteFamilyModal() {
     document.getElementById('delete-family-modal').classList.remove('active');
 }
 
-// Make functions globally available (signOut already defined at top)
+// Make functions globally available
 window.addToFamily = addToFamily;
 window.editIndividual = editIndividual;
 window.editFamilyMember = editFamilyMember;
