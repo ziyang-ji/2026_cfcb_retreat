@@ -136,5 +136,183 @@ async function signInWithGoogle() {
     }
 }
 
+// Phone Authentication Functions
+
+// Send verification code
+async function sendVerificationCode(event) {
+    event.preventDefault();
+    
+    const phoneNumber = document.getElementById('phone-number').value.trim();
+    
+    if (!phoneNumber.startsWith('+')) {
+        alert('Please include the country code (e.g., +1 for US)');
+        return;
+    }
+    
+    showLoading(true);
+    
+    try {
+        if (!window.firebaseAuth) {
+            alert('Firebase not initialized. Please refresh the page.');
+            showLoading(false);
+            return;
+        }
+        
+        console.log('Sending verification code to:', phoneNumber);
+        
+        // Setup reCAPTCHA verifier
+        if (!window.recaptchaVerifier) {
+            window.recaptchaVerifier = new window.RecaptchaVerifier(window.firebaseAuth, 'recaptcha-container', {
+                'size': 'normal',
+                'callback': (response) => {
+                    console.log('reCAPTCHA solved');
+                }
+            });
+        }
+        
+        // Send verification code
+        const appVerifier = window.recaptchaVerifier;
+        confirmationResult = await window.signInWithPhoneNumber(window.firebaseAuth, phoneNumber, appVerifier);
+        
+        console.log('Verification code sent successfully');
+        
+        // Show verification form
+        document.getElementById('phone-form').style.display = 'none';
+        document.getElementById('verification-form').style.display = 'block';
+        
+    } catch (error) {
+        console.error('Error sending verification code:', error);
+        
+        if (error.code === 'auth/invalid-phone-number') {
+            alert('Invalid phone number. Please check the format and include country code.');
+        } else if (error.code === 'auth/too-many-requests') {
+            alert('Too many attempts. Please try again later.');
+        } else {
+            alert('Failed to send verification code: ' + error.message);
+        }
+        
+        // Reset reCAPTCHA on error
+        if (window.recaptchaVerifier) {
+            window.recaptchaVerifier.render().then(function(widgetId) {
+                grecaptcha.reset(widgetId);
+            });
+        }
+    } finally {
+        showLoading(false);
+    }
+}
+
+// Verify code and sign in
+async function verifyCode(event) {
+    event.preventDefault();
+    
+    const code = document.getElementById('verification-code').value.trim();
+    
+    if (code.length !== 6) {
+        alert('Please enter a 6-digit verification code');
+        return;
+    }
+    
+    showLoading(true);
+    
+    try {
+        // Verify the code
+        const result = await confirmationResult.confirm(code);
+        const user = result.user;
+        
+        console.log('Phone authentication successful:', user.phoneNumber);
+        
+        // Check if user exists in our system
+        const phoneNumber = user.phoneNumber;
+        const checkResponse = await fetch(`${GOOGLE_SCRIPT_URL}?action=checkUserByPhone&phone=${encodeURIComponent(phoneNumber)}`);
+        const checkResult = await checkResponse.json();
+        
+        let userId;
+        let userName;
+        
+        if (!checkResult.exists) {
+            // New user - prompt for name
+            userName = prompt('Welcome! Please enter your full name:');
+            if (!userName || !userName.trim()) {
+                userName = phoneNumber; // Use phone as fallback name
+            }
+            
+            // Create new user account
+            const userData = {
+                action: 'createUser',
+                name: userName.trim(),
+                phone: phoneNumber,
+                password: 'PHONE_AUTH',
+                timestamp: new Date().toISOString()
+            };
+            
+            const createResponse = await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                redirect: 'follow',
+                headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify(userData)
+            });
+            
+            const createResult = await createResponse.json();
+            
+            if (!createResult.success) {
+                showLoading(false);
+                alert('Failed to create account: ' + createResult.message);
+                return;
+            }
+            
+            userId = createResult.userId;
+        } else {
+            // Existing user
+            userId = checkResult.userId;
+            userName = checkResult.name;
+        }
+        
+        // Save user session
+        const userSession = {
+            userId: userId,
+            name: userName,
+            phone: phoneNumber,
+            loginTime: Date.now(),
+            authMethod: 'phone'
+        };
+        
+        localStorage.setItem('userSession', JSON.stringify(userSession));
+        window.location.href = 'dashboard.html';
+        
+    } catch (error) {
+        console.error('Verification error:', error);
+        
+        if (error.code === 'auth/invalid-verification-code') {
+            alert('Invalid verification code. Please try again.');
+        } else if (error.code === 'auth/code-expired') {
+            alert('Verification code expired. Please request a new one.');
+            cancelPhoneAuth();
+        } else {
+            alert('Verification failed: ' + error.message);
+        }
+    } finally {
+        showLoading(false);
+    }
+}
+
+// Cancel phone authentication
+function cancelPhoneAuth() {
+    document.getElementById('phone-form').style.display = 'block';
+    document.getElementById('verification-form').style.display = 'none';
+    document.getElementById('phone-number').value = '';
+    document.getElementById('verification-code').value = '';
+    confirmationResult = null;
+    
+    // Reset reCAPTCHA
+    if (window.recaptchaVerifier) {
+        window.recaptchaVerifier.clear();
+        window.recaptchaVerifier = null;
+    }
+}
+
 // Make functions globally available
 window.signInWithGoogle = signInWithGoogle;
+window.sendVerificationCode = sendVerificationCode;
+window.verifyCode = verifyCode;
+window.cancelPhoneAuth = cancelPhoneAuth;

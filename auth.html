@@ -10,11 +10,12 @@
     <div class="container">
         <header>
             <h1>🏔️ Church Retreat Sign-Up</h1>
-            <p class="subtitle">Sign in with your Google account to continue</p>
+            <p class="subtitle">Sign in to continue</p>
         </header>
 
         <div class="form-section active">
-            <div class="auth-container" style="text-align: center; padding: 3rem 2rem;">
+            <div class="auth-container">
+                <!-- Google Sign-In -->
                 <button class="btn-google" onclick="signInWithGoogle()">
                     <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
                         <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
@@ -24,6 +25,33 @@
                     </svg>
                     Sign in with Google
                 </button>
+
+                <div class="divider">
+                    <span>OR</span>
+                </div>
+
+                <!-- Phone Sign-In -->
+                <div id="phone-auth-container">
+                    <form id="phone-form" onsubmit="sendVerificationCode(event)">
+                        <div class="form-group">
+                            <label for="phone-number">Phone Number</label>
+                            <input type="tel" id="phone-number" placeholder="+1 234 567 8900" required>
+                            <small>Include country code (e.g., +1 for US)</small>
+                        </div>
+                        <div id="recaptcha-container"></div>
+                        <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Send Verification Code</button>
+                    </form>
+
+                    <form id="verification-form" style="display: none;" onsubmit="verifyCode(event)">
+                        <div class="form-group">
+                            <label for="verification-code">Verification Code</label>
+                            <input type="text" id="verification-code" placeholder="123456" required maxlength="6">
+                            <small>Enter the 6-digit code sent to your phone</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Verify & Sign In</button>
+                        <button type="button" class="btn btn-secondary" onclick="cancelPhoneAuth()" style="margin-top: 0.5rem;">Cancel</button>
+                    </form>
+                </div>
             </div>
         </div>
 
@@ -38,7 +66,7 @@
     <script type="module">
         // Import Firebase modules
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-        import { getAuth, signInWithPopup, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+        import { getAuth, signInWithPopup, signInWithPhoneNumber, GoogleAuthProvider, RecaptchaVerifier } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
 
         // Firebase configuration
         const firebaseConfig = {
@@ -59,6 +87,8 @@
         window.firebaseAuth = auth;
         window.GoogleAuthProvider = GoogleAuthProvider;
         window.signInWithPopup = signInWithPopup;
+        window.signInWithPhoneNumber = signInWithPhoneNumber;
+        window.RecaptchaVerifier = RecaptchaVerifier;
     </script>
     <script src="auth.js"></script>
 </body>

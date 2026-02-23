@@ -129,6 +129,11 @@ function doGet(e) {
       return searchFamilyByEmail(email);
     }
     
+    if (action === 'checkUserByPhone') {
+      const phone = e.parameter.phone;
+      return checkUserByPhone(phone);
+    }
+    
     return ContentService.createTextOutput(JSON.stringify({
       success: false,
       message: 'Invalid action'
