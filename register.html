@@ -136,16 +136,16 @@
 
         <!-- Step 3: Create New Family -->
         <div id="step-family-new" class="form-section">
-            <h2>创建家庭报名 / Create Family Registration</h2>
-            <p class="info-text">输入您家庭的主要联系人姓名。系统将为您生成唯一的家庭ID。/ Enter the primary contact's name for your family. A unique Family ID will be generated for you.</p>
+            <h2 data-i18n="register.createFamilyReg">Create Family Registration</h2>
+            <p class="info-text" data-i18n="register.createFamilyDesc">Enter the primary contact's name for your family. A unique Family ID will be generated for you.</p>
             <div class="form-group">
-                <label for="family-head-name">主要联系人/户主 / Primary Contact / Head of Family *</label>
-                <input type="text" id="family-head-name" placeholder="张三 / John Smith" required>
-                <small>此信息将用于创建您的家庭ID / This will be used to create your Family ID</small>
+                <label for="family-head-name" data-i18n="register.primaryContact">Primary Contact / Head of Family *</label>
+                <input type="text" id="family-head-name" placeholder="John Smith" required>
+                <small data-i18n="register.familyIdHint">This will be used to create your Family ID</small>
             </div>
             <div class="button-row">
-                <button class="btn btn-secondary" onclick="goBackFromFamilyNew()">返回 / Back</button>
-                <button class="btn btn-primary" onclick="createFamilyId()">创建家庭并继续 / Create Family & Continue</button>
+                <button class="btn btn-secondary" onclick="goBackFromFamilyNew()" data-i18n="register.back">Back</button>
+                <button class="btn btn-primary" onclick="createFamilyId()" data-i18n="register.createAndContinue">Create Family & Continue</button>
             </div>
         </div>
 
@@ -235,6 +235,7 @@
     </div>
 
     <script src="config.js"></script>
+    <script src="language.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
