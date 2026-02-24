@@ -9,13 +9,14 @@
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>2026 中华归主教会夏季退修会</h1>
-            <p class="subtitle">2026 Chinese For Christ Church Summer Retreat</p>
-            <p class="subtitle">Register for our upcoming retreat</p>
+        <header style="position: relative;">
+            <div style="position: absolute; top: 1.5rem; right: 1.5rem;">
+                <button id="language-toggle" onclick="toggleLanguage()" style="background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.5); padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.3s;">EN</button>
+            </div>
+            <h1 data-i18n="header.title">2026 Chinese For Christ Church Summer Retreat</h1>
             <div class="header-actions">
-                <button class="btn-header" onclick="location.href='dashboard.html'">← 返回主页 / Back to Dashboard</button>
-                <button class="btn-header btn-signout" onclick="signOut()">登出 / Sign Out</button>
+                <button class="btn-header" onclick="location.href='dashboard.html'" data-i18n="register.backToDashboard">← Back to Dashboard</button>
+                <button class="btn-header btn-signout" onclick="signOut()" data-i18n="register.signOut">Sign Out</button>
             </div>
         </header>
 
