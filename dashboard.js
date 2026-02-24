@@ -143,7 +143,7 @@ function displayRegistrations(data) {
         `;
         }).join('') + `
             <div style="text-align: center; margin-top: 1.5rem;">
-                <button class="btn btn-secondary" onclick="location.href='register.html?type=individual'">+ Create Another Individual Registration</button>
+                <button class="btn btn-secondary" onclick="location.href='register.html?type=individual'" data-i18n="dashboard.createAnotherIndividual">+ Create Another Individual Registration</button>
             </div>
         `;
         if (window.applyLanguage) window.applyLanguage();

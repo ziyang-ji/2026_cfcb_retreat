@@ -94,9 +94,25 @@ const translations = {
     },
     
     // Dashboard
+    'dashboard.welcomeBack': {
+        en: 'Welcome back',
+        zh: '欢迎回来'
+    },
     'dashboard.signOut': {
         en: 'Sign Out',
         zh: '登出'
+    },
+    'dashboard.createAnotherIndividual': {
+        en: '+ Create Another Individual Registration',
+        zh: '+ 创建另一个个人报名'
+    },
+    'dashboard.addMoreMembers': {
+        en: '+ Add More Members',
+        zh: '+ 添加更多成员'
+    },
+    'dashboard.createAnotherFamily': {
+        en: '+ Create Another Family Registration',
+        zh: '+ 创建另一个家庭报名'
     },
     'dashboard.individualReg': {
         en: 'Individual Registrations',
