@@ -31,7 +31,9 @@ header {
 header h1 {
     font-size: 1.5rem;
     margin-bottom: 0.5rem;
-    padding-right: 100px;
+    max-width: calc(100% - 120px);
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .subtitle {
