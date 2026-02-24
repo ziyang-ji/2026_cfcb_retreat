@@ -10,8 +10,10 @@
 <body>
     <div class="container">
         <header>
-            <h1>2026 中华归主教会夏季退修会</h1>
-            <p class="subtitle">2026 Chinese For Christ Church Summer Retreat</p>
+            <div style="position: absolute; top: 1rem; right: 1rem;">
+                <button id="language-toggle" onclick="toggleLanguage()" style="background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.5); padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.9rem;">EN</button>
+            </div>
+            <h1 data-i18n="header.title">2026 Chinese For Christ Church Summer Retreat</h1>
         </header>
 
         <div class="form-section active">
@@ -24,7 +26,7 @@
                         <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
                         <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
                     </svg>
-                    使用谷歌登录 / Sign in with Google
+                    <span data-i18n="auth.signInGoogle">Sign in with Google</span>
                 </button>
 
                 <div class="divider">
@@ -35,21 +37,21 @@
                 <div id="phone-auth-container">
                     <form id="phone-form" onsubmit="sendVerificationCode(event)">
                         <div class="form-group">
-                            <label for="phone-number">电话号码 / Phone Number</label>
+                            <label for="phone-number" data-i18n="auth.phoneNumber">Phone Number</label>
                             <input type="tel" id="phone-number" placeholder="234 567 8900" required>
                         </div>
                         <div id="recaptcha-container"></div>
-                        <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">发送验证码 / Send Verification Code</button>
+                        <button type="submit" class="btn btn-primary" style="margin-top: 1rem;" data-i18n="auth.sendCode">Send Verification Code</button>
                     </form>
 
                     <form id="verification-form" style="display: none;" onsubmit="verifyCode(event)">
                         <div class="form-group">
-                            <label for="verification-code">验证码 / Verification Code</label>
+                            <label for="verification-code" data-i18n="auth.verificationCode">Verification Code</label>
                             <input type="text" id="verification-code" placeholder="123456" required maxlength="6">
-                            <small>输入发送到您手机的6位数字验证码 / Enter the 6-digit code sent to your phone</small>
+                            <small data-i18n="auth.verificationHint">Enter the 6-digit code sent to your phone</small>
                         </div>
-                        <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">验证并登录 / Verify & Sign In</button>
-                        <button type="button" class="btn btn-secondary" onclick="cancelPhoneAuth()" style="margin-top: 0.5rem;">取消 / Cancel</button>
+                        <button type="submit" class="btn btn-primary" style="margin-top: 1rem;" data-i18n="auth.verifySignIn">Verify & Sign In</button>
+                        <button type="button" class="btn btn-secondary" onclick="cancelPhoneAuth()" style="margin-top: 0.5rem;" data-i18n="auth.cancel">Cancel</button>
                     </form>
                 </div>
             </div>
@@ -58,22 +60,22 @@
         <!-- Loading Overlay -->
         <div id="loading-overlay" class="loading-overlay">
             <div class="spinner"></div>
-            <p>Processing...</p>
+            <p data-i18n="auth.processing">Processing...</p>
         </div>
 
         <!-- Name Input Modal -->
         <div id="name-modal" class="modal">
             <div class="modal-content">
-                <h3>欢迎！/ Welcome!</h3>
-                <p>请输入您的信息以完成注册 / Please enter your information to complete sign-up:</p>
+                <h3 data-i18n="auth.welcome">Welcome!</h3>
+                <p data-i18n="auth.enterInfo">Please enter your information to complete sign-up:</p>
                 <form onsubmit="submitName(event)">
                     <div class="form-group">
-                        <input type="text" id="name-input" placeholder="全名 / Full Name" required>
+                        <input type="text" id="name-input" data-i18n-placeholder="auth.fullName" placeholder="Full Name" required>
                     </div>
                     <div class="form-group">
-                        <input type="email" id="email-input" placeholder="电子邮箱 / Email Address" required>
+                        <input type="email" id="email-input" data-i18n-placeholder="auth.emailAddress" placeholder="Email Address" required>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">继续 / Continue</button>
+                    <button type="submit" class="btn btn-primary" style="margin-top: 1rem;" data-i18n="auth.continue">Continue</button>
                 </form>
             </div>
         </div>
@@ -81,9 +83,9 @@
         <!-- Error Modal -->
         <div id="error-modal" class="modal">
             <div class="modal-content">
-                <h3>⚠️ 错误 / Error</h3>
+                <h3><span>⚠️ </span><span data-i18n="auth.error">Error</span></h3>
                 <p id="error-message"></p>
-                <button class="btn btn-primary" onclick="closeErrorModal()">确定 / OK</button>
+                <button class="btn btn-primary" onclick="closeErrorModal()" data-i18n="auth.ok">OK</button>
             </div>
         </div>
     </div>
@@ -164,6 +166,7 @@
         };
     </script>
     <script src="config.js"></script>
+    <script src="language.js"></script>
     <script src="auth.js"></script>
 </body>
 </html>
