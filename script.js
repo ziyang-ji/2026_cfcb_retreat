@@ -13,7 +13,7 @@ let currentState = {
 let currentUser = null;
 
 // Google Apps Script Web App URL - UPDATE THIS AFTER DEPLOYING
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw2-vC_A_kuNGRzuHzhQoLipQH-sXYi33MU9SBPzCVQqGHEKr0GPOWLd3pW8e6gJFSV/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwzKCFEX3I1HEUHr2xnlvJP3571b1MXgpWZQ9oxdcz_3LHgJxGXg1MGqA6DjHJFo7mNdQ/exec';
 
 // Check authentication and handle URL parameters immediately
 (function initializePage() {
