@@ -450,15 +450,19 @@ function t(key) {
 function applyLanguage() {
     const lang = getCurrentLanguage();
     
-    // Update all elements with data-i18n attribute
+    // Update all elements with data-i18n attribute (for text content)
     document.querySelectorAll('[data-i18n]').forEach(element => {
         const key = element.getAttribute('data-i18n');
         if (translations[key]) {
-            if (element.tagName === 'INPUT' && element.placeholder !== undefined) {
-                element.placeholder = translations[key][lang];
-            } else {
-                element.textContent = translations[key][lang];
-            }
+            element.textContent = translations[key][lang];
+        }
+    });
+    
+    // Update all elements with data-i18n-placeholder attribute (for placeholders)
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+        const key = element.getAttribute('data-i18n-placeholder');
+        if (translations[key]) {
+            element.placeholder = translations[key][lang];
         }
     });
     
