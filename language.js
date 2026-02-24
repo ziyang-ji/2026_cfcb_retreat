@@ -23,7 +23,7 @@ function toggleLanguage() {
 const translations = {
     // Header
     'header.title': {
-        en: '2026 Chinese For Christ Church Summer Retreat',
+        en: '2026 Chinese For Christ Church<br>Summer Retreat',
         zh: '2026 中华归主教会夏季退修会'
     },
     'header.subtitle': {
@@ -454,7 +454,7 @@ function applyLanguage() {
     document.querySelectorAll('[data-i18n]').forEach(element => {
         const key = element.getAttribute('data-i18n');
         if (translations[key]) {
-            element.textContent = translations[key][lang];
+            element.innerHTML = translations[key][lang];
         }
     });
     
