@@ -13,7 +13,7 @@
             <p class="subtitle">2026 Chinese For Christ Church Summer Retreat</p>
             <p class="subtitle">Welcome back, <span id="user-name">User</span>!</p>
             <div class="header-actions">
-                <button class="btn-header btn-signout" onclick="signOut()">Sign Out</button>
+                <button class="btn-header btn-signout" onclick="signOut()">登出 / Sign Out</button>
             </div>
         </header>
 
@@ -24,36 +24,36 @@
                     <div class="card-icon">👤</div>
                     <div class="card-content">
                         <div class="card-number" id="individual-count">0</div>
-                        <div class="card-label">Individual Registrations</div>
+                        <div class="card-label">个人报名 / Individual Registrations</div>
                     </div>
                 </div>
                 <div class="summary-card">
                     <div class="card-icon">👨‍👩‍👧‍👦</div>
                     <div class="card-content">
                         <div class="card-number" id="family-count">0</div>
-                        <div class="card-label">Family Registrations</div>
+                        <div class="card-label">家庭报名 / Family Registrations</div>
                     </div>
                 </div>
             </div>
 
             <!-- Individual Registrations -->
             <section class="dashboard-section">
-                <h2>👤 Individual Registrations</h2>
+                <h2>👤 个人报名 / Individual Registrations</h2>
                 <div id="individual-registrations">
                     <div class="empty-state">
-                        <p>You haven't registered individually yet.</p>
-                        <button class="btn btn-primary" onclick="location.href='register.html'">Create Individual Registration</button>
+                        <p>您还没有个人报名。/ You haven't registered individually yet.</p>
+                        <button class="btn btn-primary" onclick="location.href='register.html'">创建个人报名 / Create Individual Registration</button>
                     </div>
                 </div>
             </section>
 
             <!-- Family Registrations -->
             <section class="dashboard-section">
-                <h2>👨‍👩‍👧‍👦 Family Registrations</h2>
+                <h2>👨‍👩‍👧‍👦 家庭报名 / Family Registrations</h2>
                 <div id="family-registrations">
                     <div class="empty-state">
-                        <p>You're not part of any family registration yet.</p>
-                        <button class="btn btn-primary" onclick="location.href='register.html'">Create Family Registration</button>
+                        <p>您还没有加入任何家庭报名。/ You're not part of any family registration yet.</p>
+                        <button class="btn btn-primary" onclick="location.href='register.html'">创建家庭报名 / Create Family Registration</button>
                     </div>
                 </div>
             </section>
@@ -62,17 +62,17 @@
         <!-- Loading Overlay -->
         <div id="loading-overlay" class="loading-overlay">
             <div class="spinner"></div>
-            <p>Loading your registrations...</p>
+            <p>正在加载您的报名信息... / Loading your registrations...</p>
         </div>
 
         <!-- Sign Out Confirmation Modal -->
         <div id="signout-modal" class="modal">
             <div class="modal-content">
-                <h2>Sign Out</h2>
-                <p>Are you sure you want to sign out?</p>
+                <h2>登出 / Sign Out</h2>
+                <p>您确定要登出吗？/ Are you sure you want to sign out?</p>
                 <div class="modal-buttons">
-                    <button class="btn btn-secondary" onclick="closeSignOutModal()">Cancel</button>
-                    <button class="btn btn-primary" onclick="confirmSignOut()">Sign Out</button>
+                    <button class="btn btn-secondary" onclick="closeSignOutModal()">取消 / Cancel</button>
+                    <button class="btn btn-primary" onclick="confirmSignOut()">登出 / Sign Out</button>
                 </div>
             </div>
         </div>
@@ -80,29 +80,29 @@
         <!-- Edit Registration Modal -->
         <div id="edit-modal" class="modal">
             <div class="modal-content modal-large">
-                <h2>Edit Registration</h2>
+                <h2>编辑报名 / Edit Registration</h2>
                 <form onsubmit="saveEdit(event)">
                     <input type="hidden" id="edit-id">
                     <input type="hidden" id="edit-family-id">
                     <div class="form-group">
-                        <label for="edit-name">Name</label>
+                        <label for="edit-name">姓名 / Name</label>
                         <input type="text" id="edit-name" required>
                     </div>
                     <div class="form-group">
-                        <label for="edit-phone">Phone</label>
+                        <label for="edit-phone">电话 / Phone</label>
                         <input type="tel" id="edit-phone" required>
                     </div>
                     <div class="form-group">
-                        <label for="edit-email">Email</label>
+                        <label for="edit-email">电子邮箱 / Email</label>
                         <input type="email" id="edit-email" required>
                     </div>
                     <div class="form-group">
-                        <label for="edit-address">Address</label>
+                        <label for="edit-address">地址 / Address</label>
                         <textarea id="edit-address" rows="3" required></textarea>
                     </div>
                     <div class="modal-buttons">
-                        <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeEditModal()">取消 / Cancel</button>
+                        <button type="submit" class="btn btn-primary">保存更改 / Save Changes</button>
                     </div>
                 </form>
             </div>
@@ -111,13 +111,13 @@
         <!-- Delete Confirmation Modal -->
         <div id="delete-modal" class="modal">
             <div class="modal-content">
-                <h2>Delete Registration</h2>
-                <p id="delete-message">Are you sure you want to delete this registration?</p>
+                <h2>删除报名 / Delete Registration</h2>
+                <p id="delete-message">您确定要删除这个报名吗？/ Are you sure you want to delete this registration?</p>
                 <input type="hidden" id="delete-id">
                 <input type="hidden" id="delete-family-id">
                 <div class="modal-buttons">
-                    <button class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
-                    <button class="btn btn-primary" style="background: #f44336;" onclick="confirmDelete()">Delete</button>
+                    <button class="btn btn-secondary" onclick="closeDeleteModal()">取消 / Cancel</button>
+                    <button class="btn btn-primary" style="background: #f44336;" onclick="confirmDelete()">删除 / Delete</button>
                 </div>
             </div>
         </div>
@@ -125,20 +125,20 @@
         <!-- Delete Family Confirmation Modal -->
         <div id="delete-family-modal" class="modal">
             <div class="modal-content">
-                <h2 style="color: #f44336;">⚠️ Delete Entire Family</h2>
-                <p id="delete-family-message" style="font-weight: 600;">Are you sure you want to delete this family?</p>
+                <h2 style="color: #f44336;">⚠️ 删除整个家庭 / Delete Entire Family</h2>
+                <p id="delete-family-message" style="font-weight: 600;">您确定要删除这个家庭吗？/ Are you sure you want to delete this family?</p>
                 <p style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">
-                    This will permanently delete:
+                    这将永久删除 / This will permanently delete:
                 </p>
                 <ul style="color: #666; font-size: 0.9rem; margin: 0.5rem 0 1rem 1.5rem; line-height: 1.8;">
-                    <li>The family registration</li>
-                    <li>All family members (<span id="delete-family-count">0</span> people)</li>
-                    <li>This action cannot be undone</li>
+                    <li>家庭报名 / The family registration</li>
+                    <li>所有家庭成员 / All family members (<span id="delete-family-count">0</span> 人/people)</li>
+                    <li>此操作无法撤销 / This action cannot be undone</li>
                 </ul>
                 <input type="hidden" id="delete-family-id-input">
                 <div class="modal-buttons">
-                    <button class="btn btn-secondary" onclick="closeDeleteFamilyModal()">Cancel</button>
-                    <button class="btn btn-primary" style="background: #f44336;" onclick="confirmDeleteFamily()">Yes, Delete Everything</button>
+                    <button class="btn btn-secondary" onclick="closeDeleteFamilyModal()">取消 / Cancel</button>
+                    <button class="btn btn-primary" style="background: #f44336;" onclick="confirmDeleteFamily()">确认删除 / Yes, Delete Everything</button>
                 </div>
             </div>
         </div>
@@ -146,20 +146,20 @@
         <!-- Quit Family Confirmation Modal -->
         <div id="quit-family-modal" class="modal">
             <div class="modal-content">
-                <h2 style="color: #ff9800;">⚠️ Quit Family</h2>
-                <p id="quit-family-message" style="font-weight: 600;">Are you sure you want to quit this family?</p>
+                <h2 style="color: #ff9800;">⚠️ 退出家庭 / Quit Family</h2>
+                <p id="quit-family-message" style="font-weight: 600;">您确定要退出这个家庭吗？/ Are you sure you want to quit this family?</p>
                 <p style="color: #666; font-size: 0.9rem; margin-top: 0.5rem;">
-                    This will permanently delete:
+                    这将永久删除 / This will permanently delete:
                 </p>
                 <ul style="color: #666; font-size: 0.9rem; margin: 0.5rem 0 1rem 1.5rem; line-height: 1.8;">
-                    <li>All your registrations in this family (<span id="quit-family-count">0</span> people)</li>
-                    <li>Other family members will remain in the family</li>
-                    <li>This action cannot be undone</li>
+                    <li>您在此家庭中的所有报名 / All your registrations in this family (<span id="quit-family-count">0</span> 人/people)</li>
+                    <li>其他家庭成员将保留在家庭中 / Other family members will remain in the family</li>
+                    <li>此操作无法撤销 / This action cannot be undone</li>
                 </ul>
                 <input type="hidden" id="quit-family-id-input">
                 <div class="modal-buttons">
-                    <button class="btn btn-secondary" onclick="closeQuitFamilyModal()">Cancel</button>
-                    <button class="btn btn-primary" style="background: #ff9800;" onclick="confirmQuitFamily()">Yes, Quit Family</button>
+                    <button class="btn btn-secondary" onclick="closeQuitFamilyModal()">取消 / Cancel</button>
+                    <button class="btn btn-primary" style="background: #ff9800;" onclick="confirmQuitFamily()">确认退出 / Yes, Quit Family</button>
                 </div>
             </div>
         </div>
@@ -167,10 +167,10 @@
         <!-- Success Modal -->
         <div id="success-modal" class="modal">
             <div class="modal-content">
-                <h2>✅ Success</h2>
-                <p id="success-message">Operation completed successfully</p>
+                <h2>✅ 成功 / Success</h2>
+                <p id="success-message">操作成功完成 / Operation completed successfully</p>
                 <div class="modal-buttons">
-                    <button class="btn btn-primary" onclick="closeSuccessModal()">OK</button>
+                    <button class="btn btn-primary" onclick="closeSuccessModal()">确定 / OK</button>
                 </div>
             </div>
         </div>
