@@ -27,36 +27,36 @@
                     <div class="card-icon">👤</div>
                     <div class="card-content">
                         <div class="card-number" id="individual-count">0</div>
-                        <div class="card-label">个人报名 / Individual Registrations</div>
+                        <div class="card-label" data-i18n="dashboard.individualReg">Individual Registrations</div>
                     </div>
                 </div>
                 <div class="summary-card">
                     <div class="card-icon">👨‍👩‍👧‍👦</div>
                     <div class="card-content">
                         <div class="card-number" id="family-count">0</div>
-                        <div class="card-label">家庭报名 / Family Registrations</div>
+                        <div class="card-label" data-i18n="dashboard.familyReg">Family Registrations</div>
                     </div>
                 </div>
             </div>
 
             <!-- Individual Registrations -->
             <section class="dashboard-section">
-                <h2>👤 个人报名 / Individual Registrations</h2>
+                <h2><span>👤 </span><span data-i18n="dashboard.individualSection">Individual Registrations</span></h2>
                 <div id="individual-registrations">
                     <div class="empty-state">
-                        <p>您还没有个人报名。/ You haven't registered individually yet.</p>
-                        <button class="btn btn-primary" onclick="location.href='register.html'">创建个人报名 / Create Individual Registration</button>
+                        <p data-i18n="dashboard.noIndividual">You haven't registered individually yet.</p>
+                        <button class="btn btn-primary" onclick="location.href='register.html?type=individual'" data-i18n="dashboard.createIndividual">Create Individual Registration</button>
                     </div>
                 </div>
             </section>
 
             <!-- Family Registrations -->
             <section class="dashboard-section">
-                <h2>👨‍👩‍👧‍👦 家庭报名 / Family Registrations</h2>
+                <h2><span>👨‍👩‍👧‍👦 </span><span data-i18n="dashboard.familySection">Family Registrations</span></h2>
                 <div id="family-registrations">
                     <div class="empty-state">
-                        <p>您还没有加入任何家庭报名。/ You're not part of any family registration yet.</p>
-                        <button class="btn btn-primary" onclick="location.href='register.html'">创建家庭报名 / Create Family Registration</button>
+                        <p data-i18n="dashboard.noFamily">You're not part of any family registration yet.</p>
+                        <button class="btn btn-primary" onclick="location.href='register.html?type=family'" data-i18n="dashboard.createFamily">Create Family Registration</button>
                     </div>
                 </div>
             </section>
