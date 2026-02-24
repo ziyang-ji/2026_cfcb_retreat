@@ -513,7 +513,7 @@ h3 {
     display: flex;
     align-items: center;
     gap: 1rem;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 12px rgba(44, 62, 80, 0.2);
 }
 
 .card-icon {
