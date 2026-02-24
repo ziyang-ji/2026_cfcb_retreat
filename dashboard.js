@@ -219,7 +219,7 @@ function displayRegistrations(data) {
                     `;
                     }).join('') : '<p style="color: #666; font-style: italic; padding: 1rem;">No members yet. Click "Add More Members" to add someone.</p>'}
                 </div>
-                <button class="btn btn-secondary" onclick="addToFamily('${family.familyId}')">+ Add More Members</button>
+                <button class="btn btn-secondary" onclick="location.href='register.html?type=family&familyId=${family.familyId}'" data-i18n="dashboard.addMoreMembers">+ Add More Members</button>
             </div>
         `;
         }).join('') + `
