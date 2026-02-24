@@ -143,6 +143,12 @@ function doGet(e) {
       return checkUserByPhone(phone);
     }
     
+    if (action === 'updateUserPhone') {
+      const userId = e.parameter.userId;
+      const phone = e.parameter.phone;
+      return updateUserPhone(userId, phone);
+    }
+    
     return ContentService.createTextOutput(JSON.stringify({
       success: false,
       message: 'Invalid action'
@@ -1099,6 +1105,64 @@ function quitFamily(data) {
 }
 
 // Check if user exists by phone number
+// Update user's phone number
+function updateUserPhone(userId, phone) {
+  try {
+    Logger.log('updateUserPhone called - userId: ' + userId + ', phone: ' + phone);
+    
+    const ss = getSpreadsheet();
+    const userSheet = ss.getSheetByName('User_Accounts');
+    
+    if (!userSheet) {
+      return ContentService.createTextOutput(JSON.stringify({
+        success: false,
+        message: 'User_Accounts sheet not found'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const lastRow = userSheet.getLastRow();
+    if (lastRow <= 1) {
+      return ContentService.createTextOutput(JSON.stringify({
+        success: false,
+        message: 'No users found'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    const data = userSheet.getRange(2, 1, lastRow - 1, 7).getValues();
+    
+    for (let i = 0; i < data.length; i++) {
+      if (data[i][1] === userId) { // Column 2 is User ID
+        const rowNumber = i + 2; // +2 because row 1 is header and i is 0-indexed
+        const currentPhone = data[i][4]; // Column 5 is Phone
+        
+        Logger.log('Found user at row ' + rowNumber + ', current phone: "' + currentPhone + '"');
+        
+        // Update phone number (Column E is column 5)
+        userSheet.getRange(rowNumber, 5).setValue(phone);
+        
+        Logger.log('✅ Phone number updated successfully');
+        
+        return ContentService.createTextOutput(JSON.stringify({
+          success: true,
+          message: 'Phone number updated'
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      message: 'User ID not found'
+    })).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    Logger.log('Error in updateUserPhone: ' + error.toString());
+    return ContentService.createTextOutput(JSON.stringify({
+      success: false,
+      message: error.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
 function checkUserByPhone(phone) {
   try {
     // Normalize phone - remove + if present

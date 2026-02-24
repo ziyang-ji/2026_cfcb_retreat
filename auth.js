@@ -334,6 +334,18 @@ async function verifyCode(event) {
                 userId = emailCheckResult.userId;
                 userName = emailCheckResult.name || userName;
                 
+                console.log('Updating phone number for existing user:', userId);
+                
+                // Update the user's phone number in the database
+                const updatePhoneResponse = await fetch(`${GOOGLE_SCRIPT_URL}?action=updateUserPhone&userId=${encodeURIComponent(userId)}&phone=${encodeURIComponent(phoneNumber)}`);
+                const updatePhoneResult = await updatePhoneResponse.json();
+                
+                if (updatePhoneResult.success) {
+                    console.log('✅ Phone number updated successfully');
+                } else {
+                    console.warn('⚠️ Failed to update phone number:', updatePhoneResult.message);
+                }
+                
                 console.log('Linked to existing user - ID:', userId, 'Name:', userName);
             } else {
                 console.log('Email not found. Creating new account.');
