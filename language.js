@@ -476,6 +476,42 @@ const translations = {
         en: 'Back to Dashboard',
         zh: '返回主页'
     },
+    'register.thankYou': {
+        en: 'Thank you',
+        zh: '谢谢'
+    },
+    'register.regSubmitted': {
+        en: 'Your registration has been submitted.',
+        zh: '您的报名已提交。'
+    },
+    'register.yourRegId': {
+        en: 'Your Registration ID:',
+        zh: '您的报名ID：'
+    },
+    'register.saveId': {
+        en: 'Please save this ID for your records.',
+        zh: '请保存此ID以备记录。'
+    },
+    'register.familyRegComplete': {
+        en: 'Family registration complete!',
+        zh: '家庭报名完成！'
+    },
+    'register.member': {
+        en: 'member',
+        zh: '位成员'
+    },
+    'register.members': {
+        en: 'members',
+        zh: '位成员'
+    },
+    'register.registeredSuccessfully': {
+        en: 'registered successfully.',
+        zh: '已成功注册。'
+    },
+    'register.yourFamilyId': {
+        en: 'Your Family ID:',
+        zh: '您的家庭ID：'
+    },
     'register.signOut': {
         en: 'Sign Out',
         zh: '登出'

@@ -154,10 +154,16 @@ async function submitIndividual() {
     
     await submitToGoogleSheets(data);
     
+    // Display success message with translations
+    const thankYou = window.t ? window.t('register.thankYou') : 'Thank you';
+    const regSubmitted = window.t ? window.t('register.regSubmitted') : 'Your registration has been submitted.';
+    const yourRegId = window.t ? window.t('register.yourRegId') : 'Your Registration ID:';
+    const saveId = window.t ? window.t('register.saveId') : 'Please save this ID for your records.';
+    
     document.getElementById('success-message').textContent = 
-        `Thank you, ${currentState.individualName}! Your registration has been submitted.`;
+        `${thankYou}, ${currentState.individualName}! ${regSubmitted}`;
     document.getElementById('success-id-display').innerHTML = 
-        `<strong>Your Registration ID:</strong> <span style="font-family: 'Courier New', monospace; font-weight: bold;">${currentState.individualId}</span><br><small style="color: #666;">Please save this ID for your records.</small>`;
+        `<strong>${yourRegId}</strong> <span style="font-family: 'Courier New', monospace; font-weight: bold;">${currentState.individualId}</span><br><small style="color: #666;">${saveId}</small>`;
     showSection('step-success');
 }
 
