@@ -292,6 +292,8 @@ function displayFamilyOptions(families) {
             </div>
         `;
     }).join('');
+    
+    if (window.applyLanguage) window.applyLanguage();
 }
 
 // Select family from multiple options
@@ -329,6 +331,8 @@ function displayFamilyPreview(familyData) {
             `}
         </div>
     `;
+    
+    if (window.applyLanguage) window.applyLanguage();
 }
 
 // Go back from confirmation page
@@ -445,7 +449,8 @@ function displayFamilyMembers() {
     const container = document.getElementById('members-container');
     
     if (currentState.familyMembers.length === 0) {
-        container.innerHTML = '<p class="empty-state">No members added yet. Click "Add Family Member" to get started.</p>';
+        container.innerHTML = '<p class="empty-state" data-i18n="register.noMembers">No members added yet. Click "Add Family Member" to get started.</p>';
+        if (window.applyLanguage) window.applyLanguage();
         return;
     }
     
@@ -462,6 +467,8 @@ function displayFamilyMembers() {
             </div>
         </div>
     `).join('');
+    
+    if (window.applyLanguage) window.applyLanguage();
 }
 
 async function completeFamilyRegistration() {
