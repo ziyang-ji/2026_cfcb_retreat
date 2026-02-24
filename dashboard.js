@@ -130,11 +130,11 @@ function displayRegistrations(data) {
                         <span class="detail-value">${person.email}</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">🏠 地址 / Address:</span>
+                        <span class="detail-label">🏠 Address:</span>
                         <span class="detail-value">${person.address}</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">📅 注册日期 / Registered:</span>
+                        <span class="detail-label">📅 Registered:</span>
                         <span class="detail-value">${formatDate(person.timestamp)}</span>
                     </div>
                 </div>
@@ -142,7 +142,7 @@ function displayRegistrations(data) {
         `;
         }).join('') + `
             <div style="text-align: center; margin-top: 1.5rem;">
-                <button class="btn btn-secondary" onclick="location.href='register.html?type=individual'">+ 创建另一个个人报名 / Create Another Individual Registration</button>
+                <button class="btn btn-secondary" onclick="location.href='register.html?type=individual'">+ Create Another Individual Registration</button>
             </div>
         `;
     }
@@ -168,35 +168,35 @@ function displayRegistrations(data) {
                 <div class="card-header">
                     <div class="card-title">
                         <span class="card-icon">👨‍👩‍👧‍👦</span>
-                        <span class="card-name">${family.familyHead}的家庭 / ${family.familyHead}'s Family</span>
+                        <span class="card-name">${family.familyHead}'s Family</span>
                     </div>
                     <div class="card-actions">
-                        <span class="card-badge">家庭ID / Family ID: ${family.familyId}</span>
+                        <span class="card-badge">Family ID: ${family.familyId}</span>
                         ${isOwner ? `
-                            <button class="btn btn-secondary" onclick="deleteFamily('${family.familyId}', '${family.familyHead}')" style="background: #f44336; color: white; padding: 0.4rem 0.8rem; font-size: 0.85rem;">删除家庭 / Delete Family</button>
+                            <button class="btn btn-secondary" onclick="deleteFamily('${family.familyId}', '${family.familyHead}')" style="background: #f44336; color: white; padding: 0.4rem 0.8rem; font-size: 0.85rem;">Delete Family</button>
                         ` : userMemberCount > 0 ? `
-                            <button class="btn btn-secondary" onclick="quitFamily('${family.familyId}', '${family.familyHead}', ${userMemberCount})" style="background: #ff9800; color: white; padding: 0.4rem 0.8rem; font-size: 0.85rem;">退出家庭 / Quit Family</button>
+                            <button class="btn btn-secondary" onclick="quitFamily('${family.familyId}', '${family.familyHead}', ${userMemberCount})" style="background: #ff9800; color: white; padding: 0.4rem 0.8rem; font-size: 0.85rem;">Quit Family</button>
                         ` : ''}
                     </div>
                 </div>
                 <div class="card-details">
                     <div class="detail-row">
-                        <span class="detail-label">👥 成员 / Members:</span>
-                        <span class="detail-value">${family.memberCount} 人 / people</span>
+                        <span class="detail-label">👥 Members:</span>
+                        <span class="detail-value">${family.memberCount} people</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">📅 创建日期 / Created:</span>
+                        <span class="detail-label">📅 Created:</span>
                         <span class="detail-value">${formatDate(family.timestamp)}</span>
                     </div>
                     ${isOwner ? `
                         <div class="detail-row">
-                            <span class="detail-label">👑 状态 / Status:</span>
-                            <span class="detail-value" style="color: #667eea; font-weight: 600;">您是户主 / You are the owner</span>
+                            <span class="detail-label">👑 Status:</span>
+                            <span class="detail-value" style="color: #667eea; font-weight: 600;">You are the owner</span>
                         </div>
                     ` : ''}
                 </div>
                 <div class="family-members">
-                    <h4>家庭成员 / Family Members:</h4>
+                    <h4>Family Members:</h4>
                     ${family.members.length > 0 ? family.members.map(member => {
                         const isOwner = member.registeredBy === currentUser.userId;
                         return `
@@ -205,8 +205,8 @@ function displayRegistrations(data) {
                                 <strong>${member.name}</strong>
                                 <span class="member-id">ID: ${member.id}</span>
                                 ${isOwner ? `
-                                    <button class="btn-icon-small" onclick="editFamilyMember('${member.id}', '${family.familyId}')" title="编辑 / Edit">✏️</button>
-                                    <button class="btn-icon-small" onclick="deleteFamilyMember('${member.id}', '${member.name}', '${family.familyId}')" title="删除 / Delete">🗑️</button>
+                                    <button class="btn-icon-small" onclick="editFamilyMember('${member.id}', '${family.familyId}')" title="Edit">✏️</button>
+                                    <button class="btn-icon-small" onclick="deleteFamilyMember('${member.id}', '${member.name}', '${family.familyId}')" title="Delete">🗑️</button>
                                 ` : ''}
                             </div>
                             <div class="member-contact">
@@ -214,14 +214,14 @@ function displayRegistrations(data) {
                             </div>
                         </div>
                     `;
-                    }).join('') : '<p style="color: #666; font-style: italic; padding: 1rem;">尚无成员。点击"添加更多成员"以添加。/ No members yet. Click "Add More Members" to add someone.</p>'}
+                    }).join('') : '<p style="color: #666; font-style: italic; padding: 1rem;">No members yet. Click "Add More Members" to add someone.</p>'}
                 </div>
-                <button class="btn btn-secondary" onclick="addToFamily('${family.familyId}')">+ 添加更多成员 / Add More Members</button>
+                <button class="btn btn-secondary" onclick="addToFamily('${family.familyId}')">+ Add More Members</button>
             </div>
         `;
         }).join('') + `
             <div style="text-align: center; margin-top: 1.5rem;">
-                <button class="btn btn-secondary" onclick="location.href='register.html?type=family'">+ 创建另一个家庭报名 / Create Another Family Registration</button>
+                <button class="btn btn-secondary" onclick="location.href='register.html?type=family'">+ Create Another Family Registration</button>
             </div>
         `;
     }
