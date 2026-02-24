@@ -22,7 +22,7 @@ body {
 }
 
 header {
-    background: #2c3e50;
+    background: #95a5a6;
     color: white;
     padding: 2rem;
     text-align: center;
@@ -114,10 +114,10 @@ h3 {
 }
 
 .choice-btn:hover {
-    border-color: #2c3e50;
+    border-color: #95a5a6;
     background: #f8f9fa;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(44, 62, 80, 0.15);
+    box-shadow: 0 4px 12px rgba(149, 165, 166, 0.15);
 }
 
 .choice-btn .icon {
@@ -159,7 +159,7 @@ h3 {
 .form-group input:focus,
 .form-group textarea:focus {
     outline: none;
-    border-color: #2c3e50;
+    border-color: #95a5a6;
 }
 
 .form-group small {
@@ -187,14 +187,14 @@ h3 {
 }
 
 .btn-primary {
-    background: #2c3e50;
+    background: #95a5a6;
     color: white;
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(44, 62, 80, 0.4);
-    background: #34495e;
+    box-shadow: 0 4px 12px rgba(149, 165, 166, 0.4);
+    background: #7f8c8d;
 }
 
 .btn-secondary {
@@ -228,14 +228,14 @@ h3 {
 
 .id-display {
     background: #f8f9ff;
-    border-left: 4px solid #2c3e50;
+    border-left: 4px solid #95a5a6;
     padding: 1rem;
     margin-bottom: 1.5rem;
     border-radius: 4px;
 }
 
 .id-display strong {
-    color: #2c3e50;
+    color: #7f8c8d;
     margin-right: 0.5rem;
 }
 
@@ -289,7 +289,7 @@ h3 {
 
 .member-id {
     font-family: 'Courier New', monospace;
-    color: #2c3e50;
+    color: #7f8c8d;
     font-size: 0.85rem;
 }
 
@@ -350,7 +350,7 @@ h3 {
 
 .spinner {
     border: 4px solid #f3f3f3;
-    border-top: 4px solid #2c3e50;
+    border-top: 4px solid #95a5a6;
     border-radius: 50%;
     width: 50px;
     height: 50px;
@@ -394,7 +394,7 @@ h3 {
 }
 
 .auth-tab.active {
-    background: #2c3e50;
+    background: #95a5a6;
     color: white;
 }
 
@@ -506,14 +506,14 @@ h3 {
 }
 
 .summary-card {
-    background: #2c3e50;
+    background: #95a5a6;
     border-radius: 12px;
     padding: 1.5rem;
     color: white;
     display: flex;
     align-items: center;
     gap: 1rem;
-    box-shadow: 0 4px 12px rgba(44, 62, 80, 0.2);
+    box-shadow: 0 4px 12px rgba(149, 165, 166, 0.2);
 }
 
 .card-icon {
@@ -555,8 +555,8 @@ h3 {
 }
 
 .registration-card:hover {
-    border-color: #2c3e50;
-    box-shadow: 0 4px 12px rgba(44, 62, 80, 0.15);
+    border-color: #95a5a6;
+    box-shadow: 0 4px 12px rgba(149, 165, 166, 0.15);
 }
 
 .card-header {
@@ -588,7 +588,7 @@ h3 {
 
 .card-badge {
     background: #f8f9ff;
-    color: #2c3e50;
+    color: #7f8c8d;
     padding: 0.5rem 1rem;
     border-radius: 6px;
     font-size: 0.85rem;
@@ -684,7 +684,7 @@ h3 {
 
 .member-id {
     font-family: 'Courier New', monospace;
-    color: #2c3e50;
+    color: #7f8c8d;
     font-size: 0.85rem;
 }
 
@@ -786,7 +786,7 @@ h3 {
 .modal-large input:focus,
 .modal-large textarea:focus {
     outline: none;
-    border-color: #2c3e50;
+    border-color: #95a5a6;
 }
 
 @media (max-width: 600px) {
