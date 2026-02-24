@@ -98,10 +98,11 @@ function displayRegistrations(data) {
     if (individuals.length === 0) {
         individualContainer.innerHTML = `
             <div class="empty-state">
-                <p>You haven't registered individually yet.</p>
-                <button class="btn btn-primary" onclick="location.href='register.html?type=individual'">Create Individual Registration</button>
+                <p data-i18n="dashboard.noIndividual">You haven't registered individually yet.</p>
+                <button class="btn btn-primary" onclick="location.href='register.html?type=individual'" data-i18n="dashboard.createIndividual">Create Individual Registration</button>
             </div>
         `;
+        if (window.applyLanguage) window.applyLanguage();
     } else {
         individualContainer.innerHTML = individuals.map(person => {
             const isOwner = person.registeredBy === currentUser.userId;
@@ -145,6 +146,7 @@ function displayRegistrations(data) {
                 <button class="btn btn-secondary" onclick="location.href='register.html?type=individual'">+ Create Another Individual Registration</button>
             </div>
         `;
+        if (window.applyLanguage) window.applyLanguage();
     }
     
     // Display family registrations
@@ -153,10 +155,11 @@ function displayRegistrations(data) {
     if (families.length === 0) {
         familyContainer.innerHTML = `
             <div class="empty-state">
-                <p>You're not part of any family registration yet.</p>
-                <button class="btn btn-primary" onclick="location.href='register.html?type=family'">Create Family Registration</button>
+                <p data-i18n="dashboard.noFamily">You're not part of any family registration yet.</p>
+                <button class="btn btn-primary" onclick="location.href='register.html?type=family'" data-i18n="dashboard.createFamily">Create Family Registration</button>
             </div>
         `;
+        if (window.applyLanguage) window.applyLanguage();
     } else {
         familyContainer.innerHTML = families.map(family => {
             const isOwner = family.ownerId === currentUser.userId;
@@ -224,6 +227,7 @@ function displayRegistrations(data) {
                 <button class="btn btn-secondary" onclick="location.href='register.html?type=family'">+ Create Another Family Registration</button>
             </div>
         `;
+        if (window.applyLanguage) window.applyLanguage();
     }
 }
 
@@ -234,17 +238,19 @@ function showEmptyState() {
     
     document.getElementById('individual-registrations').innerHTML = `
         <div class="empty-state">
-            <p>You haven't registered individually yet.</p>
-            <button class="btn btn-primary" onclick="location.href='register.html?type=individual'">Create Individual Registration</button>
+            <p data-i18n="dashboard.noIndividual">You haven't registered individually yet.</p>
+            <button class="btn btn-primary" onclick="location.href='register.html?type=individual'" data-i18n="dashboard.createIndividual">Create Individual Registration</button>
         </div>
     `;
     
     document.getElementById('family-registrations').innerHTML = `
         <div class="empty-state">
-            <p>You're not part of any family registration yet.</p>
-            <button class="btn btn-primary" onclick="location.href='register.html?type=family'">Create Family Registration</button>
+            <p data-i18n="dashboard.noFamily">You're not part of any family registration yet.</p>
+            <button class="btn btn-primary" onclick="location.href='register.html?type=family'" data-i18n="dashboard.createFamily">Create Family Registration</button>
         </div>
     `;
+    
+    if (window.applyLanguage) window.applyLanguage();
 }
 
 // Format date

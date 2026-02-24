@@ -481,4 +481,5 @@ document.addEventListener('DOMContentLoaded', () => {
 // Make functions globally available
 window.toggleLanguage = toggleLanguage;
 window.getCurrentLanguage = getCurrentLanguage;
+window.applyLanguage = applyLanguage;
 window.t = t;
