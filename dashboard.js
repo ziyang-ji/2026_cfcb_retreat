@@ -123,19 +123,19 @@ function displayRegistrations(data) {
                 </div>
                 <div class="card-details">
                     <div class="detail-row">
-                        <span class="detail-label">📞 Phone:</span>
+                        <span class="detail-label">📞 <span data-i18n="dashboard.phoneLabel">Phone:</span></span>
                         <span class="detail-value">${person.phone}</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">📧 Email:</span>
+                        <span class="detail-label">📧 <span data-i18n="dashboard.emailLabel">Email:</span></span>
                         <span class="detail-value">${person.email}</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">🏠 Address:</span>
+                        <span class="detail-label">🏠 <span data-i18n="dashboard.addressLabel">Address:</span></span>
                         <span class="detail-value">${person.address}</span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">📅 Registered:</span>
+                        <span class="detail-label">📅 <span data-i18n="dashboard.registeredLabel">Registered:</span></span>
                         <span class="detail-value">${formatDate(person.timestamp)}</span>
                     </div>
                 </div>

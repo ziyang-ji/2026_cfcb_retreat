@@ -114,6 +114,22 @@ const translations = {
         en: '+ Create Another Family Registration',
         zh: '+ 创建另一个家庭报名'
     },
+    'dashboard.phoneLabel': {
+        en: 'Phone:',
+        zh: '电话：'
+    },
+    'dashboard.emailLabel': {
+        en: 'Email:',
+        zh: '电子邮箱：'
+    },
+    'dashboard.addressLabel': {
+        en: 'Address:',
+        zh: '地址：'
+    },
+    'dashboard.registeredLabel': {
+        en: 'Registered:',
+        zh: '注册时间：'
+    },
     'dashboard.individualReg': {
         en: 'Individual Registrations',
         zh: '个人报名'
