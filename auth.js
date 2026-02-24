@@ -1,5 +1,4 @@
-// Google Apps Script URL
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwzKCFEX3I1HEUHr2xnlvJP3571b1MXgpWZQ9oxdcz_3LHgJxGXg1MGqA6DjHJFo7mNdQ/exec';
+// GOOGLE_SCRIPT_URL is now defined in config.js
 
 // Global variable for phone auth confirmation result
 let confirmationResult = null;
