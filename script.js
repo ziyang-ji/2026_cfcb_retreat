@@ -513,12 +513,20 @@ async function completeFamilyRegistration() {
         document.getElementById('success-message').textContent = 
             `${memberCount} new member${memberCount > 1 ? 's' : ''} added to your family! Total family members: ${totalCount}.`;
     } else {
+        // Display success message with translations
+        const familyRegComplete = window.t ? window.t('register.familyRegComplete') : 'Family registration complete!';
+        const memberText = memberCount > 1 ? (window.t ? window.t('register.members') : 'members') : (window.t ? window.t('register.member') : 'member');
+        const regSuccess = window.t ? window.t('register.registeredSuccessfully') : 'registered successfully.';
+        
         document.getElementById('success-message').textContent = 
-            `Family registration complete! ${memberCount} member${memberCount > 1 ? 's' : ''} registered successfully.`;
+            `${familyRegComplete} ${memberCount} ${memberText} ${regSuccess}`;
     }
     
+    const yourFamilyId = window.t ? window.t('register.yourFamilyId') : 'Family ID:';
+    const saveId = window.t ? window.t('register.saveId') : 'Share this ID with other family members so they can add themselves to your registration.';
+    
     document.getElementById('success-id-display').innerHTML = 
-        `<strong>Family ID:</strong> <span style="font-family: 'Courier New', monospace; font-weight: bold;">${currentState.familyId}</span><br><small style="color: #666;">Share this ID with other family members so they can add themselves to your registration.</small>`;
+        `<strong>${yourFamilyId}</strong> <span style="font-family: 'Courier New', monospace; font-weight: bold;">${currentState.familyId}</span><br><small style="color: #666;">${saveId}</small>`;
     showSection('step-success');
 }
 
