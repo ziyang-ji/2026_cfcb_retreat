@@ -224,7 +224,7 @@ function displayRegistrations(data) {
         `;
         }).join('') + `
             <div style="text-align: center; margin-top: 1.5rem;">
-                <button class="btn btn-secondary" onclick="location.href='register.html?type=family'">+ Create Another Family Registration</button>
+                <button class="btn btn-secondary" onclick="location.href='register.html?type=family'" data-i18n="dashboard.createAnotherFamily">+ Create Another Family Registration</button>
             </div>
         `;
         if (window.applyLanguage) window.applyLanguage();
