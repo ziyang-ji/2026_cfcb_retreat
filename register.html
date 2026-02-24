@@ -151,73 +151,73 @@
 
         <!-- Step 4: Family Sign-Up Page -->
         <div id="step-family-page" class="form-section">
-            <h2>家庭报名 / Family Registration</h2>
+            <h2 data-i18n="register.familyReg">Family Registration</h2>
             <div class="id-display">
-                <strong>家庭ID / Family ID:</strong> <span id="display-family-id"></span>
-                <small style="display: block; margin-top: 0.5rem; color: #666;">与家庭成员分享此ID，以便他们日后添加自己！/ Share this ID with family members so they can add themselves later!</small>
+                <strong data-i18n="register.familyIdLabel">Family ID:</strong> <span id="display-family-id"></span>
+                <small style="display: block; margin-top: 0.5rem; color: #666;" data-i18n="register.shareId">Share this ID with family members so they can add themselves later!</small>
             </div>
             
             <div id="family-members-list">
-                <h3>家庭成员 / Family Members</h3>
+                <h3 data-i18n="register.familyMembers">Family Members</h3>
                 <div id="members-container">
-                    <p class="empty-state">尚未添加成员。点击"添加家庭成员"开始。/ No members added yet. Click "Add Family Member" to get started.</p>
+                    <p class="empty-state" data-i18n="register.noMembers">No members added yet. Click "Add Family Member" to get started.</p>
                 </div>
             </div>
 
-            <button class="btn btn-success" onclick="showAddMemberForm()">+ 添加家庭成员 / Add Family Member</button>
+            <button class="btn btn-success" onclick="showAddMemberForm()" data-i18n="register.addMember">+ Add Family Member</button>
             
             <div id="add-member-section" class="add-member-form" style="display: none;">
-                <h3>添加新家庭成员 / Add New Family Member</h3>
+                <h3 data-i18n="register.addNewMember">Add New Family Member</h3>
                 <div class="form-group">
-                    <label for="member-name">全名 / Full Name *</label>
-                    <input type="text" id="member-name" placeholder="李四 / Jane Smith" required>
+                    <label for="member-name" data-i18n="register.fullName">Full Name *</label>
+                    <input type="text" id="member-name" placeholder="Jane Smith" required>
                 </div>
                 <div class="form-group">
-                    <label for="member-phone">电话号码 / Phone Number *</label>
+                    <label for="member-phone" data-i18n="register.phoneNumber">Phone Number *</label>
                     <input type="tel" id="member-phone" placeholder="(555) 123-4567" required>
                 </div>
                 <div class="form-group">
-                    <label for="member-email">电子邮箱 / Email Address *</label>
+                    <label for="member-email" data-i18n="register.emailAddress">Email Address *</label>
                     <input type="email" id="member-email" placeholder="jane@example.com" required>
                 </div>
                 <div class="form-group">
-                    <label for="member-address">家庭地址 / Home Address *</label>
+                    <label for="member-address" data-i18n="register.homeAddress">Home Address *</label>
                     <textarea id="member-address" rows="3" placeholder="123 Main St, City, State ZIP" required></textarea>
                 </div>
                 <div class="button-row">
-                    <button class="btn btn-secondary" onclick="cancelAddMember()">取消 / Cancel</button>
-                    <button class="btn btn-primary" onclick="addFamilyMember()">添加成员 / Add Member</button>
+                    <button class="btn btn-secondary" onclick="cancelAddMember()" data-i18n="common.cancel">Cancel</button>
+                    <button class="btn btn-primary" onclick="addFamilyMember()" data-i18n="register.addMember">Add Member</button>
                 </div>
             </div>
 
             <div class="button-row" style="margin-top: 2rem;">
-                <button class="btn btn-secondary" onclick="goBackFromFamily()">返回 / Back</button>
-                <button class="btn btn-primary" onclick="completeFamilyRegistration()">完成报名 / Complete Registration</button>
+                <button class="btn btn-secondary" onclick="goBackFromFamily()" data-i18n="register.back">Back</button>
+                <button class="btn btn-primary" onclick="completeFamilyRegistration()" data-i18n="register.completeReg">Complete Registration</button>
             </div>
         </div>
 
         <!-- Success Message -->
         <div id="step-success" class="form-section success-section">
             <div class="success-icon">✅</div>
-            <h2>报名完成！/ Registration Complete!</h2>
+            <h2 data-i18n="register.regComplete">Registration Complete!</h2>
             <p id="success-message"></p>
             <div class="id-display" id="success-id-display"></div>
-            <button class="btn btn-primary" onclick="resetForm()">返回主页 / Back to Dashboard</button>
+            <button class="btn btn-primary" onclick="resetForm()" data-i18n="register.backToDashboardBtn">Back to Dashboard</button>
         </div>
 
         <!-- Loading Overlay -->
         <div id="loading-overlay" class="loading-overlay">
             <div class="spinner"></div>
-            <p>Processing...</p>
+            <p data-i18n="auth.processing">Processing...</p>
         </div>
         <!-- Sign Out Confirmation Modal -->
         <div id="signout-modal" class="modal">
             <div class="modal-content">
-                <h2>登出 / Sign Out</h2>
-                <p>您确定要登出吗？/ Are you sure you want to sign out?</p>
+                <h2 data-i18n="register.signOut">Sign Out</h2>
+                <p data-i18n="register.signOutConfirm">Are you sure you want to sign out?</p>
                 <div class="modal-buttons">
-                    <button class="btn btn-secondary" onclick="closeSignOutModal()">取消 / Cancel</button>
-                    <button class="btn btn-primary" onclick="confirmSignOut()">登出 / Sign Out</button>
+                    <button class="btn btn-secondary" onclick="closeSignOutModal()" data-i18n="common.cancel">Cancel</button>
+                    <button class="btn btn-primary" onclick="confirmSignOut()" data-i18n="register.signOut">Sign Out</button>
                 </div>
             </div>
         </div>
@@ -225,10 +225,10 @@
         <!-- Error Modal -->
         <div id="error-modal" class="modal">
             <div class="modal-content">
-                <h2>⚠️ 错误 / Error</h2>
-                <p id="error-message">发生错误 / An error occurred</p>
+                <h2><span>⚠️ </span><span data-i18n="register.error">Error</span></h2>
+                <p id="error-message" data-i18n="register.errorMessage">An error occurred</p>
                 <div class="modal-buttons">
-                    <button class="btn btn-primary" onclick="closeErrorModal()">确定 / OK</button>
+                    <button class="btn btn-primary" onclick="closeErrorModal()" data-i18n="common.ok">OK</button>
                 </div>
             </div>
         </div>
