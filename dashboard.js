@@ -176,30 +176,30 @@ function displayRegistrations(data) {
                     <div class="card-actions">
                         <span class="card-badge">Family ID: ${family.familyId}</span>
                         ${isOwner ? `
-                            <button class="btn btn-secondary" onclick="deleteFamily('${family.familyId}', '${family.familyHead}')" style="background: #f44336; color: white; padding: 0.4rem 0.8rem; font-size: 0.85rem;">Delete Family</button>
+                            <button class="btn btn-secondary" onclick="deleteFamily('${family.familyId}', '${family.familyHead}')" style="background: #f44336; color: white; padding: 0.4rem 0.8rem; font-size: 0.85rem;" data-i18n="dashboard.deleteFamilyBtn">Delete Family</button>
                         ` : userMemberCount > 0 ? `
-                            <button class="btn btn-secondary" onclick="quitFamily('${family.familyId}', '${family.familyHead}', ${userMemberCount})" style="background: #ff9800; color: white; padding: 0.4rem 0.8rem; font-size: 0.85rem;">Quit Family</button>
+                            <button class="btn btn-secondary" onclick="quitFamily('${family.familyId}', '${family.familyHead}', ${userMemberCount})" style="background: #ff9800; color: white; padding: 0.4rem 0.8rem; font-size: 0.85rem;" data-i18n="dashboard.quitFamilyBtn">Quit Family</button>
                         ` : ''}
                     </div>
                 </div>
                 <div class="card-details">
                     <div class="detail-row">
-                        <span class="detail-label">👥 Members:</span>
-                        <span class="detail-value">${family.memberCount} people</span>
+                        <span class="detail-label">👥 <span data-i18n="dashboard.membersLabel">Members:</span></span>
+                        <span class="detail-value">${family.memberCount} <span data-i18n="dashboard.people">people</span></span>
                     </div>
                     <div class="detail-row">
-                        <span class="detail-label">📅 Created:</span>
+                        <span class="detail-label">📅 <span data-i18n="dashboard.createdLabel">Created:</span></span>
                         <span class="detail-value">${formatDate(family.timestamp)}</span>
                     </div>
                     ${isOwner ? `
                         <div class="detail-row">
-                            <span class="detail-label">👑 Status:</span>
-                            <span class="detail-value" style="color: #667eea; font-weight: 600;">You are the owner</span>
+                            <span class="detail-label">👑 <span data-i18n="dashboard.statusLabel">Status:</span></span>
+                            <span class="detail-value" style="color: #667eea; font-weight: 600;" data-i18n="dashboard.ownerStatus">You are the owner</span>
                         </div>
                     ` : ''}
                 </div>
                 <div class="family-members">
-                    <h4>Family Members:</h4>
+                    <h4 data-i18n="dashboard.familyMembersHeading">Family Members:</h4>
                     ${family.members.length > 0 ? family.members.map(member => {
                         const isOwner = member.registeredBy === currentUser.userId;
                         return `
@@ -217,7 +217,7 @@ function displayRegistrations(data) {
                             </div>
                         </div>
                     `;
-                    }).join('') : '<p style="color: #666; font-style: italic; padding: 1rem;">No members yet. Click "Add More Members" to add someone.</p>'}
+                    }).join('') : '<p style="color: #666; font-style: italic; padding: 1rem;" data-i18n="dashboard.noMembersYet">No members yet. Click "Add More Members" to add someone.</p>'}
                 </div>
                 <button class="btn btn-secondary" onclick="location.href='register.html?type=family&familyId=${family.familyId}'" data-i18n="dashboard.addMoreMembers">+ Add More Members</button>
             </div>

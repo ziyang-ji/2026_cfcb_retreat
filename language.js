@@ -130,6 +130,42 @@ const translations = {
         en: 'Registered:',
         zh: '注册时间：'
     },
+    'dashboard.deleteFamilyBtn': {
+        en: 'Delete Family',
+        zh: '删除家庭'
+    },
+    'dashboard.quitFamilyBtn': {
+        en: 'Quit Family',
+        zh: '退出家庭'
+    },
+    'dashboard.membersLabel': {
+        en: 'Members:',
+        zh: '成员：'
+    },
+    'dashboard.people': {
+        en: 'people',
+        zh: '人'
+    },
+    'dashboard.createdLabel': {
+        en: 'Created:',
+        zh: '创建时间：'
+    },
+    'dashboard.statusLabel': {
+        en: 'Status:',
+        zh: '身份：'
+    },
+    'dashboard.ownerStatus': {
+        en: 'You are the owner',
+        zh: '您是户主'
+    },
+    'dashboard.familyMembersHeading': {
+        en: 'Family Members:',
+        zh: '家庭成员：'
+    },
+    'dashboard.noMembersYet': {
+        en: 'No members yet. Click "Add More Members" to add someone.',
+        zh: '还没有成员。点击"添加更多成员"来添加。'
+    },
     'dashboard.individualReg': {
         en: 'Individual Registrations',
         zh: '个人报名'
