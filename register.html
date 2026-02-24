@@ -72,150 +72,150 @@
                 </button>
             </div>
             <div class="button-row">
-                <button class="btn btn-secondary" onclick="goBackFromFamilyCheck()">Back</button>
+                <button class="btn btn-secondary" onclick="goBackFromFamilyCheck()">返回 / Back</button>
             </div>
         </div>
 
         <!-- Step 3: Enter Existing Family ID -->
         <div id="step-family-existing" class="form-section">
-            <h2>Join Existing Family</h2>
-            <p>Find your family by entering either the Family ID or a family member's email.</p>
+            <h2>加入现有家庭 / Join Existing Family</h2>
+            <p>通过输入家庭ID或家庭成员的电子邮箱来查找您的家庭。/ Find your family by entering either the Family ID or a family member's email.</p>
             
             <div class="form-group">
-                <label for="existing-family-id">Family ID</label>
+                <label for="existing-family-id">家庭ID / Family ID</label>
                 <input type="text" id="existing-family-id" placeholder="e.g., SMITH-123456" style="text-transform: uppercase;">
-                <small>Ask your family member for this ID</small>
+                <small>向您的家庭成员询问此ID / Ask your family member for this ID</small>
             </div>
             
             <div style="text-align: center; margin: 1rem 0; color: #666; font-weight: 500;">
-                — OR —
+                — 或 / OR —
             </div>
             
             <div class="form-group">
-                <label for="member-email-search">Family Member's Email</label>
+                <label for="member-email-search">家庭成员的电子邮箱 / Family Member's Email</label>
                 <input type="email" id="member-email-search" placeholder="e.g., john@example.com">
-                <small>Enter the email of someone already registered in the family</small>
+                <small>输入已在家庭中报名的成员的电子邮箱 / Enter the email of someone already registered in the family</small>
             </div>
             
             <div class="button-row">
-                <button class="btn btn-secondary" onclick="showSection('step-family-check')">Back</button>
-                <button class="btn btn-primary" onclick="searchFamily()">Find Family</button>
+                <button class="btn btn-secondary" onclick="showSection('step-family-check')">返回 / Back</button>
+                <button class="btn btn-primary" onclick="searchFamily()">查找家庭 / Find Family</button>
             </div>
         </div>
         
         <!-- Step 3b-1: Select Family (when multiple found) -->
         <div id="step-family-select" class="form-section">
-            <h2>Multiple Families Found</h2>
-            <p>We found multiple families with a member using that email. Please select which family you'd like to join:</p>
+            <h2>找到多个家庭 / Multiple Families Found</h2>
+            <p>我们找到了多个使用该电子邮箱的家庭。请选择您想加入的家庭：/ We found multiple families with a member using that email. Please select which family you'd like to join:</p>
             
             <div id="family-options" style="margin: 1.5rem 0;">
                 <!-- Family options will be inserted here -->
             </div>
             
             <div class="button-row">
-                <button class="btn btn-secondary" onclick="showSection('step-family-existing')">Back</button>
+                <button class="btn btn-secondary" onclick="showSection('step-family-existing')">返回 / Back</button>
             </div>
         </div>
         
         <!-- Step 3b-2: Confirm Family -->
         <div id="step-family-confirm" class="form-section">
-            <h2>Confirm Family</h2>
-            <p>Is this the correct family?</p>
+            <h2>确认家庭 / Confirm Family</h2>
+            <p>这是正确的家庭吗？/ Is this the correct family?</p>
             
             <div id="family-preview" class="member-card" style="margin: 1.5rem 0; padding: 1.5rem; background: #f8f9ff; border: 2px solid #667eea; border-radius: 8px;">
                 <!-- Family details will be inserted here -->
             </div>
             
             <div class="button-row">
-                <button class="btn btn-secondary" onclick="goBackFromConfirm()">Back</button>
-                <button class="btn btn-primary" onclick="confirmAndJoinFamily()">Yes, Join This Family</button>
+                <button class="btn btn-secondary" onclick="goBackFromConfirm()">返回 / Back</button>
+                <button class="btn btn-primary" onclick="confirmAndJoinFamily()">是的，加入此家庭 / Yes, Join This Family</button>
             </div>
         </div>
 
         <!-- Step 3: Create New Family -->
         <div id="step-family-new" class="form-section">
-            <h2>Create Family Registration</h2>
-            <p class="info-text">Enter the primary contact's name for your family. A unique Family ID will be generated for you.</p>
+            <h2>创建家庭报名 / Create Family Registration</h2>
+            <p class="info-text">输入您家庭的主要联系人姓名。系统将为您生成唯一的家庭ID。/ Enter the primary contact's name for your family. A unique Family ID will be generated for you.</p>
             <div class="form-group">
-                <label for="family-head-name">Primary Contact / Head of Family *</label>
-                <input type="text" id="family-head-name" placeholder="John Smith" required>
-                <small>This will be used to create your Family ID</small>
+                <label for="family-head-name">主要联系人/户主 / Primary Contact / Head of Family *</label>
+                <input type="text" id="family-head-name" placeholder="张三 / John Smith" required>
+                <small>此信息将用于创建您的家庭ID / This will be used to create your Family ID</small>
             </div>
             <div class="button-row">
-                <button class="btn btn-secondary" onclick="goBackFromFamilyNew()">Back</button>
-                <button class="btn btn-primary" onclick="createFamilyId()">Create Family & Continue</button>
+                <button class="btn btn-secondary" onclick="goBackFromFamilyNew()">返回 / Back</button>
+                <button class="btn btn-primary" onclick="createFamilyId()">创建家庭并继续 / Create Family & Continue</button>
             </div>
         </div>
 
         <!-- Step 4: Family Sign-Up Page -->
         <div id="step-family-page" class="form-section">
-            <h2>Family Registration</h2>
+            <h2>家庭报名 / Family Registration</h2>
             <div class="id-display">
-                <strong>Family ID:</strong> <span id="display-family-id"></span>
-                <small style="display: block; margin-top: 0.5rem; color: #666;">Share this ID with family members so they can add themselves later!</small>
+                <strong>家庭ID / Family ID:</strong> <span id="display-family-id"></span>
+                <small style="display: block; margin-top: 0.5rem; color: #666;">与家庭成员分享此ID，以便他们日后添加自己！/ Share this ID with family members so they can add themselves later!</small>
             </div>
             
             <div id="family-members-list">
-                <h3>Family Members</h3>
+                <h3>家庭成员 / Family Members</h3>
                 <div id="members-container">
-                    <p class="empty-state">No members added yet. Click "Add Family Member" to get started.</p>
+                    <p class="empty-state">尚未添加成员。点击"添加家庭成员"开始。/ No members added yet. Click "Add Family Member" to get started.</p>
                 </div>
             </div>
 
-            <button class="btn btn-success" onclick="showAddMemberForm()">+ Add Family Member</button>
+            <button class="btn btn-success" onclick="showAddMemberForm()">+ 添加家庭成员 / Add Family Member</button>
             
             <div id="add-member-section" class="add-member-form" style="display: none;">
-                <h3>Add New Family Member</h3>
+                <h3>添加新家庭成员 / Add New Family Member</h3>
                 <div class="form-group">
-                    <label for="member-name">Full Name *</label>
-                    <input type="text" id="member-name" placeholder="Jane Smith" required>
+                    <label for="member-name">全名 / Full Name *</label>
+                    <input type="text" id="member-name" placeholder="李四 / Jane Smith" required>
                 </div>
                 <div class="form-group">
-                    <label for="member-phone">Phone Number *</label>
+                    <label for="member-phone">电话号码 / Phone Number *</label>
                     <input type="tel" id="member-phone" placeholder="(555) 123-4567" required>
                 </div>
                 <div class="form-group">
-                    <label for="member-email">Email Address *</label>
+                    <label for="member-email">电子邮箱 / Email Address *</label>
                     <input type="email" id="member-email" placeholder="jane@example.com" required>
                 </div>
                 <div class="form-group">
-                    <label for="member-address">Home Address *</label>
+                    <label for="member-address">家庭地址 / Home Address *</label>
                     <textarea id="member-address" rows="3" placeholder="123 Main St, City, State ZIP" required></textarea>
                 </div>
                 <div class="button-row">
-                    <button class="btn btn-secondary" onclick="cancelAddMember()">Cancel</button>
-                    <button class="btn btn-primary" onclick="addFamilyMember()">Add Member</button>
+                    <button class="btn btn-secondary" onclick="cancelAddMember()">取消 / Cancel</button>
+                    <button class="btn btn-primary" onclick="addFamilyMember()">添加成员 / Add Member</button>
                 </div>
             </div>
 
             <div class="button-row" style="margin-top: 2rem;">
-                <button class="btn btn-secondary" onclick="goBackFromFamily()">Back</button>
-                <button class="btn btn-primary" onclick="completeFamilyRegistration()">Complete Registration</button>
+                <button class="btn btn-secondary" onclick="goBackFromFamily()">返回 / Back</button>
+                <button class="btn btn-primary" onclick="completeFamilyRegistration()">完成报名 / Complete Registration</button>
             </div>
         </div>
 
         <!-- Success Message -->
         <div id="step-success" class="form-section success-section">
             <div class="success-icon">✅</div>
-            <h2>Registration Complete!</h2>
+            <h2>报名完成！/ Registration Complete!</h2>
             <p id="success-message"></p>
             <div class="id-display" id="success-id-display"></div>
-            <button class="btn btn-primary" onclick="resetForm()">Back to Dashboard</button>
+            <button class="btn btn-primary" onclick="resetForm()">返回主页 / Back to Dashboard</button>
         </div>
 
         <!-- Loading Overlay -->
         <div id="loading-overlay" class="loading-overlay">
             <div class="spinner"></div>
-            <p>Processing...</p>
+            <p>处理中... / Processing...</p>
         </div>
         <!-- Sign Out Confirmation Modal -->
         <div id="signout-modal" class="modal">
             <div class="modal-content">
-                <h2>Sign Out</h2>
-                <p>Are you sure you want to sign out?</p>
+                <h2>登出 / Sign Out</h2>
+                <p>您确定要登出吗？/ Are you sure you want to sign out?</p>
                 <div class="modal-buttons">
-                    <button class="btn btn-secondary" onclick="closeSignOutModal()">Cancel</button>
-                    <button class="btn btn-primary" onclick="confirmSignOut()">Sign Out</button>
+                    <button class="btn btn-secondary" onclick="closeSignOutModal()">取消 / Cancel</button>
+                    <button class="btn btn-primary" onclick="confirmSignOut()">登出 / Sign Out</button>
                 </div>
             </div>
         </div>
@@ -223,10 +223,10 @@
         <!-- Error Modal -->
         <div id="error-modal" class="modal">
             <div class="modal-content">
-                <h2>⚠️ Error</h2>
-                <p id="error-message">An error occurred</p>
+                <h2>⚠️ 错误 / Error</h2>
+                <p id="error-message">发生错误 / An error occurred</p>
                 <div class="modal-buttons">
-                    <button class="btn btn-primary" onclick="closeErrorModal()">OK</button>
+                    <button class="btn btn-primary" onclick="closeErrorModal()">确定 / OK</button>
                 </div>
             </div>
         </div>
