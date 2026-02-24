@@ -510,8 +510,12 @@ async function completeFamilyRegistration() {
     const totalCount = currentState.familyMembers.length;
     
     if (currentState.isExistingFamily) {
+        // Display success message for adding to existing family
+        const newMemberText = memberCount > 1 ? (window.t ? window.t('register.newMembersAdded') : 'new members added to your family!') : (window.t ? window.t('register.newMemberAdded') : 'new member added to your family!');
+        const totalText = window.t ? window.t('register.totalFamilyMembers') : 'Total family members:';
+        
         document.getElementById('success-message').textContent = 
-            `${memberCount} new member${memberCount > 1 ? 's' : ''} added to your family! Total family members: ${totalCount}.`;
+            `${memberCount} ${newMemberText} ${totalText} ${totalCount}.`;
     } else {
         // Display success message with translations
         const familyRegComplete = window.t ? window.t('register.familyRegComplete') : 'Family registration complete!';

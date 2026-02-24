@@ -512,6 +512,18 @@ const translations = {
         en: 'Your Family ID:',
         zh: '您的家庭ID：'
     },
+    'register.newMemberAdded': {
+        en: 'new member added to your family!',
+        zh: '位新成员已添加到您的家庭！'
+    },
+    'register.newMembersAdded': {
+        en: 'new members added to your family!',
+        zh: '位新成员已添加到您的家庭！'
+    },
+    'register.totalFamilyMembers': {
+        en: 'Total family members:',
+        zh: '家庭总成员数：'
+    },
     'register.signOut': {
         en: 'Sign Out',
         zh: '登出'
