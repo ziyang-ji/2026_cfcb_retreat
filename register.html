@@ -21,59 +21,59 @@
 
         <!-- Step 1: Individual Name Entry -->
         <div id="step-individual-name" class="form-section">
-            <h2>输入您的姓名 / Enter Your Name</h2>
+            <h2 data-i18n="register.enterName">Enter Your Name</h2>
             <div class="form-group">
-                <label for="individual-name">全名 / Full Name *</label>
-                <input type="text" id="individual-name" placeholder="张三 / John Doe" required>
+                <label for="individual-name" data-i18n="register.fullName">Full Name *</label>
+                <input type="text" id="individual-name" placeholder="John Doe" required>
             </div>
             <div class="button-row">
-                <button class="btn btn-secondary" onclick="goBackFromIndividual()">返回 / Back</button>
-                <button class="btn btn-primary" onclick="createIndividualId()">继续 / Continue</button>
+                <button class="btn btn-secondary" onclick="goBackFromIndividual()" data-i18n="register.back">Back</button>
+                <button class="btn btn-primary" onclick="createIndividualId()" data-i18n="register.continue">Continue</button>
             </div>
         </div>
 
         <!-- Step 3: Individual Details Form -->
         <div id="step-individual-form" class="form-section">
-            <h2>报名详情 / Registration Details</h2>
+            <h2 data-i18n="register.regDetails">Registration Details</h2>
             <div class="id-display">
-                <strong>您的ID / Your ID:</strong> <span id="display-individual-id"></span>
+                <strong data-i18n="register.yourId">Your ID:</strong> <span id="display-individual-id"></span>
             </div>
             <div class="form-group">
-                <label for="individual-phone">电话号码 / Phone Number *</label>
+                <label for="individual-phone" data-i18n="register.phoneNumber">Phone Number *</label>
                 <input type="tel" id="individual-phone" placeholder="(555) 123-4567" required>
             </div>
             <div class="form-group">
-                <label for="individual-email">电子邮箱 / Email Address *</label>
+                <label for="individual-email" data-i18n="register.emailAddress">Email Address *</label>
                 <input type="email" id="individual-email" placeholder="john@example.com" required>
             </div>
             <div class="form-group">
-                <label for="individual-address">家庭地址 / Home Address *</label>
+                <label for="individual-address" data-i18n="register.homeAddress">Home Address *</label>
                 <textarea id="individual-address" rows="3" placeholder="123 Main St, City, State ZIP" required></textarea>
             </div>
             <div class="button-row">
-                <button class="btn btn-secondary" onclick="showSection('step-individual-name')">返回 / Back</button>
-                <button class="btn btn-primary" onclick="submitIndividual()">提交报名 / Submit Registration</button>
+                <button class="btn btn-secondary" onclick="showSection('step-individual-name')" data-i18n="register.back">Back</button>
+                <button class="btn btn-primary" onclick="submitIndividual()" data-i18n="register.submitReg">Submit Registration</button>
             </div>
         </div>
 
         <!-- Step 2: Family - Check if Exists -->
         <div id="step-family-check" class="form-section">
-            <h2>家庭报名 / Family Registration</h2>
-            <p class="info-text">请选择以下选项 / Choose an option below:</p>
+            <h2 data-i18n="register.familyReg">Family Registration</h2>
+            <p class="info-text" data-i18n="register.chooseOption">Choose an option below:</p>
             <div class="button-group">
                 <button class="choice-btn" onclick="selectFamilyOption('existing')">
                     <span class="icon">👨‍👩‍👧‍👦</span>
-                    <span class="text">加入家庭 / Join a Family</span>
-                    <span class="description">输入家庭ID或成员邮箱以加入 / Enter Family ID or member email to join</span>
+                    <span class="text" data-i18n="register.joinFamily">Join a Family</span>
+                    <span class="description" data-i18n="register.joinFamilyDesc">Enter Family ID or member email to join</span>
                 </button>
                 <button class="choice-btn" onclick="selectFamilyOption('new')">
                     <span class="icon">✨</span>
-                    <span class="text">新用户？创建新家庭 / New here? Create a New Family</span>
-                    <span class="description">开始新的家庭报名 / Start a new family registration</span>
+                    <span class="text" data-i18n="register.createNewFamily">New here? Create a New Family</span>
+                    <span class="description" data-i18n="register.createNewFamilyDesc">Start a new family registration</span>
                 </button>
             </div>
             <div class="button-row">
-                <button class="btn btn-secondary" onclick="goBackFromFamilyCheck()">返回 / Back</button>
+                <button class="btn btn-secondary" onclick="goBackFromFamilyCheck()" data-i18n="register.back">Back</button>
             </div>
         </div>
 
